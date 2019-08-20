@@ -1,0 +1,188 @@
+<?php
+
+/*
+ * Utility methods
+ * ---------------
+ */
+
+namespace Foundation;
+
+trait Utils_Render {
+
+    /*
+     * Output for social media links / sharing
+     *
+     * Note: assumes svg sprite with social icons.
+     *
+     * @param array $args {
+     *      @type string $links. Accepts string stating menu location.   
+     *      @type string $share. Accepts boolean.
+     *      @type string $vertical. Accepts boolean.
+     *      @type string $center. Accepts boolean.
+     *      @type string $lg. Accepts boolean.
+     *      @type string $div. Accepts boolean.
+     *      @type string $hover. Accepts boolean.
+     *      @type string $class. Accepts string.
+     * }
+     * @return string of html output
+     */
+
+	public static function render_social( $args = [] ) {
+		$links = $args['links'] ?? '';
+		$share = $args['share'] ?? false;
+		$vertical = $args['vertical'] ?? false;
+		$center = $args['center'] ?? false;
+		$lg = $args['lg'] ?? false;
+		$div = $args['div'] ?? false;
+        $hover = $args['hover'] ?? false;
+        $class = $args['class'] ?? '';
+
+		if( !$links && !$share )
+			return '';
+
+		$tag = $div ? 'div' : 'ul';
+		$child_tag = $div ? 'div' : 'li';
+
+        $item_class = 'o-social__item';
+
+        if( $class )
+            $item_class .= " $class";
+
+		$list_classes = "o-social l-flex --wrap --align-center";
+		$list_classes .= $center ? ' --justify-center' : '';
+		$list_classes .= $vertical ? ' --vertical' : '';
+		$list_classes .= $lg ? ' --s-lg' : '';
+        $list_classes .= $hover ? ' --hover' : '';
+
+		$output = "<$tag class='$list_classes'>";
+		$data = [];
+		$meta = [
+			'Facebook' => [
+				'id' => 'facebook',
+				'w' => 16,
+				'h' => 28
+			],
+			'Twitter' => [
+				'id' => 'twitter',
+				'w' => 26,
+				'h' => 28
+			],
+			'Linkedin' => [
+				'id' => 'linkedin',
+				'w' => 24,
+				'h' => 28
+			],
+			'YouTube' => [
+				'id' => 'youtube',
+				'w' => 28,
+				'h' => 28
+			],
+			'Instagram' => [
+				'id' => 'instagram',
+				'w' => 24,
+				'h' => 28
+			],
+			'Email' => [
+				'id' => 'envelope',
+				'w' => 28,
+				'h' => 28
+			]
+		];
+
+		if( $share ) {
+            $blog_name = get_bloginfo( 'name' );
+            $url = get_permalink();
+            $share_meta = [
+                'Facebook' => 'https://www.facebook.com/sharer.php?' . http_build_query(
+                    ['u' => $url]
+                ),
+                'Twitter' => 'https://twitter.com/intent/tweet?' . http_build_query(
+                    [
+                        'text' => get_the_title() . ' | ' . $blog_name,
+                        'url' => $url
+                    ]
+                ),
+                'Linkedin' => 'https://www.linkedin.com/shareArticle?' . http_build_query(
+                    [
+                        'mini' => true,
+                        'url' => $url,
+                        'title' => get_the_title() . ' | ' . $blog_name,
+                        'summary' => get_the_excerpt(),
+                        'source' => ''
+                    ]
+                ),
+                'Email' => 
+                    'mailto:?' .
+                    '&subject=' . get_the_title() . '%20%7C%20' . $blog_name .
+                    '&body=' . get_the_excerpt() . '%0D%0A%0D%0A' . $url
+            ];
+
+            foreach( $share as $s ) {
+            	if( !array_key_exists( $s, $share_meta ) )
+					continue;
+
+				$item = $meta[$s];
+				$item['url'] = $share_meta[$s];
+				$data[] = $item;
+            }
+        }
+
+		if( $links ) {
+			$theme_locations = get_nav_menu_locations(); 
+
+			if( isset( $theme_locations[$links] ) ) {
+				$social_links = wp_get_nav_menu_items( $links );
+
+				foreach( $social_links as $s ) {
+					if( !array_key_exists( $s->post_title, $meta ) )
+						continue;
+
+					$item = $meta[$s->post_title];
+					$item['url'] = $s->url;
+					$data[] = $item;
+				}
+			}
+		}
+
+		foreach( $data as $d ) {
+			$url = $d['url'];
+			$id = $d['id'];
+			$w = '';
+
+			if( $share && $id !== 'envelope' ) {
+                $w_width = 600;
+                $w_height = 500;
+                $w = " onclick=\"window.open( '$url', 'newwindow', 'width=$w_width, height=$w_height' ); return false;\"";
+            }
+
+			$output .= 
+				"<$child_tag class='$item_class'>".
+					'<a' . ( $share && $w ? $w : '' ) . ' class="o-social__link" href="' . $url . '">' . 
+						'<span class="u-visually-hidden">' . ucwords( $id ) . '</span>' .
+						'<svg class="o-social__icon u-position-relative" width="' . $d['w'] . '" height="' . $d['h'] . '" viewBox="0 0 ' . $d['w'] . ' ' . $d['h'] . '">' .
+							'<use xlink:href="#sprite-' . $id . '" />' .
+						'</svg>' .
+					'</a>' .
+				"</$child_tag>";
+		}
+
+		$output .= "</$tag>";
+
+		return $output;
+	}
+
+    /*
+     * Output posts requested through ajax.
+     *
+     * Note: meant to be overwritten by user.
+     *
+     * @param string $post_type 
+     * @param array $query_args
+     * @return string / array of html output
+     */
+
+    public static function render_ajax_posts( $post_type = 'post', $query_args = [] ) {
+        return '';
+    }
+
+} // end Utils_Render

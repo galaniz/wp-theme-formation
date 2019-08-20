@@ -11,5 +11,14 @@
     ],
     "require": {
         "php": ">=7.1.0"
+    },
+    "autoload": {
+        "classmap": [
+            "src/globals.php",
+            "src/utils.php",
+            "src/utils-render.php",
+            "src/public/ajax.php",
+            "src/index.php"
+        ]
     }
 }

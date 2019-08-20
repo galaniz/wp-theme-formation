@@ -18,6 +18,24 @@ class Foundation {
 	* Variables
 	* ---------
 	*
+	* Namespace for handles, option and meta names.
+	*
+	* @var string $namespace
+	*/
+
+	public static $namespace = 'fdn';
+
+	/*
+	 * Store api keys for use in ajax callbacks for example.
+	 *
+	 * @var array $api_keys {
+	 *     	@type string $name. Accepts string / array.
+	 * }
+	 */
+
+	protected static $api_keys = [];
+
+   /*
 	* Pass query args to front end when loading posts with ajax.
 	*
 	* @var array $load_posts_query {
@@ -41,6 +59,16 @@ class Foundation {
 	 */
 
 	public static $cpt = [];
+
+	/*
+	 * Number of posts to display by type / post type
+	 *
+	 * @var array $posts_per_page {
+	 *     	@type string $type / $post_type. Accepts int.
+	 * }
+	 */
+
+	public static $posts_per_page = [];
 
 	/*
 	 * Editor color palette theme support args.
@@ -106,7 +134,6 @@ class Foundation {
 	 *		@type string $footer. Accepts boolean.
 	 *		@type string $defer. Accepts boolean.
 	 *		@type string $data. Accepts array.
-	 *		@type string $data_name. Accepts string.
 	 * }
 	 */
 
@@ -140,9 +167,10 @@ class Foundation {
 
 	private function setup_actions() {
 		add_action( 'after_setup_theme', [$this, 'init'] );
+		add_action( 'pre_get_posts', [$this, 'query_vars'] );
 		add_action( 'wp_enqueue_scripts', [$this, 'scripts'] );
 
-		// self::ajax_actions();
+		self::ajax_actions();
 
 		/* Admin customizations */
 
@@ -226,6 +254,28 @@ class Foundation {
 	}
 
    /*
+	* Alter query vars for posts when not in admin.
+	*/
+
+	public function query_vars( $query ) {
+		if( !is_admin() && $query->is_main_query() ) {
+			if( is_home() || is_category() || is_archive() )
+				$query->set( 'posts_per_page', self::get_posts_per_page( 'post' ) );	
+
+			if( is_tax() || is_post_type_archive() ) {
+				$post_type = $query->get( 'post_type' );
+				$query->set( 'posts_per_page', self::get_posts_per_page( $post_type ) );
+			}
+
+			if( is_search() && isset( self::$posts_per_page['search'] ) )
+				$query->set( 'posts_per_page', self::$posts_per_page['search'] );
+
+			if( is_author() && isset( self::$posts_per_page['author'] ) )
+				$query->set( 'posts_per_page', self::$posts_per_page['author'] );
+		}
+	}
+
+   /*
 	* Register and enqueue scripts and styles.
 	*/ 
 
@@ -268,7 +318,7 @@ class Foundation {
 			if( $data ) {
 				$localize_scripts[] = [
 					$handle,
-					$sc['data_name'] ?? $handle . '_data', 
+					self::$namespace, 
 					$data
 				];
 			}
@@ -339,6 +389,19 @@ class Foundation {
         remove_meta_box( 'tagsdiv-post_tag', 'post', 'advanced' );
         remove_submenu_page( 'edit.php', 'edit-tags.php?taxonomy=post_tag' );
     }
+
+   /*
+	* Ajax callbacks.
+	*/ 
+
+	use Pub\Ajax;
+
+   /*
+	* Utility methods
+	* ---------------
+	*/
+
+	use Utils;
 
    /*
 	* Filter callbacks

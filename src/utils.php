@@ -5,31 +5,41 @@
  * ---------------
  */
 
-namespace FG;
+namespace Foundation;
 
 trait Utils {
 
-	// get posts per page by post type
+    /*
+     * Get posts per page by post type.
+     *
+     * @param string $post_type
+     * @return int posts per page
+     */
+
 	public static function get_posts_per_page( $post_type = 'post' ) {
 		if( !$post_type )
 			return 0;
 
 		$ppp = $post_type == 'post' ? (int) get_option( 'posts_per_page' ) : (int) get_option( $post_type . '_posts_per_page' );
 
-		if( !$ppp )
-			$ppp = POSTS_PER_PAGE[$post_type];
-
-		if( is_single() ) {
-			if( $post_type == 'post' || $post_type == 'fg_projects' )
-				$ppp = 3;
-		}
+		if( !$ppp && self::$posts_per_page )
+			$ppp = self::$posts_per_page[$post_type];
 
 		return $ppp;
 	}
 
-	// get first category for post
+    /*
+     * Get first category for post.
+     *
+     * @param int $id
+     * @param string $taxonomy
+     * @return array {
+     *      @type string category name
+     *      @type string category url
+     * }
+     */
+
 	public static function get_first_cat( $id = 0, $taxonomy = '' ) {
-		// get category
         $category = !$taxonomy ? get_the_category() : get_the_terms( $id, $taxonomy );
 
         if( !$category )
@@ -52,20 +62,36 @@ trait Utils {
         return $first_cat;
 	}
 
-	// get id early ( init hook )
-	public static function get_id_early() {
+    /*
+     * Get id early in admin.
+     *
+     * @return int post id
+     */
+
+	public static function get_id_early_admin() {
 		$id = 0;
 
-        // get id in admin
-        if( isset( $_GET['post'] ) )
+        if( is_admin() && isset( $_GET['post'] ) )
             $id = $_GET['post'];
 
         return (int) $id;
 	}
 
-	// get excerpt post, page, author etc
+    /*
+     * Get excerpt from post, page, any string...
+     *
+     * @param array $args {
+     *      @type string $content. Accepts string.
+     *      @type string $words trim by words. Accepts boolean.
+     *      @type string $length in words or characters. Accepts int.
+     *      @type string $post_id. Accepts int.
+     *      @type string $post. Accepts string.
+     * }
+     * @return string trimmed to specified length 
+     */
+
     public static function get_excerpt( $args ) {
-        $content = $args['content'] ?? false;
+        $content = $args['content'] ?? '';
         $words = $args['words'] ?? false;
         $max = $args['length'] ?? 55;
 
@@ -74,7 +100,7 @@ trait Utils {
             $post = $args['post'] ?? get_post( $post_id );
 
             // check for meta description
-            $content = get_post_meta( $post_id, 'cm_meta_description', true );
+            $content = get_post_meta( $post_id, 'meta_description', true );
 
             if( !$content )
                 $content = $post->post_excerpt ? $post->post_excerpt : $post->post_content;
@@ -96,7 +122,12 @@ trait Utils {
         return $content;
     }
 
-	// ajax load more posts fallback 
+    /*
+     * Ajax load more posts fallback 
+     *
+     * @return string url of next posts page
+     */
+
     public static function get_next_posts_link() {
         global $wp_query;
         global $paged;
@@ -117,7 +148,12 @@ trait Utils {
         return get_pagenum_link( $paged );
     }
 
-	// ajax load more comments fallback 
+    /*
+     * Ajax load more comments fallback
+     *
+     * @return string url of next comments page
+     */
+
     public static function get_next_comments_link() {
 		if( !is_singular() )
 			return;
