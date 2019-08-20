@@ -1,0 +1,16 @@
+{
+    "name": "alanizcreative/wp-theme-foundation",
+    "description": "Provide base, utilities and added functionality for building WordPress themes",
+    "type": "library",
+    "license": "gpl-3.0",
+    "authors": [
+        {
+            "name": "Graciela Alaniz",
+            "email": "alanizcreative@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.1.0"
+    }
+}

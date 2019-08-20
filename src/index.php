@@ -4,7 +4,7 @@
  * Theme foundation core class
  * ---------------------------
  * 
- * Description: Provide base, utilities and added functionality for building theme
+ * Description: Provide base, utilities and added functionality for building themes
  * Author: Graciela Alaniz
  * Author URI: gracielaalaniz.com
  * Version: 1.0.0
