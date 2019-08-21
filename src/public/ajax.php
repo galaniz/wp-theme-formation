@@ -5,7 +5,7 @@
  * ---------------------------------------
  */
 
-namespace Foundation\Pub;
+namespace Formation\Pub;
 
 trait Ajax {
 
@@ -34,8 +34,8 @@ trait Ajax {
     /*
      * Create nonces before form submission.
      *
-     * @pass string $nonce_name. Required.
-     * @echo string json containing nonce
+     * @pass string $nonce_name Required.
+     * @echo string json containing nonce.
      */
 
     public static function create_nonce() {
@@ -60,9 +60,9 @@ trait Ajax {
      *
      * Note: recaptcha api keys required.
      *
-     * @pass string $nonce. Required.
-     * @pass string $nonce_name. Required.
-     * @pass string $recaptcha. Required.
+     * @pass string $nonce Required.
+     * @pass string $nonce_name Required.
+     * @pass string $recaptcha Required.
      */
 
     public static function send_form( $priv_type ) {
@@ -119,7 +119,7 @@ trait Ajax {
     /*
      * Process and send contact form.
      *
-     * @pass string $id. Required.
+     * @pass string $id Required.
      * @pass array $inputs
      * @echo string if successfully sent
      */
@@ -210,7 +210,7 @@ trait Ajax {
      *
      * @pass int $offset
      * @pass string $type
-     * @pass int $posts_per_page. Required. 
+     * @pass int $posts_per_page Required. 
      * @pass array $query_args
      * @pass array $filters
      * @echo string json containing output

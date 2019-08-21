@@ -5,7 +5,7 @@
  * ------------------------------
  */
 
-namespace Foundation;
+namespace Formation;
 
 /*
  * Pass data to front end not passed with localize script.

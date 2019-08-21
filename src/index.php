@@ -1,18 +1,18 @@
 <?php
 
 /* 
- * Theme foundation core class
- * ---------------------------
+ * Formation core class
+ * --------------------
  * 
  * Description: Provide base, utilities and added functionality for building themes.
  * Author: Graciela Alaniz
  * Author URI: gracielaalaniz.com
- * Version: 1.0.0
+ * Version: 1.1.0
  */
 
-namespace Foundation;
+namespace Formation;
 
-class Foundation {
+class Formation {
 
    /*
 	* Variables
@@ -29,7 +29,7 @@ class Foundation {
 	 * Store api keys for use in ajax callbacks for example.
 	 *
 	 * @var array $api_keys {
-	 *     	@type string $name. Accepts string / array.
+	 *     	@type string $name Accepts string / array.
 	 * }
 	 */
 
@@ -39,7 +39,7 @@ class Foundation {
 	* Pass query args to front end when loading posts with ajax.
 	*
 	* @var array $load_posts_query {
-	*     @type string $id. Accepts array.
+	*     @type string $id Accepts array.
 	* }
 	*/
 
@@ -49,11 +49,11 @@ class Foundation {
 	 * Store custom post type names and meta.
 	 *
 	 * @var array $cpt {
-	 *		@type string $post_type. Accepts array {
-	 *     		@type string $slug. Accepts string.
-	 *     		@type string $label. Accepts string.
-	 *     		@type string $plural_label. Accepts string.
-	 *     		@type string $taxonomy. Accepts string.
+	 *		@type string $post_type Accepts array {
+	 *     		@type string $slug Accepts string.
+	 *     		@type string $label Accepts string.
+	 *     		@type string $plural_label Accepts string.
+	 *     		@type string $taxonomy Accepts string.
 	 *		}
 	 * }
 	 */
@@ -64,7 +64,7 @@ class Foundation {
 	 * Number of posts to display by type / post type
 	 *
 	 * @var array $posts_per_page {
-	 *     	@type string $type / $post_type. Accepts int.
+	 *     	@type string $type / $post_type Accepts int.
 	 * }
 	 */
 
@@ -74,9 +74,9 @@ class Foundation {
 	 * Editor color palette theme support args.
 	 *
 	 * @var array $editor_color_palette {
-	 *     	@type string $name. Accepts string.
-	 *     	@type string $slug. Accepts string.
-	 *     	@type string $color. Accepts string with hex code.
+	 *     	@type string $name Accepts string.
+	 *     	@type string $slug Accepts string.
+	 *     	@type string $color Accepts string with hex code.
 	 * }
 	 */
 
@@ -86,7 +86,7 @@ class Foundation {
 	 * Custom image sizes to register.
 	 *
 	 * @var array $image_sizes {
-	 *     	@type string $name. Accepts int for size.
+	 *     	@type string $name Accepts int for size.
 	 * }
 	 */
 
@@ -96,7 +96,7 @@ class Foundation {
 	 * Nav menus to register.
 	 *
 	 * @var array $nav_menus {
-	 *     	@type string $slug. Accepts string for label.
+	 *     	@type string $slug Accepts string for label.
 	 * }
 	 */
 
@@ -114,10 +114,10 @@ class Foundation {
 	 * Stylesheets to register.
 	 *
 	 * @var array $styles {
-	 *     	@type string $handle. Accepts string.
-	 *		@type string $url. Accepts string.
-	 *		@type string $dep. Accepts array.
-	 *		@type string $ver. Accepts string/boolean.
+	 *     	@type string $handle Accepts string.
+	 *		@type string $url Accepts string.
+	 *		@type string $dep Accepts array.
+	 *		@type string $ver Accepts string/boolean.
 	 * }
 	 */
 
@@ -127,13 +127,13 @@ class Foundation {
 	 * Scripts to register.
 	 *
 	 * @var array $styles {
-	 *     	@type string $handle. Accepts string.
-	 *		@type string $url. Accepts string.
-	 *		@type string $dep. Accepts array.
-	 *		@type string $ver. Accepts string/boolean.
-	 *		@type string $footer. Accepts boolean.
-	 *		@type string $defer. Accepts boolean.
-	 *		@type string $data. Accepts array.
+	 *     	@type string $handle Accepts string.
+	 *		@type string $url Accepts string.
+	 *		@type string $dep Accepts array.
+	 *		@type string $ver Accepts string/boolean.
+	 *		@type string $footer Accepts boolean.
+	 *		@type string $defer Accepts boolean.
+	 *		@type string $data Accepts array.
 	 * }
 	 */
 
@@ -148,6 +148,57 @@ class Foundation {
 	 */
 
 	public $defer_script_handles = [];
+
+	/*
+	 * Stores svg sprite meta.
+	 *
+	 * Note: svg can be found: 
+	 *
+	 * @var array $sprites
+	 */
+
+	public static $sprites = [
+		'Facebook' => [
+			'id' => 'facebook',
+			'w' => 16,
+			'h' => 28
+		],
+		'Twitter' => [
+			'id' => 'twitter',
+			'w' => 26,
+			'h' => 28
+		],
+		'Linkedin' => [
+			'id' => 'linkedin',
+			'w' => 24,
+			'h' => 28
+		],
+		'YouTube' => [
+			'id' => 'youtube',
+			'w' => 28,
+			'h' => 28
+		],
+		'Pinterest' => [
+			'id' => 'pinterest',
+			'w' => ,
+			'h' =>
+		],
+		'Instagram' => [
+			'id' => 'instagram',
+			'w' => 24,
+			'h' => 28
+		],
+		'Email' => [
+			'id' => 'email',
+			'w' => 28,
+			'h' => 28
+		],
+		'Caret' => [
+			'id' => 'caret',
+			'w' => 15,
+			'h' => 9
+		]
+	];
 
    /*
 	* Constructor
@@ -391,7 +442,7 @@ class Foundation {
     }
 
    /*
-	* Ajax callbacks.
+	* Ajax callbacks
 	*/ 
 
 	use Pub\Ajax;
@@ -464,4 +515,4 @@ class Foundation {
 		return $init;
 	}
 
-} // end Foundation
+} // end Formation

@@ -5,14 +5,15 @@
  * -----------------------------------
  */
 
-namespace Foundation\Admin\Settings;
+namespace Formation\Admin\Settings;
 
 /*
  * Imports
+ * -------
  */
 
-use Foundation\Foundation as FDN;  
-use Foundation\Admin\Settings\Settings; 
+use Formation\Formation as FRM;  
+use Formation\Admin\Settings\Settings; 
 
 class Reading {
 
@@ -22,15 +23,15 @@ class Reading {
     */
 
 	public function __construct() {
-		if( count( FDN::$cpt ) == 0 )
+		if( count( FRM::$cpt ) == 0 )
 			return;
 
 		// register settings
 		add_action( 'admin_init', [$this, 'setup'] );
 
-		// admin pages list add if associated with custom post type
+		// admin pages list add state if associated with custom post type
 		add_filter( 'display_post_states', function( $post_states, $post ) {
-			foreach( FDN::$cpt as $c => $meta ) {
+			foreach( FRM::$cpt as $c => $meta ) {
 				$cpt_page_id = (int) get_option( $c . '_page', 0 );
 
 				if( $cpt_page_id === $post->ID )
@@ -56,7 +57,7 @@ class Reading {
 
 		$fields = [];
 
-		foreach( FDN::$cpt as $c => $meta ) {
+		foreach( FRM::$cpt as $c => $meta ) {
 			$name = $c . '_page';
 
 			$fields[] = [
@@ -77,9 +78,9 @@ class Reading {
 
 					// delete meta from all other pages
 					foreach( $get_pages as $page ) 
-						delete_post_meta( $page->ID, FDN::$namespace . '_insert_cpt_block', $c );
+						delete_post_meta( $page->ID, FRM::$namespace . '_insert_cpt_block', $c );
 					
-					update_post_meta( $id, FDN::$namespace . '_insert_cpt_block', $c );
+					update_post_meta( $id, FRM::$namespace . '_insert_cpt_block', $c );
 
 					flush_rewrite_rules();
 

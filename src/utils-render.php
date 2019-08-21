@@ -5,7 +5,7 @@
  * ---------------
  */
 
-namespace Foundation;
+namespace Formation;
 
 trait Utils_Render {
 
@@ -15,14 +15,14 @@ trait Utils_Render {
      * Note: assumes svg sprite with social icons.
      *
      * @param array $args {
-     *      @type string $links. Accepts string stating menu location.   
-     *      @type string $share. Accepts boolean.
-     *      @type string $vertical. Accepts boolean.
-     *      @type string $center. Accepts boolean.
-     *      @type string $lg. Accepts boolean.
-     *      @type string $div. Accepts boolean.
-     *      @type string $hover. Accepts boolean.
-     *      @type string $class. Accepts string.
+     *      @type string $links Accepts string stating menu location.   
+     *      @type string $share Accepts boolean.
+     *      @type string $vertical Accepts boolean.
+     *      @type string $center Accepts boolean.
+     *      @type string $lg Accepts boolean.
+     *      @type string $div Accepts boolean.
+     *      @type string $hover Accepts boolean.
+     *      @type string $class Accepts string.
      * }
      * @return string of html output
      */
@@ -56,38 +56,6 @@ trait Utils_Render {
 
 		$output = "<$tag class='$list_classes'>";
 		$data = [];
-		$meta = [
-			'Facebook' => [
-				'id' => 'facebook',
-				'w' => 16,
-				'h' => 28
-			],
-			'Twitter' => [
-				'id' => 'twitter',
-				'w' => 26,
-				'h' => 28
-			],
-			'Linkedin' => [
-				'id' => 'linkedin',
-				'w' => 24,
-				'h' => 28
-			],
-			'YouTube' => [
-				'id' => 'youtube',
-				'w' => 28,
-				'h' => 28
-			],
-			'Instagram' => [
-				'id' => 'instagram',
-				'w' => 24,
-				'h' => 28
-			],
-			'Email' => [
-				'id' => 'envelope',
-				'w' => 28,
-				'h' => 28
-			]
-		];
 
 		if( $share ) {
             $blog_name = get_bloginfo( 'name' );
@@ -121,7 +89,7 @@ trait Utils_Render {
             	if( !array_key_exists( $s, $share_meta ) )
 					continue;
 
-				$item = $meta[$s];
+				$item = self::$sprites[$s];
 				$item['url'] = $share_meta[$s];
 				$data[] = $item;
             }
@@ -134,10 +102,10 @@ trait Utils_Render {
 				$social_links = wp_get_nav_menu_items( $links );
 
 				foreach( $social_links as $s ) {
-					if( !array_key_exists( $s->post_title, $meta ) )
+					if( !array_key_exists( $s->post_title, self::$sprites ) )
 						continue;
 
-					$item = $meta[$s->post_title];
+					$item = self::$sprites[$s->post_title];
 					$item['url'] = $s->url;
 					$data[] = $item;
 				}
@@ -149,7 +117,7 @@ trait Utils_Render {
 			$id = $d['id'];
 			$w = '';
 
-			if( $share && $id !== 'envelope' ) {
+			if( $share && $id !== 'email' ) {
                 $w_width = 600;
                 $w_height = 500;
                 $w = " onclick=\"window.open( '$url', 'newwindow', 'width=$w_width, height=$w_height' ); return false;\"";

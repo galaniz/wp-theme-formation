@@ -1,5 +1,5 @@
 {
-    "name": "alanizcreative/wp-theme-foundation",
+    "name": "alanizcreative/wp-theme-formation",
     "description": "Provide base, utilities and added functionality for building WordPress themes",
     "type": "library",
     "license": "gpl-3.0",
@@ -13,12 +13,8 @@
         "php": ">=7.1.0"
     },
     "autoload": {
-        "classmap": [
-            "src/globals.php",
-            "src/utils.php",
-            "src/utils-render.php",
-            "src/public/ajax.php",
-            "src/index.php"
-        ]
+        "psr-4": {
+            "Formation\\": "src"
+        }
     }
 }

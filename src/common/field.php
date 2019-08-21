@@ -1,26 +1,37 @@
 <?php
 
 /*
- * Render fields in frontend and admin
- * -----------------------------------
+ * Render fields in front end and admin
+ * ------------------------------------
  */
 
-namespace FG\Common;
+namespace Formation\Common;
+
+/*
+ * Imports
+ * -------
+ */
+
+use function \Formation\additional_script_data;
+use \Formation\Formation;
 
 class Field {
 
    /*
     * Variables
     * ---------
+    *
+    * Default arguments to render fields.
+    *
+    * @var array $default 
     */
-   
-    // default arguments
+
     private static $default = [
         'render' => [
+            'name' => '',
             'fields' => [],
             'index' => 0,
-            'data' => [],
-            'value' => false,
+            'data' => '',
             'multi' => false,
             'copy' => false
         ],
@@ -36,11 +47,17 @@ class Field {
             'options' => [],
             'hidden' => false,
             'before' => '',
-            'after' => ''
+            'after' => '',
+            'value' => ''
         ]
     ];
 
-    // multi buttons markup
+   /*
+    * Multi buttons markup.
+    *
+    * @var array $multi_buttons 
+    */
+
     public static $multi_buttons = [
         'add' => 
             '<button type="button" class="o-multi__button --add" data-type="add">' .
@@ -55,11 +72,25 @@ class Field {
     ];
 
    /*
-    * Helper methods
-    * --------------
+    * Multi field copies to pass to front end.
+    *
+    * @var array $localize_data
     */
 
-    // for getting saved value(s)
+    public static $localize_data = [
+        'multi' => []
+    ];
+
+   /*
+    * Helper methods
+    * --------------
+    *
+    * Get base name without keys or indexes.
+    *
+    * @param string $name 
+    * @return string base name
+    */
+
     public static function get_top_level_name( $name ) {
         if( strpos( $name, '[%i]' ) !== false )
             $name = explode( '[', $name )[0];
@@ -73,7 +104,14 @@ class Field {
         return $name;
     }
 
-    // replace %i with actual index
+   /*
+    * Replace %i placeholder with actual index.
+    *
+    * @param string $name
+    * @param int $index 
+    * @return string indexed name
+    */
+
     public static function index_name( $name, $index ) {
         return str_replace( 
             array( '%i' ),
@@ -82,7 +120,14 @@ class Field {
         );
     }
 
-    // get value in data array from name ( eg. lorem[%i][ipsum] )
+   /*
+    * Get value in data array from name ( lorem[%i][ipsum] )
+    *
+    * @param array $array
+    * @param string $key 
+    * @return string/array value of $key in $array
+    */
+
     public static function get_array_value( $array, $key ) {
         if( !$key ) return false;
 
@@ -109,12 +154,104 @@ class Field {
     }
 
    /*
-    * Render methods
-    * --------------
+    * Recursively filter out required empty multi fields. 
+    *
+    * @param array $array Contains multi fields value.
+    * @param array $required Contains required keys.
     */
 
-    // render field markup
-    public static function render( $args, &$output ) {
+    public static function filter_multi_fields( &$array, $required = [] ) {
+        if( !is_array( $array ) )
+            return;
+
+        foreach( $array as $k => &$v ) {
+            if( is_array( $v ) ) {
+                $unset = false;
+
+                // check if values required and if empty remove parent
+                foreach( $v as $q => $r ) {
+                    if( in_array( $q, $required ) && !$r )
+                        $unset = true;
+                }
+
+                if( $unset )
+                    unset( $array[$k] ); 
+
+                self::filter_multi_fields( $v );
+
+                continue;
+            }
+        }
+    }
+
+   /*
+    * Render methods
+    * --------------
+    *
+    * Output sections of fields.
+    *
+    * @param array $args @see self::$default['render']
+    * @return string of markup.
+    */
+
+    public function render( $args ) {
+        $args = array_replace_recursive( self::$default['render'], $args );
+        extract( $args );
+
+        $fields = isset( $args['fields'] ) ? $args['fields'] : [$args];
+
+        // get top level name in case an array
+        $top_level_name = Field::get_top_level_name( $args['name'] );
+
+        // get count for multi fields
+        $count = $multi && is_array( $data ) && isset( $data[0] ) ? count( $data ) : 1;
+
+        $output = '<div class="c-section-' . $top_level_name . '">';
+        $copy = '';
+
+        if( $multi )
+            $output .= '<div class="o-multi">';
+
+        for( $i = 0; $i < $count; $i++ ) {
+            self::render_field( [
+                'fields' => $fields,
+                'index' => $i,
+                'data' => $data,
+                'multi' => $multi
+            ], $output );
+
+            if( $multi && $i === 0 )
+                self::render_field( [
+                    'fields' => $fields,
+                    'index' => $i,
+                    'data' => $data,
+                    'multi' => $multi,
+                    'copy' => true
+                ], $copy );
+        }
+
+        if( $multi ) {
+            $output .= '</div>';
+
+            if( $copy ) {
+                self::$localize_data['multi'][$top_level_name] = $copy;
+                additional_script_data( Formation::$namespace, self::$localize_data, true );
+            }
+        }
+
+        $output .= '</div>';
+
+        return $output;
+    }
+
+   /*
+    * Output fields.
+    *
+    * @param array $args @see self::$default['render'] and self::$default['field']
+    * @param string $output Append to it as loop in render method.
+    */
+
+    public static function render_field( $args, &$output ) {
         $args = array_replace_recursive( self::$default['render'], $args );
         extract( $args );
 
@@ -129,16 +266,19 @@ class Field {
 
             $name = $multi && !$copy ? self::index_name( $f['name'], $index ) : $f['name'];
             $type = $f['type'];
+            $value = $f['value'];
             $classes = 'o-field__' . $type . ' js-input ' . $f['class'];
             $placeholder = '';
             $req = '';
             $attr = [];
 
-            if( is_array( $value ) ) {
-                $val = self::get_array_value( $data, $name );
+            if( is_array( $data ) ) {
+                $data_value = self::get_array_value( $data, $name );
             } else {
-                $val = $value;
+                $data_value = $data;
             }
+
+            $val = !$value ? $data_value : $value;
 
             if( count( $f['attr'] ) > 0 ) {
                 foreach( $f['attr'] as $a => $v ) {
@@ -164,7 +304,6 @@ class Field {
 
             $output .= $f['before'];
 
-            // check which type of field
             switch( $type ) {
                 case 'text':
                 case 'email':
@@ -184,10 +323,10 @@ class Field {
                     $v = $val;
 
                     if( $type === 'checkbox' || $type === 'radio' ) {
-                        if( $val == $f['value'] ) 
+                        if( $data_value == $value ) 
                             $checked = 'checked';
 
-                        $v = $f['value'];
+                        $v = $value;
                     }
 
                     $output .= sprintf( 
@@ -262,7 +401,22 @@ class Field {
         }
     }
 
-    // render listbox ( substitute for select )
+   /*
+    * Output listbox ( substitute for select ).
+    *
+    * @param array $args {
+    *       @type string $options Accepts array {
+    *           @type string $value Accepts string.
+    *           @type string $label Accepts string.
+    *           @type string $selected Accepts boolean.
+    *       }
+    *       @type string $id Accepts string.
+    *       @type string $list_class Accepts string.
+    *
+    * }
+    * @return string of markup
+    */
+
     public static function render_listbox( $args = [] ) {
         $options = $args['options'] ?? [];
         $id = $args['id'] ?? 'fg_' . uniqid();
@@ -283,6 +437,7 @@ class Field {
         $selected_index_id = '';
         $selected_index = 0;
         $options_output = '';
+        $caret = '';
 
         foreach( $options as $index => $o ) {
             $v = $o['value'];
@@ -302,10 +457,16 @@ class Field {
             $options_output .= "<li class='o-listbox__item' id='$o_id' data-value='$v' role='option'$selected>$l</li>";
         }
 
-        $caret = 
-            '<svg class="o-listbox__caret u-flex-shrink-0" width="15" height="9" viewBox="0 0 15 9">' .
-                '<use xlink:href="#sprite-caret" />' .
-            '</svg>';
+        if( isset( self::$sprites['caret'] ) ) {
+            $caret_meta = self::$sprites['caret'];
+            $caret_w = $caret_meta['w'];
+            $caret_h = $caret_meta['h'];
+
+            $caret = 
+                "<svg class='o-listbox__caret u-flex-shrink-0' width='$caret_w' height='$caret_h' viewBox='0 0 $caret_w $caret_h'>" .
+                    "<use xlink:href='#sprite-caret' />" .
+                "</svg>";
+        }
 
         return 
             '<div class="o-listbox">' .

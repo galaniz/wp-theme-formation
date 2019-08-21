@@ -5,7 +5,7 @@
  * ---------------
  */
 
-namespace Foundation;
+namespace Formation;
 
 trait Utils {
 
@@ -81,11 +81,11 @@ trait Utils {
      * Get excerpt from post, page, any string...
      *
      * @param array $args {
-     *      @type string $content. Accepts string.
+     *      @type string $content Accepts string.
      *      @type string $words trim by words. Accepts boolean.
      *      @type string $length in words or characters. Accepts int.
-     *      @type string $post_id. Accepts int.
-     *      @type string $post. Accepts string.
+     *      @type string $post_id Accepts int.
+     *      @type string $post Accepts string.
      * }
      * @return string trimmed to specified length 
      */
@@ -123,7 +123,7 @@ trait Utils {
     }
 
     /*
-     * Ajax load more posts fallback 
+     * Ajax load more posts fallback.
      *
      * @return string url of next posts page
      */
@@ -149,7 +149,7 @@ trait Utils {
     }
 
     /*
-     * Ajax load more comments fallback
+     * Ajax load more comments fallback.
      *
      * @return string url of next comments page
      */
