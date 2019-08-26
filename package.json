@@ -1,0 +1,72 @@
+{
+  "name": "wp-theme-formation",
+  "version": "1.0.0",
+  "description": "Provide base, utilities and added functionality for building WordPress themes",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --optimize-minimize -p",
+    "watch": "webpack --optimize-minimize -p --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/galaniz/wp-theme-foundation.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/galaniz/wp-theme-foundation/issues"
+  },
+  "homepage": "https://github.com/galaniz/wp-theme-foundation#readme",
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "autoprefixer": "^9.6.1",
+    "babel-loader": "^8.0.6",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "css-loader": "^3.2.0",
+    "cssnano": "^4.1.10",
+    "fibers": "^4.0.1",
+    "mini-css-extract-plugin": "^0.8.0",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "postcss-loader": "^3.0.0",
+    "sass": "^1.22.10",
+    "sass-loader": "^7.3.1",
+    "style-loader": "^1.0.0",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "modules": false,
+          "targets": {
+            "browsers": [
+              "last 3 versions",
+              "ie >= 10"
+            ]
+          }
+        }
+      ]
+    ],
+    "plugins": [
+      [
+        "transform-react-jsx",
+        {
+          "pragma": "wp.element.createElement"
+        }
+      ]
+    ]
+  },
+  "browserslist": [
+    "> 1%",
+    "last 20 versions"
+  ],
+  "dependencies": {
+    "core-js": "^3.2.1",
+    "css-mqpacker": "^7.0.0",
+    "postcss-combine-duplicated-selectors": "^8.0.2"
+  }
+}

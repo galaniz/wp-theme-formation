@@ -12,6 +12,7 @@ namespace Formation\Admin\Settings;
  * -------
  */
 
+use Formation\Formation as FRM;  
 use \Formation\Common\Field;
 
 class Settings {
@@ -71,8 +72,6 @@ class Settings {
 	    		}
 	    	}
 
-	    	$field['data'] = get_option( $top_level_name, '' );
-
 	    	register_setting( 
 	    		$this->page, 
 	    		$top_level_name, 
@@ -82,7 +81,11 @@ class Settings {
 	        add_settings_field( 
 	        	$field['name'], 
 	        	$field['label'], 
-	        	function( $args ) { // $args = $field
+	        	function( $args ) use ( $top_level_name ) { // $args = $field
+	        		$args['data'] = [
+	        			$top_level_name => get_option( $top_level_name, '' )
+	        		];
+	        		
 	        		echo Field::render( $args );
 	        	}, 
 	        	$this->page, 

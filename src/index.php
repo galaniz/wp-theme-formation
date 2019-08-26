@@ -23,23 +23,13 @@ class Formation {
 	* @var string $namespace
 	*/
 
-	public static $namespace = 'fdn';
-
-	/*
-	 * Store api keys for use in ajax callbacks for example.
-	 *
-	 * @var array $api_keys {
-	 *     	@type string $name Accepts string / array.
-	 * }
-	 */
-
-	protected static $api_keys = [];
+	public static $namespace = 'frm';
 
    /*
 	* Pass query args to front end when loading posts with ajax.
 	*
 	* @var array $load_posts_query {
-	*     @type string $id Accepts array.
+	*		@type string $id Accepts array.
 	* }
 	*/
 
@@ -180,8 +170,8 @@ class Formation {
 		],
 		'Pinterest' => [
 			'id' => 'pinterest',
-			'w' => ,
-			'h' =>
+			'w' => 20,
+			'h' => 28
 		],
 		'Instagram' => [
 			'id' => 'instagram',
@@ -221,7 +211,7 @@ class Formation {
 		add_action( 'pre_get_posts', [$this, 'query_vars'] );
 		add_action( 'wp_enqueue_scripts', [$this, 'scripts'] );
 
-		self::ajax_actions();
+		static::ajax_actions();
 
 		/* Admin customizations */
 
@@ -235,6 +225,11 @@ class Formation {
 		remove_action( 'admin_print_scripts', 'print_emoji_detection_script' ); 
 		remove_action( 'wp_print_styles', 'print_emoji_styles' ); 
 		remove_action( 'admin_print_styles', 'print_emoji_styles' );
+
+		/* Pass namespace to front end */
+		
+		additional_script_data( 'namespace', static::$namespace, true );
+		additional_script_data( 'namespace', static::$namespace );
 	}
 
    /*
@@ -310,19 +305,26 @@ class Formation {
 
 	public function query_vars( $query ) {
 		if( !is_admin() && $query->is_main_query() ) {
-			if( is_home() || is_category() || is_archive() )
-				$query->set( 'posts_per_page', self::get_posts_per_page( 'post' ) );	
+			if( is_home() || is_category() || is_archive() ) {
+				$ppp = static::get_posts_per_page();
+
+				if( $ppp )
+					$query->set( 'posts_per_page', $ppp );	
+			}
 
 			if( is_tax() || is_post_type_archive() ) {
 				$post_type = $query->get( 'post_type' );
-				$query->set( 'posts_per_page', self::get_posts_per_page( $post_type ) );
+				$ppp = static::get_posts_per_page( $post_type );
+
+				if( $ppp )
+					$query->set( 'posts_per_page', $ppp );
 			}
 
-			if( is_search() && isset( self::$posts_per_page['search'] ) )
-				$query->set( 'posts_per_page', self::$posts_per_page['search'] );
+			if( is_search() && isset( static::$posts_per_page['search'] ) )
+				$query->set( 'posts_per_page', static::$posts_per_page['search'] );
 
-			if( is_author() && isset( self::$posts_per_page['author'] ) )
-				$query->set( 'posts_per_page', self::$posts_per_page['author'] );
+			if( is_author() && isset( static::$posts_per_page['author'] ) )
+				$query->set( 'posts_per_page', static::$posts_per_page['author'] );
 		}
 	}
 
@@ -369,7 +371,7 @@ class Formation {
 			if( $data ) {
 				$localize_scripts[] = [
 					$handle,
-					self::$namespace, 
+					static::$namespace, 
 					$data
 				];
 			}
@@ -453,6 +455,7 @@ class Formation {
 	*/
 
 	use Utils;
+	use Utils_Render;
 
    /*
 	* Filter callbacks
@@ -471,7 +474,7 @@ class Formation {
 	*/ 
 
 	public function cpt_nav_classes( $classes, $item ) {
-		foreach( self::$cpt as $c => $meta ) {
+		foreach( static::$cpt as $c => $meta ) {
 			$c_archive = is_post_type_archive( $c );
 			$c_tax = isset( $meta['taxonomy'] ) ? is_tax( $meta['taxonomy'] ) : false;
 			$c_single = is_singular( $c );

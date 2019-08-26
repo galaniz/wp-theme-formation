@@ -34,6 +34,7 @@ class Blocks {
     *       @type string $name Accepts array {
     *           @type string $attr Accepts array.             
     *           @type string $default Accepts array.
+    *           @type string $parent Accepts array.
     *           @type string $render Accepts function.
     *           @type string $handle Accepts string. Required.
     *           @type string $script Accepts $string. Required.
@@ -79,12 +80,13 @@ class Blocks {
             'blocks' => self::$blocks
         ];
 
-        foreach( self::$blocks as $name => $b ) {
+        foreach( self::$blocks as &$name => $b ) {
             // check handle and script exist
             if( !isset( $b['handle'] ) || !isset( $b['script'] ) )
                 continue;
 
-            $handle = $b['handle'];
+            $name = FRM::$namespace . '/';
+            $handle = FRM::$namespace . '_' . $b['handle'];
 
             if( is_admin() )
                 wp_register_script(

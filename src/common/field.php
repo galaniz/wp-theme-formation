@@ -12,8 +12,8 @@ namespace Formation\Common;
  * -------
  */
 
-use function \Formation\additional_script_data;
-use \Formation\Formation;
+use function Formation\additional_script_data;
+use \Formation\Formation as FRM;
 
 class Field {
 
@@ -62,12 +62,12 @@ class Field {
         'add' => 
             '<button type="button" class="o-multi__button --add" data-type="add">' .
                 '<span class="u-visually-hidden">Add Input</span>' .
-                '<span class="dashicons dashicons-plus"></span>' .
+                '<span class="dashicons dashicons-plus o-multi__icon"></span>' .
             '</button>',
         'remove' => 
             '<button type="button" class="o-multi__button --remove" data-type="remove">' .
                 '<span class="u-visually-hidden">Remove Input</span>' .
-                '<span class="dashicons dashicons-minus"></span>' .
+                '<span class="dashicons dashicons-minus o-multi__icon"></span>' .
             '</button>'
     ];
 
@@ -198,7 +198,7 @@ class Field {
         $args = array_replace_recursive( self::$default['render'], $args );
         extract( $args );
 
-        $fields = isset( $args['fields'] ) ? $args['fields'] : [$args];
+        $fields = $args['fields'] ? $args['fields'] : [$args];
 
         // get top level name in case an array
         $top_level_name = Field::get_top_level_name( $args['name'] );
@@ -235,7 +235,7 @@ class Field {
 
             if( $copy ) {
                 self::$localize_data['multi'][$top_level_name] = $copy;
-                additional_script_data( Formation::$namespace, self::$localize_data, true );
+                additional_script_data( FRM::$namespace, self::$localize_data, true );
             }
         }
 
@@ -457,8 +457,8 @@ class Field {
             $options_output .= "<li class='o-listbox__item' id='$o_id' data-value='$v' role='option'$selected>$l</li>";
         }
 
-        if( isset( self::$sprites['caret'] ) ) {
-            $caret_meta = self::$sprites['caret'];
+        if( isset( FRM::$sprites['caret'] ) ) {
+            $caret_meta = FRM::$sprites['caret'];
             $caret_w = $caret_meta['w'];
             $caret_h = $caret_meta['h'];
 

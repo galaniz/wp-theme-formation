@@ -22,8 +22,10 @@ trait Utils {
 
 		$ppp = $post_type == 'post' ? (int) get_option( 'posts_per_page' ) : (int) get_option( $post_type . '_posts_per_page' );
 
-		if( !$ppp && self::$posts_per_page )
-			$ppp = self::$posts_per_page[$post_type];
+		if( !$ppp && static::$posts_per_page ) {
+            if( isset( static::$posts_per_page[$post_type] ) )
+                $ppp = static::$posts_per_page[$post_type];
+        }
 
 		return $ppp;
 	}

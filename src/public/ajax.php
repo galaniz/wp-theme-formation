@@ -20,11 +20,11 @@ trait Ajax {
 		add_action( 'wp_ajax_create_nonce', [__CLASS__, 'create_nonce'] );
 
 		add_action( 'wp_ajax_nopriv_send_form', function() {
-			self::send_form( 'nopriv' );
+			static::send_form( 'nopriv' );
 		} );
 
 		add_action( 'wp_ajax_send_form', function() {
-			self::send_form( 'priv' );
+			static::send_form( 'priv' );
 		} );
 
 		add_action( 'wp_ajax_nopriv_get_posts', [__CLASS__, 'get_posts'] );
@@ -80,11 +80,11 @@ trait Ajax {
     		$recaptcha = $_POST['recaptcha'];
 
     		// check recaptcha api keys exist
-    		if( !isset( self::$api_keys['recaptcha']['secret'] ) )
+    		if( !isset( static::$api_keys['recaptcha']['secret'] ) )
     			throw new \Exception( 'Forbidden' ); 
 
 			// verify recaptcha token
-			$secret_key = self::$api_keys['recaptcha']['secret'];
+			$secret_key = static::$api_keys['recaptcha']['secret'];
 			$recaptcha_url = "https://www.google.com/recaptcha/api/siteverify?secret=$secret_key&response=$recaptcha";
 			$recaptcha_response = wp_remote_get( $recaptcha_url );
 
@@ -103,9 +103,9 @@ trait Ajax {
 			$type = $_POST['type'] ?? 'contact';
 
 			if( $type == 'contact' ) {
-				self::send_contact_form();
+				static::send_contact_form();
 			} else if( $type == 'comment' ) {
-				// self::send_comment( $priv_type );
+				// static::send_comment( $priv_type );
 			}
 
 			exit;
@@ -131,7 +131,7 @@ trait Ajax {
     	if( !$id )
     		throw new \Exception( 'No id' );
 
-    	$meta = get_option( self::$namespace . '_' . $id, '' );
+    	$meta = get_option( static::$namespace . '_' . $id, '' );
 
     	if( !$meta ) 
     		throw new \Exception( 'No meta' );
@@ -269,7 +269,7 @@ trait Ajax {
 				$args = array_replace_recursive( $processed_args, $args );
 	    	}
 
-	    	$output = self::render_ajax_posts( $type, $args );
+	    	$output = static::render_ajax_posts( $type, $args );
 
 	    	if( is_string( $output ) ) 
 	    		echo $output;

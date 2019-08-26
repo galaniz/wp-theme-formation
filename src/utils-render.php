@@ -15,8 +15,8 @@ trait Utils_Render {
      * Note: assumes svg sprite with social icons.
      *
      * @param array $args {
-     *      @type string $links Accepts string stating menu location.   
-     *      @type string $share Accepts boolean.
+     *      @type string $links Accepts string of menu location.   
+     *      @type string $share Accepts array.
      *      @type string $vertical Accepts boolean.
      *      @type string $center Accepts boolean.
      *      @type string $lg Accepts boolean.
@@ -29,7 +29,7 @@ trait Utils_Render {
 
 	public static function render_social( $args = [] ) {
 		$links = $args['links'] ?? '';
-		$share = $args['share'] ?? false;
+		$share = $args['share'] ?? [];
 		$vertical = $args['vertical'] ?? false;
 		$center = $args['center'] ?? false;
 		$lg = $args['lg'] ?? false;
@@ -89,7 +89,7 @@ trait Utils_Render {
             	if( !array_key_exists( $s, $share_meta ) )
 					continue;
 
-				$item = self::$sprites[$s];
+				$item = static::$sprites[$s];
 				$item['url'] = $share_meta[$s];
 				$data[] = $item;
             }
@@ -102,10 +102,10 @@ trait Utils_Render {
 				$social_links = wp_get_nav_menu_items( $links );
 
 				foreach( $social_links as $s ) {
-					if( !array_key_exists( $s->post_title, self::$sprites ) )
+					if( !array_key_exists( $s->post_title, static::$sprites ) )
 						continue;
 
-					$item = self::$sprites[$s->post_title];
+					$item = static::$sprites[$s->post_title];
 					$item['url'] = $s->url;
 					$data[] = $item;
 				}
@@ -151,6 +151,31 @@ trait Utils_Render {
 
     public static function render_ajax_posts( $post_type = 'post', $query_args = [] ) {
         return '';
+    }
+
+    /*
+     * Output for button loader animation.
+     *
+     * Note: can be overwritten by user.
+     *
+     * @param string $add_class
+     * @return string / array of html output
+     */
+
+    public static function render_button_loader( $add_class = '' ) {
+        $class = '';
+
+        if( $add_class )
+            $class = " $add_class";
+
+        return 
+            "<div class='o-loader$class'>" .
+                '<div class="o-loader__icon l-flex --align-center --justify-center u-position-center">' .
+                    '<div></div>' .
+                    '<div></div>' .
+                    '<div></div>' .
+                '</div>' .
+            '</div>';
     }
 
 } // end Utils_Render
