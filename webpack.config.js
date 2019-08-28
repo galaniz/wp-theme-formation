@@ -50,13 +50,13 @@ module.exports = [
     {
         mode: 'production',
         entry: {
-            'settings': [
-                __dirname + '/src/admin/assets/src/settings/index.js', 
-                __dirname + '/src/admin/assets/src/settings/index.scss'
+            'field': [
+                __dirname + '/src/common/assets/src/field/index.js', 
+                __dirname + '/src/common/assets/src/field/index.scss'
             ]
         },
         output: {
-            path: __dirname + '/src/admin/assets/public/',
+            path: __dirname + '/src/common/assets/public/',
             publicPath: '/',
             filename: 'js/[name].js'
         },

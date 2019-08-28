@@ -8,7 +8,10 @@ $baseDir = dirname($vendorDir);
 return array(
     'Formation\\Admin\\Settings\\Reading' => $baseDir . '/src/admin/settings/reading.php',
     'Formation\\Admin\\Settings\\Settings' => $baseDir . '/src/admin/settings/settings.php',
+    'Formation\\Admin\\Settings\\Theme' => $baseDir . '/src/admin/settings/theme.php',
     'Formation\\Common\\Blocks\\Blocks' => $baseDir . '/src/common/blocks/blocks.php',
+    'Formation\\Common\\Blocks\\Contact_Form' => $baseDir . '/src/common/blocks/contact-form.php',
+    'Formation\\Common\\Blocks\\Media' => $baseDir . '/src/common/blocks/media.php',
     'Formation\\Common\\Field' => $baseDir . '/src/common/field.php',
     'Formation\\Formation' => $baseDir . '/src/index.php',
     'Formation\\Pub\\Ajax' => $baseDir . '/src/public/ajax.php',

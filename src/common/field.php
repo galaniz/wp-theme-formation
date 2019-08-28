@@ -48,7 +48,8 @@ class Field {
             'hidden' => false,
             'before' => '',
             'after' => '',
-            'value' => ''
+            'value' => '',
+            'image' => false
         ]
     ];
 
@@ -341,6 +342,10 @@ class Field {
                     );
 
                     break;
+                case 'file':
+
+
+                    break;
                 case 'textarea':
                     $output .= sprintf(
                         '<textarea name="%1$s" id="%1$s" class="%2$s" %4$s>%3$s</textarea>', 
@@ -349,6 +354,10 @@ class Field {
                         $val,
                         $attr
                     );
+
+                    break;
+                case 'richtext':
+                    
 
                     break;
                 case 'select': 
@@ -419,7 +428,7 @@ class Field {
 
     public static function render_listbox( $args = [] ) {
         $options = $args['options'] ?? [];
-        $id = $args['id'] ?? 'fg_' . uniqid();
+        $id = $args['id'] ?? FRM::$namespace . '_' . uniqid();
 
         $list_id = $id . '_list';
         $list_class = $args['list_class'] ?? '';
@@ -477,6 +486,25 @@ class Field {
                     '</ul>' .
                 '</div>' .
             '</div>';
+    }
+
+   /*
+    * Scripts and styles to enqueue.
+    */
+
+    public static function scripts() {
+        wp_enqueue_style( 
+            FRM::$namespace . '_field_styles', 
+            get_template_directory_uri() . '/packages/wp-theme-formation/src/common/assets/public/css/field.css' 
+        );
+
+        wp_enqueue_script(
+            FRM::$namespace . '_field_script', 
+            get_template_directory_uri() . '/packages/wp-theme-formation/src/admin/assets/public/js/field.js',
+            [],
+            NULL,
+            true
+        );
     }
 
 } // end Field

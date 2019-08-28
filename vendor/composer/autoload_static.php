@@ -27,7 +27,10 @@ class ComposerStaticIniteb7cdd6420d025868a0145250003a4d1
     public static $classMap = array (
         'Formation\\Admin\\Settings\\Reading' => __DIR__ . '/../..' . '/src/admin/settings/reading.php',
         'Formation\\Admin\\Settings\\Settings' => __DIR__ . '/../..' . '/src/admin/settings/settings.php',
+        'Formation\\Admin\\Settings\\Theme' => __DIR__ . '/../..' . '/src/admin/settings/theme.php',
         'Formation\\Common\\Blocks\\Blocks' => __DIR__ . '/../..' . '/src/common/blocks/blocks.php',
+        'Formation\\Common\\Blocks\\Contact_Form' => __DIR__ . '/../..' . '/src/common/blocks/contact-form.php',
+        'Formation\\Common\\Blocks\\Media' => __DIR__ . '/../..' . '/src/common/blocks/media.php',
         'Formation\\Common\\Field' => __DIR__ . '/../..' . '/src/common/field.php',
         'Formation\\Formation' => __DIR__ . '/../..' . '/src/index.php',
         'Formation\\Pub\\Ajax' => __DIR__ . '/../..' . '/src/public/ajax.php',
