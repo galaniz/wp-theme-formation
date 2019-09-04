@@ -4,7 +4,7 @@
  * Formation core class
  * --------------------
  * 
- * Description: Provide base, utilities and added functionality for building themes.
+ * Description: Base, utilities and added functionality for building themes.
  * Author: Graciela Alaniz
  * Author URI: gracielaalaniz.com
  * Version: 1.1.0
@@ -35,117 +35,117 @@ class Formation {
 
 	public static $load_posts_query = [];
 
-	/*
-	 * Store custom post type names and meta.
-	 *
-	 * @var array $cpt {
-	 *		@type string $post_type Accepts array {
-	 *     		@type string $slug Accepts string.
-	 *     		@type string $label Accepts string.
-	 *     		@type string $plural_label Accepts string.
-	 *     		@type string $taxonomy Accepts string.
-	 *		}
-	 * }
-	 */
+   /*
+	* Store custom post type names and meta.
+	*
+	* @var array $cpt {
+	*		@type string $post_type Accepts array {
+	*     		@type string $slug Accepts string.
+	*     		@type string $label Accepts string.
+	*     		@type string $plural_label Accepts string.
+	*     		@type string $taxonomy Accepts string.
+	*		}
+	* }
+	*/
 
 	public static $cpt = [];
 
-	/*
-	 * Number of posts to display by type / post type
-	 *
-	 * @var array $posts_per_page {
-	 *     	@type string $type / $post_type Accepts int.
-	 * }
-	 */
+   /*
+	* Number of posts to display by type / post type
+	*
+	* @var array $posts_per_page {
+	*     	@type string $type / $post_type Accepts int.
+	* }
+	*/
 
 	public static $posts_per_page = [];
 
-	/*
-	 * Editor color palette theme support args.
-	 *
-	 * @var array $editor_color_palette {
-	 *     	@type string $name Accepts string.
-	 *     	@type string $slug Accepts string.
-	 *     	@type string $color Accepts string with hex code.
-	 * }
-	 */
+   /*
+	* Editor color palette theme support args.
+	*
+	* @var array $editor_color_palette {
+	*     	@type string $name Accepts string.
+	*     	@type string $slug Accepts string.
+	*     	@type string $color Accepts string with hex code.
+	* }
+	*/
 
 	public $editor_color_palette = [];
 
-	/*
-	 * Custom image sizes to register.
-	 *
-	 * @var array $image_sizes {
-	 *     	@type string $name Accepts int for size.
-	 * }
-	 */
+   /*
+	* Custom image sizes to register.
+	*
+	* @var array $image_sizes {
+	*     	@type string $name Accepts int for size.
+	* }
+	*/
 
 	public $image_sizes = [];
 
-	/*
-	 * Nav menus to register.
-	 *
-	 * @var array $nav_menus {
-	 *     	@type string $slug Accepts string for label.
-	 * }
-	 */
+   /*
+	* Nav menus to register.
+	*
+	* @var array $nav_menus {
+	*     	@type string $slug Accepts string for label.
+	* }
+	*/
 
 	public $nav_menus = [];
 
-	/*
-	 * Stylesheet url for admin editor styles.
-	 *
-	 * @var string $editor_style_url
-	 */
+   /*
+	* Stylesheet url for admin editor styles.
+	*
+	* @var string $editor_style_url
+	*/
 
 	public $editor_style_url = '';
 
-	/*
-	 * Stylesheets to register.
-	 *
-	 * @var array $styles {
-	 *     	@type string $handle Accepts string.
-	 *		@type string $url Accepts string.
-	 *		@type string $dep Accepts array.
-	 *		@type string $ver Accepts string/boolean.
-	 * }
-	 */
+   /*
+	* Stylesheets to register.
+	*
+	* @var array $styles {
+	*     	@type string $handle Accepts string.
+	*		@type string $url Accepts string.
+	*		@type string $dep Accepts array.
+	*		@type string $ver Accepts string/boolean.
+	* }
+	*/
 
 	public $styles = [];
 
-	/*
-	 * Scripts to register.
-	 *
-	 * @var array $styles {
-	 *     	@type string $handle Accepts string.
-	 *		@type string $url Accepts string.
-	 *		@type string $dep Accepts array.
-	 *		@type string $ver Accepts string/boolean.
-	 *		@type string $footer Accepts boolean.
-	 *		@type string $defer Accepts boolean.
-	 *		@type string $data Accepts array.
-	 * }
-	 */
+   /*
+	* Scripts to register.
+	*
+	* @var array $styles {
+	*     	@type string $handle Accepts string.
+	*		@type string $url Accepts string.
+	*		@type string $dep Accepts array.
+	*		@type string $ver Accepts string/boolean.
+	*		@type string $footer Accepts boolean.
+	*		@type string $defer Accepts boolean.
+	*		@type string $data Accepts array.
+	* }
+	*/
 
 	public $scripts = [];
 
-	/*
-	 * Handles of scripts that should be deferred. Set in scripts callback.
-	 *
-	 * @var array $defer_script_handles {
-	 *     	@type string $handle
-	 * }
-	 */
+   /*
+	* Handles of scripts that should be deferred. Set in scripts callback.
+	*
+	* @var array $defer_script_handles {
+	*     	@type string $handle
+	* }
+	*/
 
 	public $defer_script_handles = [];
 
-	/*
-	 * Stores svg sprite meta.
-	 *
-	 * Note: svg can be found: 
-	 *
-	 * @var array $sprites
-	 */
+   /*
+	* Stores svg sprite meta.
+	*
+	* Note: svg can be found: 
+	*
+	* @var array $sprites
+	*/
 
 	public static $sprites = [
 		'Facebook' => [
@@ -183,12 +183,38 @@ class Formation {
 			'w' => 28,
 			'h' => 28
 		],
+		'Location' => [
+			'id' => 'location',
+			'w' => 32,
+			'h' => 32,
+		],
 		'Caret' => [
 			'id' => 'caret',
-			'w' => 15,
-			'h' => 9
+			'w' => 24,
+			'h' => 24
+		],
+		'Error' => [
+			'id' => 'error',
+			'w' => 32,
+			'h' => 32
+		],
+		'Success' => [
+			'id' => 'success',
+			'w' => 20,
+			'h' => 20
 		]
 	];
+
+   /*
+	* Upload directory and url.
+	*
+	* @see Common\Field
+	* @var string $uploads_dir
+	* @var string $uploads_url
+	*/
+
+	public static $uploads_dir = '';
+	public static $uploads_url = '';
 
    /*
 	* Constructor
@@ -230,6 +256,16 @@ class Formation {
 		
 		additional_script_data( 'namespace', static::$namespace, true );
 		additional_script_data( 'namespace', static::$namespace );
+
+		$ajax_url = ['ajax_url' => admin_url( 'admin-ajax.php' )];
+
+		additional_script_data( static::$namespace, $ajax_url, true );
+		additional_script_data( static::$namespace, $ajax_url );
+
+		/* Set uploads variables */
+
+		self::$uploads_dir = WP_CONTENT_DIR . '/' . static::$namespace . '_uploads/';
+		self::$uploads_url = get_site_option( 'siteurl' ) . '/wp-content/' . static::$namespace . '_uploads/';
 	}
 
    /*
@@ -333,32 +369,60 @@ class Formation {
 	*/ 
 
 	public function scripts() {
-		$localize_scripts = [];
+		$n = static::$namespace . '_';
+		$nh = static::$namespace . '-';
+
+		$localize_data = [];
+		$localize_script_handle = '';
+
 		$enqueue_scripts = [];
 		$enqueue_styles = [];
 
-		// register styles
+		/* Register styles */
+
 		foreach( $this->styles as $st ) {
-			$enqueue_styles[] = $st['handle'];
+			$handle = $nh . $st['handle'];
 			$dep = $st['dep'] ?? [];
 
+			$enqueue_styles[] = $handle;
+
+			// filter out if dependency
+			if( $dep ) {
+				$dep = array_map( function( $v ) use ( $nh ) {
+					return $nh . $v;
+				}, $dep );
+
+				array_filter( $enqueue_styles, function( $v ) use ( $dep ) {
+					return !in_array( $v, $dep );
+				} );
+			}
+
 			wp_register_style(
-				$st['handle'],
+				$handle,
 				$st['url'],
 				$dep,
 				$st['ver'] ?? NULL
 			);
-
-			// filter out if dependency
-			if( $dep )
-				array_filter( $enqueue_styles, function( $v ) use ( $dep ) {
-					return !in_array( $v, $dep );
-				} );
 		}
 
-		// register scripts
-		foreach( $this->scripts as $sc ) {
-			$handle = $sc['handle'];
+		/* Register scripts */
+
+		$recaptcha_secret_key = get_option( $n . 'recaptcha_secret_key', '' );
+		$recaptcha_site_key = get_option( $n . 'recaptcha_site_key', '' );
+
+		if( $recaptcha_secret_key ) {
+			$this->scripts[] = [
+				'handle' => 'recaptcha',
+				'url' => 'https://www.google.com/recaptcha/api.js?render=' . $recaptcha_site_key,
+				'footer' => false,
+				'defer' => true
+			];
+
+			$localize_data['recaptcha_site_key'] = $recaptcha_site_key;
+		}
+
+		foreach( $this->scripts as $i => $sc ) {
+			$handle = $nh . $sc['handle'];
 			$defer = $sc['defer'] ?? false;
 			$data = $sc['data'] ?? false;
 			$dep = $sc['dep'] ?? [];
@@ -368,12 +432,18 @@ class Formation {
 			if( $defer )
 				$this->defer_script_handles[] = $handle;
 
-			if( $data ) {
-				$localize_scripts[] = [
-					$handle,
-					static::$namespace, 
-					$data
-				];
+			if( $data )
+				array_merge( $localize_data, $data );
+
+			// filter out if dependency
+			if( $dep ) {
+				$dep = array_map( function( $v ) use ( $nh ) {
+					return $nh . $v;
+				}, $dep );
+
+				array_filter( $enqueue_scripts, function( $v ) use ( $dep ) {
+					return !in_array( $v, $dep );
+				} );
 			}
 
 			wp_register_script( 
@@ -384,16 +454,13 @@ class Formation {
 				$sc['footer'] ?? true
 			);
 
-			// filter out if dependency
-			if( $dep )
-				array_filter( $enqueue_scripts, function( $v ) use ( $dep ) {
-					return !in_array( $v, $dep );
-				} );
+			if( $i == 0 )
+				$localize_script_handle = $handle;
 		}
 
 		// localize scripts
-		foreach( $localize_scripts as $l )
-			wp_localize_script( $l[0], $l[1], $l[2] );
+		if( $localize_script_handle && $localize_data )
+			wp_localize_script( $localize_script_handle, static::$namespace, $localize_data );
 
 		// enqueue scripts
 		foreach( $enqueue_scripts as $sc_handle ) 

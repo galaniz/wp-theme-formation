@@ -69,5 +69,21 @@ module.exports = [
             } ),
             new OptimizeCssAssetsPlugin()
         ]
+    }, 
+    {
+        mode: 'production',
+        entry: {
+            'select-fields': [
+                __dirname + '/src/common/assets/src/field/objects/select-fields.js', 
+            ]
+        },
+        output: {
+            path: __dirname + '/src/common/assets/public/',
+            publicPath: '/',
+            filename: 'js/[name].js'
+        },
+        module: {
+            rules: rules
+        }
     }
 ];

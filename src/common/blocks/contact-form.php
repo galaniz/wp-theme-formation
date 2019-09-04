@@ -13,7 +13,7 @@ namespace Formation\Common\Blocks;
  */
 
 use Formation\Formation as FRM; 
-use Formation\Common\Field;
+use Formation\Common\Field\Field;
 use Formation\Common\Blocks\Blocks; 
 
 class Contact_Form {
@@ -28,6 +28,14 @@ class Contact_Form {
     */
 
     public static $field_class = '';
+
+   /*
+    * Optional class to add to submit button.
+    *
+    * @var string $button_class
+    */  
+
+    public static $button_class = '';
 
    /*
     * Args for contact form and field blocks.
@@ -184,12 +192,15 @@ class Contact_Form {
             ] );
         } 
 
+        $s_error = FRM::$sprites['Error'];
+        $s_success = FRM::$sprites['Success'];
+
         return
             '<form class="o-editor__form js-form" id="' . $id . '" data-type="contact" novalidate>' .
                 '<div class="o-field-container l-flex --align-center --wrap">' .
                     $content .
                     '<div class="o-field">' .
-                        '<button class="o-button js-submit --fill" type="submit">' .
+                        '<button class="o-button js-submit' . ( self::$button_class ? ' ' . $button_class : '' ) . '" type="submit">' .
                             '<div class="u-position-relative">' . $submit_text . '</div>' .
                             FRM::render_button_loader() .
                         '</button>' .
@@ -197,12 +208,12 @@ class Contact_Form {
                 '</div>' .
                 '<div class="o-form-result">' .
                     '<div class="o-form-result__message l-flex --align-center" aria-live="polite">' .
-                        '<div class="o-form-result__icon u-bg-primary-base u-text-light u-flex-shrink-0">' .
-                            '<svg width="32" height="32" viewBox="0 0 32 32" class="o-form-result__svg u-position-center --error">' .
-                                '<use xlink:href="#sprite-alert" />' .
+                        '<div class="o-form-result__icon">' .
+                            '<svg width="' . $s_error['w'] . '" height="' . $s_error['h'] . '" viewBox="0 0 ' . $s_error['w'] . ' ' . $s_error['w'] . '" class="o-form-result__svg u-position-center --error">' .
+                                '<use xlink:href="#sprite-error" />' .
                             '</svg>' .
-                            '<svg width="20" height="20" viewBox="0 0 20 20" class="o-form-result__svg u-position-center --success">' .
-                                '<use xlink:href="#sprite-check" />' .
+                            '<svg width="' . $s_success['w'] . '" height="' . $s_success['h'] . '" viewBox="0 0 ' . $s_success['w'] . ' ' . $s_success['h'] . '" class="o-form-result__svg u-position-center --success">' .
+                                '<use xlink:href="#sprite-success" />' .
                             '</svg>' .
                         '</div>' .
                         '<p class="o-form-result__text"></p>' .

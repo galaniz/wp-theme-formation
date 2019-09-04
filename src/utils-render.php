@@ -17,12 +17,9 @@ trait Utils_Render {
      * @param array $args {
      *      @type string $links Accepts string of menu location.   
      *      @type string $share Accepts array.
-     *      @type string $vertical Accepts boolean.
-     *      @type string $center Accepts boolean.
-     *      @type string $lg Accepts boolean.
      *      @type string $div Accepts boolean.
-     *      @type string $hover Accepts boolean.
      *      @type string $class Accepts string.
+     *      @type string $list_class Accepts string.
      * }
      * @return string of html output
      */
@@ -30,12 +27,9 @@ trait Utils_Render {
 	public static function render_social( $args = [] ) {
 		$links = $args['links'] ?? '';
 		$share = $args['share'] ?? [];
-		$vertical = $args['vertical'] ?? false;
-		$center = $args['center'] ?? false;
-		$lg = $args['lg'] ?? false;
 		$div = $args['div'] ?? false;
-        $hover = $args['hover'] ?? false;
         $class = $args['class'] ?? '';
+        $list_class = $args['list_class'] ?? '';
 
 		if( !$links && !$share )
 			return '';
@@ -49,10 +43,7 @@ trait Utils_Render {
             $item_class .= " $class";
 
 		$list_classes = "o-social l-flex --wrap --align-center";
-		$list_classes .= $center ? ' --justify-center' : '';
-		$list_classes .= $vertical ? ' --vertical' : '';
-		$list_classes .= $lg ? ' --s-lg' : '';
-        $list_classes .= $hover ? ' --hover' : '';
+        $list_classes .= $list_class ? ' ' . $list_class : '';
 
 		$output = "<$tag class='$list_classes'>";
 		$data = [];

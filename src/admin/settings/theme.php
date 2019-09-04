@@ -13,7 +13,8 @@ namespace Formation\Admin\Settings;
  */
 
 use Formation\Formation as FRM;  
-use Formation\Common\Field; 
+use Formation\Common\Field\Field; 
+use Formation\Common\Field\Select_Fields; 
 use Formation\Admin\Settings\Settings; 
 
 class Theme {
@@ -76,20 +77,20 @@ class Theme {
 
     private $fields = [
         [
-            'name' => 'logo',
-            'label' => 'Logo',
+            'name' => 'svg_logo',
+            'label' => 'SVG Logo',
             'section' => 'logo',
             'type' => 'file',
-            'image' => true,
-            'attr' => [
-                'accept' => 'image/svg+xml,image/png'
-            ]
+            'file_type' => 'image',
+            'accept' => 'image/svg+xml'
         ],
         [
             'name' => 'footer_text',
             'label' => 'Footer Text',
             'section' => 'footer',
-            'type' => 'richtext'
+            'type' => 'richtext',
+            'toolbar' => 'bold,italic,link',
+            'p_tags' => false
         ]
     ];
 
@@ -121,22 +122,15 @@ class Theme {
             ];
 
             $this->fields[] = [
-                'name' => 'recaptcha',
-                'section' => 'recaptcha',
-                'label' => 'Recaptcha',
-                'fields' => [
-                    [
-                        'name' => 'recaptcha[0][site_key]',
-                        'label' => 'Site Key',
-                        'type' => 'text'
-                    ],
-                    [
-                        'name' => 'recaptcha[0][secret_key]',
-                        'label' => 'Secret Key',
-                        'type' => 'text',
-                        'on_save' => [$this, 'save_recaptcha']
-                    ]
-                ]
+                'name' => 'recaptcha_site_key',
+                'label' => 'Site Key',
+                'section' => 'recaptcha'
+            ];
+
+            $this->fields[] = [
+                'name' => 'recaptcha_secret_key',
+                'label' => 'Secret Key',
+                'section' => 'recaptcha'
             ];
         }
 
@@ -158,26 +152,65 @@ class Theme {
             ];
 
             $this->fields[] = [
-                [
-                    'name' => 'mailchimp_api_key',
-                    'section' => 'mailchimp',
-                    'label' => 'API Key',
-                ],
-                [
-                    'name' => 'mailchimp_data_center',
-                    'section' => 'mailchimp',
-                    'label' => 'Data Center',
-                ]
+                'name' => 'mailchimp_api_key',
+                'section' => 'mailchimp',
+                'label' => 'API Key'
+            ];
+
+            $this->fields[] = [
+                'name' => 'mailchimp_data_center',
+                'section' => 'mailchimp',
+                'label' => 'Data Center',
             ];
 
             foreach( $mailchimp_list_locations as $name => $location ) {
+                $cap_location = ucfirst( $location );
+                $section_id = 'mailchimp_' . $location;
+                $name_fields = $name . '_fields';
+
+                $this->sections[] = [
+                    'id' => $section_id,
+                    'title' => "Mailchimp: $cap_location Form"
+                ];
+
                 $this->fields[] = [
-                    'name' => $name,
-                    'section' => 'mailchimp',
-                    'label' => 'List ID (displays in ' . $location . ')'
+                    'name' => $name . '_id',
+                    'section' => $section_id,
+                    'label' => 'List ID'
+                ];
+
+                $this->fields[] = [
+                    'name' => $name . '_title',
+                    'section' => $section_id,
+                    'label' => 'Title'
+                ];
+
+                $this->fields[] = [
+                    'name' => $name . '_submit_label',
+                    'section' => $section_id,
+                    'label' => 'Submit label'
+                ];
+
+                $this->fields[] = [
+                    'name' => $name_fields,
+                    'section' => $section_id,
+                    'label' => 'Fields',
+                    'multi' => true,
+                    'on_save' => ['Select_Fields', 'filter'],
+                    'fields' => Select_Fields::get( $name_fields )
                 ];
             }
         }
+
+        /* Additional fields */
+
+        if( $fields )
+            $this->fields = array_merge( $this->fields, $fields );
+
+        /* Additional sections */
+
+        if( $sections )
+            $this->sections = array_merge( $this->sections, $sections );
 
         // add options page to settings
         add_action( 'admin_menu', [$this, 'menu'] );
@@ -187,6 +220,9 @@ class Theme {
 
         // enqueue scripts
         add_action( 'admin_enqueue_scripts', [$this, 'scripts'] ); 
+
+        // file upload
+        Field::file_upload_action();
     }
 
    /*
@@ -197,7 +233,7 @@ class Theme {
     public function menu() {
         $page_hook = add_options_page( 
             'Theme Settings',
-            'Theme Settings',
+            'Theme',
             $this->user_cap,
             $this->page,
             [$this, 'output']
@@ -254,17 +290,6 @@ class Theme {
     <?php }
 
    /*
-    * Field callbacks
-    * ---------------
-    */
-
-    public function save_recaptcha( $value ) {
-        Field::filter_multi_fields( $value, ['site_key', 'secret_key'] );
-
-        return $value;
-    }
-
-   /*
     * Enqueue scripts and styles
     * --------------------------
     */
@@ -272,6 +297,7 @@ class Theme {
     public function scripts( $hook ) {
         if( $hook === $this->page_hook ) {
             Field::scripts();
+            Select_Fields::scripts();
         }
     }
 

@@ -1,0 +1,68 @@
+
+/*
+ * File
+ * ----
+ */
+
+$gray: rgba( map-get( $g-colors, 'foreground-dark' ), 0.05 );
+
+.o-file {
+    max-width: 30em;
+    &.--full {
+        max-width: none;
+    }
+}
+
+.o-file__exists {
+    box-shadow: 0 1px 1px $gray;
+	@extend %u-background-color-background-base;
+    &,
+    & > div {
+        height: 80px;
+    }
+}
+
+.o-file__asset {
+    @extend %u-display-flex;
+    background-color: $gray;
+    height: inherit;
+}
+
+.o-file__icon {
+	@include fontRem( 16px );
+	font-weight: 600;
+    padding: 0 16px;
+    border-radius: 4px;
+    &:empty {
+    	@extend %u-display-none;
+    }
+}
+
+.o-file__image {
+    @extend %u-width-100;
+    max-width: 200px;
+    max-height: 80px;
+    object-fit: contain;
+    &[src=""] {
+    	@extend %u-display-none;
+    }
+}
+
+.o-file__name {
+	@extend %u-overflow-hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-left: 12px;
+}
+
+.o-file__remove {
+	@extend %u-position-relative;
+	@extend %u-text-align-center;
+    width: 50px;
+    height: 50px;
+    margin-left: auto;
+    padding: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+}

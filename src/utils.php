@@ -9,6 +9,20 @@ namespace Formation;
 
 trait Utils {
 
+   /*
+    * Prefix input name with namespace only if not already prefixed.
+    *
+    * @param string $name
+    * @return string prefixed name
+    */
+
+    public static function get_namespaced_str( $name = '' ) {
+        if( substr( $name, 0, strlen( static::$namespace ) ) !== static::$namespace  )
+            return static::$namespace . '_' . $name;
+
+        return $name;
+    }
+
     /*
      * Get posts per page by post type.
      *

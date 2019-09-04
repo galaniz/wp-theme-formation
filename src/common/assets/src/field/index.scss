@@ -16,35 +16,16 @@ $g-breakpoints: (
 
 @import '~@alanizcreative/formation/layouts/layouts';
 
+.l-table__cell {
+	@include breakpointMax( 600 ) {
+		width: 100%;
+		display: block;
+	}
+}
+
 /* Objects */
 
 @import '~@alanizcreative/formation/objects/multi/multi';
-
-/* Objects: Field */
-
-.o-field {
-	.o-multi & {
-		padding: 10px;
-		flex-grow: 1;
-	}
-}
-
-.o-field__label {
-	@include fontRem( 13px );
-	margin-bottom: 6px;
-	font-weight: bold;
-}
-
-.o-field__text,
-.o-field__textarea,
-.o-field__select {
-	.o-multi & {
-		@extend %u-width-100;
-	}
-}
-
-.o-field__checkbox {
-	@include breakpointMax( 782 ) {
-		margin: 0 4px 0 0 !important;
-	}
-}
+@import 'objects/file/file';
+@import 'objects/field';
+@import 'objects/loader';

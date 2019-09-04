@@ -5,7 +5,7 @@
  * ------------------------------------
  */
 
-namespace Formation\Common;
+namespace Formation\Common\Field;
 
 /*
  * Imports
@@ -14,6 +14,7 @@ namespace Formation\Common;
 
 use function Formation\additional_script_data;
 use \Formation\Formation as FRM;
+use Formation\Common\Field\File_Upload;
 
 class Field {
 
@@ -49,7 +50,15 @@ class Field {
             'before' => '',
             'after' => '',
             'value' => '',
-            'image' => false
+            /* file */
+            'file_type' => 'file', // or image
+            'accept' => '',
+            /* richtext */
+            'rows' => 4,
+            'quicktags' => false,
+            'wpautop' => false,
+            'p_tags' => true,
+            'toolbar' => 'bold,italic,separator,bullist,numlist,blockquote,separator,link'
         ]
     ];
 
@@ -79,7 +88,8 @@ class Field {
     */
 
     public static $localize_data = [
-        'multi' => []
+        'multi' => [],
+        'files' => []
     ];
 
    /*
@@ -119,6 +129,23 @@ class Field {
             array( $index ),
             $name 
         );
+    }
+
+   /*
+    * Remove brackets from name to create id ( tinymce doesn't allow brackets in id ).
+    *
+    * @param string $id
+    * @return string
+    */
+
+    public static function format_id( $id ) {
+        $id = str_replace( 
+            array( '[', ']' ),
+            array( '_' ),
+            $id 
+        );
+
+        return rtrim( $id, '_' );
     }
 
    /*
@@ -195,14 +222,15 @@ class Field {
     * @return string of markup.
     */
 
-    public function render( $args ) {
+    public static function render( $args ) {
         $args = array_replace_recursive( self::$default['render'], $args );
         extract( $args );
 
         $fields = $args['fields'] ? $args['fields'] : [$args];
+        $name = FRM::get_namespaced_str( $args['name'] );
 
         // get top level name in case an array
-        $top_level_name = Field::get_top_level_name( $args['name'] );
+        $top_level_name = Field::get_top_level_name( $name );
 
         // get count for multi fields
         $count = $multi && is_array( $data ) && isset( $data[0] ) ? count( $data ) : 1;
@@ -234,13 +262,13 @@ class Field {
         if( $multi ) {
             $output .= '</div>';
 
-            if( $copy ) {
+            if( $copy )
                 self::$localize_data['multi'][$top_level_name] = $copy;
-                additional_script_data( FRM::$namespace, self::$localize_data, true );
-            }
         }
 
         $output .= '</div>';
+
+        additional_script_data( FRM::$namespace, self::$localize_data, true );
 
         return $output;
     }
@@ -266,6 +294,9 @@ class Field {
             $f = array_replace_recursive( self::$default['field'], $f );
 
             $name = $multi && !$copy ? self::index_name( $f['name'], $index ) : $f['name'];
+            $name = FRM::get_namespaced_str( $name );
+
+            $id = $multi && !$copy ? self::format_id( $name ) : $name;
             $type = $f['type'];
             $value = $f['value'];
             $classes = 'o-field__' . $type . ' js-input ' . $f['class'];
@@ -331,33 +362,100 @@ class Field {
                     }
 
                     $output .= sprintf( 
-                        '<input name="%1$s" id="%1$s" type="%2$s" value="%4$s" class="%5$s" %6$s %7$s %3$s>', 
+                        '<input name="%1$s" id="%8$s" type="%2$s" value="%4$s" class="%5$s" %6$s %7$s %3$s>', 
                         $name, 
                         $type, 
                         $placeholder, 
                         $v,
                         $classes,
                         $checked,
-                        $attr
+                        $attr,
+                        $id
                     );
 
                     break;
                 case 'file':
+                    $file_type = strtolower( $f['file_type'] );
+                    $file_type_cap = ucwords( $file_type );
+                    $file_exists = $val ? true : false;
 
+                    $accept = $f['accept'];
+
+                    $url = '';
+                    $title = basename( parse_url( $val, PHP_URL_PATH ) );
+
+                    self::$localize_data['files'][] = [
+                        'id' => $id,
+                        'file_type' => $file_type
+                    ];
+
+                    if( $file_type == 'image' )
+                        $url = $val;
+
+                    $output .= 
+                        "<div class='o-file'>" .
+                            "<div class='o-file__exists' style='display: " . ( $file_exists ? "block" : "none" ) . "'>" .
+                                "<div class='l-flex --align-center --wrap'>" .
+                                    "<div class='o-file__asset'>" .
+                                        "<img class='o-file__image' src='$url' alt='Image preview'>" .
+                                    "</div>" . 
+                                    "<div class='o-file__icon'></div>" .
+                                    "<span class='o-file__name'>$title</span>" .
+                                    "<button type='button' class='o-file__remove'>" .
+                                        "<span class='dashicons dashicons-no-alt'></span>" .
+                                        "<span class='u-visually-hidden'>Remove $file_type_cap</span>" .
+                                    "</button>" .
+                                "</div>" .
+                            "</div>" .
+                            "<div class='o-file__no' style='display: " . ( $file_exists ? "none" : "block" ) . "'>" .
+                                "<p style='margin: 0'>" .
+                                    "<label class='o-file__select u-position-relative" . ( is_admin() ? ' button add-media' : '' ) . "'>" .
+                                        "<input type='file' aria-label='Select $file_type_cap' class='u-hide-input' accept='$accept'>" .
+                                        "<span>Select $file_type_cap</span>" .
+                                        "<span class='o-loader'><span class='spinner is-active'></span></span>" .
+                                    "</label>" .
+                                "</p>" .
+                            "</div>" . 
+                            "<input name='$name' id='$id' type='hidden' value='$val'>" .
+                        "</div>";
 
                     break;
                 case 'textarea':
                     $output .= sprintf(
-                        '<textarea name="%1$s" id="%1$s" class="%2$s" %4$s>%3$s</textarea>', 
+                        '<textarea name="%1$s" id="%5$s" class="%2$s" %4$s>%3$s</textarea>', 
                         $name, 
                         $classes,
                         $val,
-                        $attr
+                        $attr,
+                        $id
                     );
 
                     break;
                 case 'richtext':
-                    
+                    ob_start();
+
+                    if( !$f['p_tags'] ) {
+                        add_filter( 'tiny_mce_before_init', function( $init_settings ) {
+                            $init_settings['forced_root_block'] = false;
+                            return $init_settings;
+                        } );
+                    }
+
+                    wp_editor( html_entity_decode( $val ), $id, [
+                        'media_buttons' => false,
+                        'wpautop' => $f['wpautop'],
+                        'textarea_name' => $name,
+                        'textarea_rows' => $f['rows'],
+                        'editor_class' => $classes,
+                        'tinymce' => array(
+                            'toolbar1' => $f['toolbar'],
+                            'toolbar2' => '',
+                            'toolbar3' => '',
+                            'toolbar4' => ''
+                        )
+                    ] );
+
+                    $output .= ob_get_clean();
 
                     break;
                 case 'select': 
@@ -376,11 +474,12 @@ class Field {
                         }
 
                         $output .= sprintf(
-                            '<select name="%1$s" id="%1$s" class="%3$s" %4$s>%2$s</select>', 
+                            '<select name="%1$s" id="%5$s" class="%3$s" %4$s>%2$s</select>', 
                             $name, 
                             $opt,
                             $classes,
-                            $attr
+                            $attr,
+                            $id
                         );
                     }
 
@@ -493,18 +592,60 @@ class Field {
     */
 
     public static function scripts() {
+        $path = '/vendor/alanizcreative/wp-theme-formation/src/common/assets/public/';
+
         wp_enqueue_style( 
-            FRM::$namespace . '_field_styles', 
-            get_template_directory_uri() . '/packages/wp-theme-formation/src/common/assets/public/css/field.css' 
+            FRM::$namespace . '-field-styles', 
+            get_template_directory_uri() . $path . 'css/field.css' 
         );
 
-        wp_enqueue_script(
-            FRM::$namespace . '_field_script', 
-            get_template_directory_uri() . '/packages/wp-theme-formation/src/admin/assets/public/js/field.js',
+        $handle = FRM::$namespace . '-field-script';
+        $nonce_name = FRM::$namespace . '_upload_file_nonce';
+
+        wp_register_script(
+            $handle, 
+            get_template_directory_uri() . $path . 'js/field.js',
             [],
             NULL,
             true
         );
+
+        wp_localize_script( $handle, FRM::$namespace, [
+            $nonce_name => wp_create_nonce( $nonce_name )
+        ] );
+
+        wp_enqueue_script( $handle );
+    }
+
+   /*
+    * Ajax action and callback to upload files.
+    */
+
+    public static function file_upload_action() {
+        add_action( 'wp_ajax_upload_file', function() {
+            try {
+                // check upload nonce
+                if( !check_ajax_referer( FRM::$namespace . '_upload_file_nonce', FRM::$namespace . '_upload_file_nonce', false ) )
+                    throw new \Exception( 'Not allowed' );
+
+                new File_Upload( [
+                    'uploads_dir' => FRM::$uploads_dir,
+                    'uploads_url' => FRM::$uploads_url,
+                    'success' => function( $data ) {
+                        echo json_encode( $data );
+                    },
+                    'error' => function( $err ) {
+                        throw new \Exception( $err );
+                    }
+                ] );
+
+                exit;
+            } catch( \Exception $e ) {
+                header( http_response_code( 500 ) );
+                echo $e->getMessage();
+                exit;
+            }
+        } );
     }
 
 } // end Field

@@ -13,7 +13,7 @@ namespace Formation\Admin\Settings;
  */
 
 use Formation\Formation as FRM;  
-use \Formation\Common\Field;
+use \Formation\Common\Field\Field;
 
 class Settings {
 
@@ -60,7 +60,8 @@ class Settings {
 
 	public function setup() {
 	    foreach( $this->fields as $field ) {
-	    	$top_level_name = Field::get_top_level_name( $field['name'] );
+	    	$name = FRM::get_namespaced_str( $field['name'] );
+	    	$top_level_name = Field::get_top_level_name( $name );
 	    	$register_args = [];
 
 	    	if( !isset( $field['fields'] ) )
@@ -79,7 +80,7 @@ class Settings {
 		    );
 
 	        add_settings_field( 
-	        	$field['name'], 
+	        	$name, 
 	        	$field['label'], 
 	        	function( $args ) use ( $top_level_name ) { // $args = $field
 	        		$args['data'] = [
