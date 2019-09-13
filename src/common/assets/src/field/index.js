@@ -9,15 +9,15 @@ import 'core-js/es/object/assign';
 import 'core-js/es/array/from';
 import 'core-js/es/promise';
 
+// functions
+import { closest } from '@alanizcreative/formation/utils';
+
 // modules
 import fileUpload from './objects/file/file-upload';
 
-// classes
-import Multi from '@alanizcreative/formation/objects/multi/multi';
-
 /*
- * DOM loaded ( runs on every page load )
- * -------------------------------------
+ * DOM loaded
+ * ----------
  */
 
 const initialize = () => {
@@ -27,6 +27,11 @@ const initialize = () => {
 		return;
 
 	const n = window[namespace]; 
+
+	/*
+	 * File upload
+	 * -----------
+	 */
 
 	if( n.hasOwnProperty( 'files' ) ) {
 		if( n.files.length > 0 ) {
@@ -55,25 +60,53 @@ const initialize = () => {
 		}
 	}
 
+	/*
+	 * Multi fields
+	 * ------------
+	 */
+
 	if( !n.hasOwnProperty( 'multi' ) ) 
 		return;
 
-	for( name in n.multi ) {
-		let section = document.querySelector( `.c-section-${ name }` );
+	window.multi = function( m ) {
+		let multiItem = closest( m, 'o-multi__item' ),
+			multi = multiItem.parentElement,
+			multiItems = Array.from( multi.children );
 
-		if( section ) {
-			let multi = section.querySelectorAll( '.o-multi__item' );
+		let dataType = m.getAttribute( 'data-type' );
 
-			multi.forEach( ( m ) => {
-				let o = new Multi( {
-					item: m, 
-					itemAsString: n.multi[name],
-					buttonSelector: '.o-multi__button',
-					inputSelector: '.js-input'
-				} );
-			} );
+		if( dataType === 'add' ) {
+			let name = multiItem.getAttribute( 'data-name' );
+
+			/* Get index of current item */
+
+			let itemIndex = multiItems.indexOf( multiItem ),
+				newItemIndex = itemIndex !== -1 ? itemIndex + 1 : false;
+
+			/* Insert new item */
+
+			multiItem.insertAdjacentHTML( 'afterend', n.multi[name] );
+		} else {
+			multi.removeChild( multiItem );
 		}
-	}
+
+		/* Reindex items */
+
+		multiItems = Array.from( multi.children );
+
+		multiItems.forEach( ( item, i ) => {
+			let inputs = Array.from( item.querySelectorAll( '.js-input' ) );
+
+			inputs.forEach( ( input ) => {
+				let dataName = input.getAttribute( 'data-name' ),
+					dataId = input.getAttribute( 'data-id' );
+
+				input.name = dataName.replace( '%i', i );
+				input.id = dataId.replace( '%i', i );
+			} );
+		} );
+	};
+
 }; // end initialize
 
 document.addEventListener( 'DOMContentLoaded', initialize );

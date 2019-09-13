@@ -103,7 +103,10 @@ class Reading {
 		}
 
 		// add fields
-		new Settings( $fields, 'reading' );
+		new Settings( [
+			'fields' => $fields,
+			'page' => 'reading'
+		] );
 	}
 
 } // end Reading

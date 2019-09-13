@@ -89,6 +89,7 @@ class Media {
 
     public function register_blocks() {
         foreach( self::$blocks as $name => $b ) {
+            $b['frm'] = true;
             Blocks::$blocks[$name] = $b;
         }
     }

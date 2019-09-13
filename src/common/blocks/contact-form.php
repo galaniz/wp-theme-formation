@@ -22,22 +22,6 @@ class Contact_Form {
     * Variables
     * ---------
     *
-    * Optional class to add to fields.
-    *
-    * @var string $field_class
-    */
-
-    public static $field_class = '';
-
-   /*
-    * Optional class to add to submit button.
-    *
-    * @var string $button_class
-    */  
-
-    public static $button_class = '';
-
-   /*
     * Args for contact form and field blocks.
     *
     * @var array $blocks
@@ -50,17 +34,17 @@ class Contact_Form {
                 'id' => ['type' => 'string'],
                 'email' => ['type' => 'string'],
                 'subject' => ['type' => 'string'],
-                'submit_text' => ['type' => 'string']
+                'submit_label' => ['type' => 'string']
             ],
             'default' => [
                 'id' => '',
                 'email' => '',
                 'subject' => '',
-                'submit_text' => 'Submit'
+                'submit_label' => 'Submit'
             ],
             'render' => [__CLASS__, 'render_contact_form'],
             'handle' => 'contact_form',
-            'script' => 'block-contact-form.js'
+            'script' => 'contact-form.js'
         ], 
         'contact-form-field' => [
             'attr' => [
@@ -85,7 +69,7 @@ class Contact_Form {
             ],
             'render' => [__CLASS__, 'render_contact_form_field'],
             'handle' => 'contact_form_field',
-            'script' => 'block-contact-form-field.js'
+            'script' => 'contact-form-field.js'
         ]
     ];
 
@@ -118,6 +102,7 @@ class Contact_Form {
 
     public function register_blocks() {
         foreach( self::$blocks as $name => $b ) {
+            $b['frm'] = true;
             Blocks::$blocks[$name] = $b;
         }
     }
@@ -195,31 +180,12 @@ class Contact_Form {
         $s_error = FRM::$sprites['Error'];
         $s_success = FRM::$sprites['Success'];
 
-        return
-            '<form class="o-editor__form js-form" id="' . $id . '" data-type="contact" novalidate>' .
-                '<div class="o-field-container l-flex --align-center --wrap">' .
-                    $content .
-                    '<div class="o-field">' .
-                        '<button class="o-button js-submit' . ( self::$button_class ? ' ' . $button_class : '' ) . '" type="submit">' .
-                            '<div class="u-position-relative">' . $submit_text . '</div>' .
-                            FRM::render_button_loader() .
-                        '</button>' .
-                    '</div>' .
-                '</div>' .
-                '<div class="o-form-result">' .
-                    '<div class="o-form-result__message l-flex --align-center" aria-live="polite">' .
-                        '<div class="o-form-result__icon">' .
-                            '<svg width="' . $s_error['w'] . '" height="' . $s_error['h'] . '" viewBox="0 0 ' . $s_error['w'] . ' ' . $s_error['w'] . '" class="o-form-result__svg u-position-center --error">' .
-                                '<use xlink:href="#sprite-error" />' .
-                            '</svg>' .
-                            '<svg width="' . $s_success['w'] . '" height="' . $s_success['h'] . '" viewBox="0 0 ' . $s_success['w'] . ' ' . $s_success['h'] . '" class="o-form-result__svg u-position-center --success">' .
-                                '<use xlink:href="#sprite-success" />' .
-                            '</svg>' .
-                        '</div>' .
-                        '<p class="o-form-result__text"></p>' .
-                    '</div>' .
-                '</div>' .
-            '</form>';
+        return FRM::render_form( [
+            'id' => $id,
+            'data_type' => 'contact',
+            'fields' => $content,
+            'submit_label' => $submit_label
+        ] );
     }
 
    /*
@@ -239,8 +205,7 @@ class Contact_Form {
             'label' => $label,
             'type' => $type,
             'placeholder' => $placeholder,
-            'field_class' => "l-$width", 
-            'input_class' => ''
+            'field_class' => "l-$width"
         ];
 
         $attr_array = self::get_assoc_array_from_str( $attr );

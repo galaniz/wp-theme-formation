@@ -26,6 +26,15 @@ class Formation {
 	public static $namespace = 'frm';
 
    /*
+	* Path from vendor to source.
+	*
+	* @var string $src_path
+	*/
+
+	public static $src_path = '/vendor/alanizcreative/wp-theme-formation/src/';
+	public static $src_url = '';
+
+   /*
 	* Pass query args to front end when loading posts with ajax.
 	*
 	* @var array $load_posts_query {
@@ -138,6 +147,27 @@ class Formation {
 	*/
 
 	public $defer_script_handles = [];
+
+   /*
+    * Optional classes to add to fields, labels, buttons...
+    *
+    * @var array $classes
+    */
+
+	public static $loader_icon = '';
+
+   /*
+    * Optional classes to add to fields, labels, buttons...
+    *
+    * @var array $classes
+    */
+
+    public static $classes = [
+        'field' => '',
+        'button' => '',
+        'label' => '',
+        'input' => ''
+    ];
 
    /*
 	* Stores svg sprite meta.
@@ -266,6 +296,10 @@ class Formation {
 
 		self::$uploads_dir = WP_CONTENT_DIR . '/' . static::$namespace . '_uploads/';
 		self::$uploads_url = get_site_option( 'siteurl' ) . '/wp-content/' . static::$namespace . '_uploads/';
+
+		/* Set source url */
+
+		self::$src_url = get_template_directory_uri() . self::$src_path;
 	}
 
    /*

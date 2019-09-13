@@ -25,7 +25,7 @@ $g-breakpoints: (
 
 /* Objects */
 
-@import '~@alanizcreative/formation/objects/multi/multi';
 @import 'objects/file/file';
+@import 'objects/multi';
 @import 'objects/field';
 @import 'objects/loader';

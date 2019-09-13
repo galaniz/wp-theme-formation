@@ -4,11 +4,18 @@
  * -----
  */
 
+.o-field-section {
+	@extend %u-display-inline-block;
+}
+
 .o-field {
 	margin-bottom: 15px;
 	.o-multi & {
 		padding: 10px;
 		flex-grow: 1;
+	}
+	&.--richtext {
+		max-width: 750px;
 	}
 }
 

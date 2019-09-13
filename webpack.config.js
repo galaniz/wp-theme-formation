@@ -50,6 +50,7 @@ module.exports = [
     {
         mode: 'production',
         entry: {
+            'blocks': __dirname + '/src/common/assets/src/blocks/index.scss',
             'field': [
                 __dirname + '/src/common/assets/src/field/index.js', 
                 __dirname + '/src/common/assets/src/field/index.scss'
@@ -75,12 +76,43 @@ module.exports = [
         entry: {
             'select-fields': [
                 __dirname + '/src/common/assets/src/field/objects/select-fields.js', 
-            ]
+            ] 
         },
         output: {
             path: __dirname + '/src/common/assets/public/',
             publicPath: '/',
             filename: 'js/[name].js'
+        },
+        module: {
+            rules: rules
+        }
+    },
+    {
+        mode: 'production',
+        entry: {
+            'contact-form-field': __dirname + '/src/common/assets/src/blocks/contact-form-field.js',
+            'contact-form': __dirname + '/src/common/assets/src/blocks/contact-form.js',
+            'media': __dirname + '/src/common/assets/src/blocks/media.js',
+        },
+        output: {
+            path: __dirname + '/src/common/assets/public/',
+            publicPath: '/',
+            filename: 'js/blocks/[name].js'
+        },
+        module: {
+            rules: rules
+        }
+    },
+    {
+        mode: 'production',
+        entry: {
+            'utils': __dirname + '/src/common/assets/src/blocks/utils.js',
+        },
+        output: {
+            library: 'blockUtils',
+            path: __dirname + '/src/common/assets/public/',
+            publicPath: '/',
+            filename: 'js/blocks/[name].js'
         },
         module: {
             rules: rules

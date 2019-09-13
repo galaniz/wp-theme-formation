@@ -16,7 +16,7 @@ namespace Formation;
  */
 
 function additional_script_data( $name = false, $data = [], $admin = false ) {
-	$action = $admin ? 'admin_print_footer_scripts' : 'wp_print_footer_scripts';
+	$action = $admin ? 'admin_head' : 'head';
 
 	add_action( $action, 
 		function() use ( $name, $data ) { 

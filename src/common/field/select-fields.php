@@ -50,7 +50,11 @@ class Select_Fields {
                 'type' => 'textarea',
                 'name' => $name . '[%i][options]',
                 'label' => 'Options (value : label)',
-                'hidden' => true
+                'hidden' => true,
+                'attr' => [
+                	'rows' => 5,
+                	'cols' => 40
+                ]
             ],
             [
                 'type' => 'checkbox',
@@ -64,17 +68,67 @@ class Select_Fields {
    /*
     * Output fields.
     *
-    * @param array $data 
+    * @param array $fields 
     * @return string of markup
     */
 
-	public static function render( $data ) {
-		var_dump( 'BLAHHHH', $data );
-
-		if( !$data )
+	public static function render( $fields = [] ) {
+		if( !$fields )
 			return '';
 
 		$output = '';
+
+		if( !isset( $fields[0] ) )
+			$fields = [$fields];
+
+		$fields = array_map( function( $v ) {
+			$v['name'] = FRM::$namespace . '_' . str_replace( ' ', '_', strtolower( $v['label'] ) );
+
+			$type = $v['type'];
+			$options = $v['options'] ?? '';
+
+			if( $options ) {
+				$options = explode( "\n", $options );
+				$options_arr = [];
+				$ff = [];
+
+				foreach( $options as $o ) {
+					$o_arr = explode( ' : ', $o );
+					$options_arr[$o_arr[0]] = $o_arr[1];
+
+					if( $type == 'checkbox' || $type == 'radio' ) {
+						$ff[] = [
+							'name' => FRM::$namespace . '_' . str_replace( ' ', '_', strtolower( $o_arr[1] ) ),
+							'type' => $type,
+							'label' => $o_arr[1],
+							'value' => $o_arr[0],
+							'label_above' => false
+						];
+					}
+				}
+
+				$v['options'] = $options_arr;
+
+				if( $type == 'checkbox' || $type == 'radio' ) {
+					$v = [
+						'fields' => $ff,
+						'label' => $v['label'] ?? ''
+					];
+				}
+			}
+
+			if( isset( $v['required'] ) ) {
+				$v['attr'] = [
+					'aria-required' => 'true'
+				];
+			}
+
+			return $v;
+		}, $fields );
+
+		Field::render( [
+			'fields' => $fields
+		], $output );
 
 		return $output;
 	}
@@ -96,7 +150,7 @@ class Select_Fields {
     */
 
 	public static function scripts() {
-		$path = '/vendor/alanizcreative/wp-theme-formation/src/common/assets/public/';
+		$path = FRM::$src_path . 'common/assets/public/';
         $handle = FRM::$namespace . '-select-fields-script';
 
         wp_enqueue_script(

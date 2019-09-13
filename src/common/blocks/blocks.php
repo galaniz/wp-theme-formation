@@ -22,10 +22,18 @@ class Blocks {
     *
     * Folder url to register scripts with.
     *
-    * @var string $blocks_folder_url 
+    * @var string $folder_url 
     */
 
-    public static $blocks_folder_url = '';
+    public static $folder_url = '';
+
+   /*
+    * Optional utilities script.
+    *
+    * @var boolean $utils_script 
+    */
+
+    public static $utils_script = false;
 
    /*
     * Append blocks with args to register.
@@ -49,12 +57,19 @@ class Blocks {
 	* -----------
 	*/
 
-	public function __construct( $blocks_folder_url = '' ) {
-        // set folder url
-        self::$blocks_folder_url = $blocks_folder_url;
+	public function __construct( $args = [] ) {
+        $args = array_merge( [
+            'folder_url' => '',
+            'utils' => false
+        ], $args );
+
+        extract( $args );
+
+        self::$folder_url = $folder_url;
+        self::$utils_script = $utils;
 
         // add blocks
-        add_action( 'init', [$this, 'register_blocks'] );
+        add_action( 'init', [$this, 'register_blocks'], 999 );
 
         // ajax callbacks for previewing blocks in editor
         add_action( 'wp_ajax_nopriv_preview_blocks', [__CLASS__, 'preview_blocks'] );
@@ -70,32 +85,40 @@ class Blocks {
 
     public function register_blocks() {
         // check blocks and blocks folder url exist
-        if( count( self::$blocks ) == 0 || !self::$blocks_folder_url )
+        if( count( self::$blocks ) == 0 || !self::$folder_url )
             return;
 
         $counter = 0;
 
         $data = [
             'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'blocks' => self::$blocks
+            'blocks' => []
         ];
 
-        foreach( self::$blocks as &$name => $b ) {
+        foreach( self::$blocks as $name => $b ) {
             // check handle and script exist
             if( !isset( $b['handle'] ) || !isset( $b['script'] ) )
                 continue;
 
-            $name = FRM::$namespace . '/';
+            $n = FRM::$namespace . '/' . $name;
             $handle = FRM::$namespace . '_' . $b['handle'];
 
-            if( is_admin() )
+            if( !isset( $data['blocks'][$n] ) )
+                $data['blocks'][$n] = $b;
+
+            if( is_admin() ) {
+                $folder_url = isset( $b['frm'] ) ? FRM::$src_url . 'common/assets/public/js/blocks/' : self::$folder_url; 
+
                 wp_register_script(
                     $handle,
-                    self::$blocks_folder_url . $b['script'], 
+                    $folder_url . $b['script'], 
                     ['wp-blocks', 'wp-element', 'wp-editor', 'wp-blocks'],
                     NULL, 
                     true 
                 );
+
+                wp_localize_script( $handle, FRM::$namespace, $data );
+            }
 
             $register_args = ['editor_script' => $handle];
 
@@ -105,11 +128,20 @@ class Blocks {
             if( isset( $b['attr'] ) ) 
                 $register_args['attributes'] = $b['attr'];
 
-            $r = register_block_type( $name, $register_args );
+            $r = register_block_type( $n, $register_args );
 
             if( $counter === 0 ) {
-                // pass data to front end
-                wp_localize_script( $handle, FRM::$namespace, $data );
+                if( is_admin() ) {
+                    if( self::$utils_script ) {
+                        wp_enqueue_script(
+                            FRM::$namespace . '-block-utils-script', 
+                            FRM::$src_url . 'common/assets/public/js/blocks/utils.js',
+                            [],
+                            NULL,
+                            true
+                        );
+                    }
+                }
             }
 
             $counter++;

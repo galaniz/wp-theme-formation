@@ -27,10 +27,6 @@
     }
 }
 
-.c-panel .components-base-control + .components-base-control {
-	margin-bottom: 0 !important;
-}
-
 /* Layout */
 
 .l-breakout {
@@ -42,14 +38,6 @@
 }
 
 /* Objects */
-
-.o-media-wrap {
-    margin: 20px 0;
-}
-
-.o-button-wrap {
-    padding: 6px 0;
-}
 
 .o-remove-button {
     @extend %u-background-color-background-light;
