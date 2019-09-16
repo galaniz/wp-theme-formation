@@ -49,8 +49,8 @@ trait Ajax {
 
 			exit;
     	} catch( \Exception $e ) { 
-    		header( http_response_code( 500 ) );
     		echo $e->getMessage();
+    		header( http_response_code( 500 ) );
 			exit;
     	}
     }
@@ -110,8 +110,8 @@ trait Ajax {
 
 			exit;
     	} catch( \Exception $e ) { 
-    		header( http_response_code( 500 ) );
     		echo $e->getMessage();
+    		header( http_response_code( 500 ) );
 			exit;
     	}
     }
@@ -279,8 +279,8 @@ trait Ajax {
 
 	    	exit;
     	} catch( \Exception $e ) {
-    		header( http_response_code( 500 ) );
     		echo $e->getMessage();
+    		header( http_response_code( 500 ) );
 			exit;
     	}
     }

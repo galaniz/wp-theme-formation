@@ -1,19 +1,26 @@
 
 /*
- * File
- * ----
+ * Asset
+ * -----
  */
 
 $gray: rgba( map-get( $g-colors, 'foreground-dark' ), 0.05 );
 
-.o-file {
+.o-asset-row {
+    margin-bottom: 20px;
+    &:empty {
+        @extend %u-display-none;
+    }
+}
+
+.o-asset {
     max-width: 30em;
     &.--full {
         max-width: none;
     }
 }
 
-.o-file__exists {
+.o-asset__exists {
     box-shadow: 0 1px 1px $gray;
 	@extend %u-background-color-background-base;
     &,
@@ -22,23 +29,23 @@ $gray: rgba( map-get( $g-colors, 'foreground-dark' ), 0.05 );
     }
 }
 
-.o-file__asset {
+.o-asset__asset {
     @extend %u-display-flex;
     background-color: $gray;
     height: inherit;
 }
 
-.o-file__icon {
+.o-asset__icon {
 	@include fontRem( 16px );
 	font-weight: 600;
-    padding: 0 16px;
+    padding: 0 15px 0 25px;
     border-radius: 4px;
     &:empty {
     	@extend %u-display-none;
     }
 }
 
-.o-file__image {
+.o-asset__image {
     @extend %u-width-100;
     max-width: 200px;
     max-height: 80px;
@@ -48,14 +55,15 @@ $gray: rgba( map-get( $g-colors, 'foreground-dark' ), 0.05 );
     }
 }
 
-.o-file__name {
+.o-asset__name {
 	@extend %u-overflow-hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    padding-left: 12px;
+    padding-left: 15px;
 }
 
-.o-file__remove {
+.o-asset__remove {
+    @extend %u-background-color-background-base;
 	@extend %u-position-relative;
 	@extend %u-text-align-center;
     width: 50px;
@@ -64,5 +72,4 @@ $gray: rgba( map-get( $g-colors, 'foreground-dark' ), 0.05 );
     padding: 0;
     border: none;
     outline: none;
-    background: transparent;
 }

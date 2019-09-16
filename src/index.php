@@ -284,13 +284,13 @@ class Formation {
 
 		/* Pass namespace to front end */
 		
-		additional_script_data( 'namespace', static::$namespace, true );
-		additional_script_data( 'namespace', static::$namespace );
+		additional_script_data( 'namespace', static::$namespace, true, false );
+		additional_script_data( 'namespace', static::$namespace, false, false );
 
 		$ajax_url = ['ajax_url' => admin_url( 'admin-ajax.php' )];
 
-		additional_script_data( static::$namespace, $ajax_url, true );
-		additional_script_data( static::$namespace, $ajax_url );
+		additional_script_data( static::$namespace, $ajax_url, true, false );
+		additional_script_data( static::$namespace, $ajax_url, false, false );
 
 		/* Set uploads variables */
 
@@ -312,6 +312,7 @@ class Formation {
 		add_filter( 'document_title_separator', [$this, 'title_separator'] );
 		add_filter( 'nav_menu_css_class', [$this, 'cpt_nav_classes'], 10, 2 );
 		add_filter( 'script_loader_tag', [$this, 'add_defer_async_attributes'], 10, 2 );
+		add_filter( 'image_size_names_choose', [$this, 'custom_image_sizes'] );
 
 		/* Admin customizations */
 
@@ -543,6 +544,20 @@ class Formation {
         remove_meta_box( 'tagsdiv-post_tag', 'post', 'advanced' );
         remove_submenu_page( 'edit.php', 'edit-tags.php?taxonomy=post_tag' );
     }
+
+   /*
+	* Add custom image sizes for users to select.
+	*/ 
+
+	public function custom_image_sizes( $sizes ) {
+		if( !$this->image_sizes )
+			return $sizes;
+
+		foreach( $this->image_sizes as $key => $size )
+			$sizes[$key] = str_replace( '_', ' ', ucfirst( $key ) );
+
+		return $sizes;
+	}
 
    /*
 	* Ajax callbacks

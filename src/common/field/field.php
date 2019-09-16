@@ -15,6 +15,7 @@ namespace Formation\Common\Field;
 use function Formation\additional_script_data;
 use \Formation\Formation as FRM;
 use Formation\Common\Field\File_Upload;
+use function \Formation\write_log;
 
 class Field {
 
@@ -465,47 +466,14 @@ class Field {
 
                 break;
             case 'file':
-                $file_type = strtolower( $file_type );
-                $file_type_cap = ucwords( $file_type );
-                $file_exists = $val ? true : false;
-
-                $url = '';
-                $title = basename( parse_url( $val, PHP_URL_PATH ) );
-
-                self::$localize_data['files'][] = [
+                $output .= self::render_asset( [
+                    'type' => $file_type,
+                    'value' => $val,
+                    'accept' => $accept,
+                    'name' => $name,
                     'id' => $id,
-                    'file_type' => $file_type
-                ];
-
-                if( $file_type == 'image' )
-                    $url = $val;
-
-                $output .= 
-                    "<div class='o-file'>" .
-                        "<div class='o-file__exists' style='display: " . ( $file_exists ? "block" : "none" ) . "'>" .
-                            "<div class='l-flex --align-center --wrap'>" .
-                                "<div class='o-file__asset'>" .
-                                    "<img class='o-file__image' src='$url' alt='Image preview'>" .
-                                "</div>" . 
-                                "<div class='o-file__icon'></div>" .
-                                "<span class='o-file__name'>$title</span>" .
-                                "<button type='button' class='o-file__remove'>" .
-                                    "<span class='dashicons dashicons-no-alt'></span>" .
-                                    "<span class='u-visually-hidden'>Remove $file_type_cap</span>" .
-                                "</button>" .
-                            "</div>" .
-                        "</div>" .
-                        "<div class='o-file__no' style='display: " . ( $file_exists ? "none" : "block" ) . "'>" .
-                            "<p style='margin: 0'>" .
-                                "<label class='o-file__select u-position-relative" . ( is_admin() ? ' button add-media' : '' ) . "'>" .
-                                    "<input type='file' aria-label='Select $file_type_cap' class='u-hide-input' accept='$accept'>" .
-                                    "<span>Select $file_type_cap</span>" .
-                                    "<span class='o-loader'><span class='spinner is-active'></span></span>" .
-                                "</label>" .
-                            "</p>" .
-                        "</div>" . 
-                        "<input name='$name' id='$id' type='hidden' value='$val'>" .
-                    "</div>";
+                    'class' => 'o-asset--upload'
+                ] );
 
                 break;
             case 'textarea':
@@ -584,6 +552,90 @@ class Field {
         }
 
         $output .= '</div>';
+    }
+
+   /*
+    * Output asset ( files, links.. ).
+    *
+    * @param array $args
+    * @return string of markup
+    */
+
+    public static function render_asset( $args = [] ) {
+        $args = array_merge( [
+            'upload' => true,
+            'class' => '',
+            'type' => '',
+            'value' => '',
+            'accept' => '',
+            'name' => '',
+            'id' => '',
+            'input_value' => ''
+        ], $args );
+
+        extract( $args );
+
+        $type = strtolower( $type );
+        $type_cap = ucwords( $type );
+        $exists = $value ? true : false;
+
+        $url = '';
+        $title = basename( parse_url( $value, PHP_URL_PATH ) );
+
+        if( $upload ) {
+            self::$localize_data['files'][] = [
+                'id' => $id,
+                'file_type' => $type
+            ];
+        }
+
+        if( $type == 'image' )
+            $url = $value;
+
+        if( !$input_value )
+            $input_value = $value;
+
+        $class = 'o-asset' . ( $class ? " $class" : '' );
+
+        return 
+            "<div class='$class'>" .
+                "<div class='o-asset__exists' style='display: " . ( $exists ? "block" : "none" ) . "'>" .
+                    "<div class='l-flex --align-center --wrap'>" .
+                        "<div class='o-asset__asset'>" .
+                            "<img class='o-asset__image' src='$url' alt='Asset preview'>" .
+                        "</div>" . 
+                        "<div class='o-asset__icon'></div>" .
+                        "<span class='o-asset__name'>$title</span>" .
+                        "<button type='button' class='o-asset__remove u-position-relative'>" .
+                            "<span class='dashicons dashicons-no-alt'></span>" .
+                            "<span class='u-visually-hidden'>Remove $type_cap</span>" .
+                            "<span class='o-asset__loader o-loader js-loader-remove'><span class='spinner is-active'></span></span>" .
+                        "</button>" .
+                    "</div>" .
+                "</div>" .
+                (   
+                    $upload 
+                    ?
+                    "<div class='o-asset__no' style='display: " . ( $exists ? "none" : "block" ) . "'>" .
+                        "<p style='margin: 0'>" .
+                            "<label class='o-asset__select u-position-relative" . ( is_admin() ? ' button add-media' : '' ) . "'>" .
+                                "<input type='file' aria-label='Select $type_cap' class='u-hide-input' accept='$accept'>" .
+                                "<span>Select $type_cap</span>" .
+                                "<span class='o-asset__loader o-loader js-loader-select'><span class='spinner is-active'></span></span>" .
+                            "</label>" .
+                        "</p>" .
+                    "</div>" 
+                    :
+                    ''
+                ) .
+                (
+                    $name && $id
+                    ?
+                    "<input class='o-asset__input' name='$name' id='$id' type='hidden' value='$input_value'>"
+                    : 
+                    ''
+                ) .
+            "</div>";
     }
 
    /*
@@ -677,7 +729,8 @@ class Field {
         );
 
         $handle = FRM::$namespace . '-field-script';
-        $nonce_name = FRM::$namespace . '_upload_file_nonce';
+        $upload_nonce_name = FRM::$namespace . '_upload_file_nonce';
+        $remove_nonce_name = FRM::$namespace . '_remove_file_nonce';
 
         wp_register_script(
             $handle, 
@@ -688,7 +741,8 @@ class Field {
         );
 
         wp_localize_script( $handle, FRM::$namespace, [
-            $nonce_name => wp_create_nonce( $nonce_name )
+            $upload_nonce_name => wp_create_nonce( $upload_nonce_name ),
+            $remove_nonce_name => wp_create_nonce( $remove_nonce_name )
         ] );
 
         wp_enqueue_script( $handle );
@@ -698,7 +752,7 @@ class Field {
     * Ajax action and callback to upload files.
     */
 
-    public static function file_upload_action() {
+    public static function file_actions() {
         add_action( 'wp_ajax_upload_file', function() {
             try {
                 // check upload nonce
@@ -718,8 +772,31 @@ class Field {
 
                 exit;
             } catch( \Exception $e ) {
-                header( http_response_code( 500 ) );
                 echo $e->getMessage();
+                header( http_response_code( 500 ) );
+                exit;
+            }
+        } );
+
+        add_action( 'wp_ajax_remove_file', function() {
+            try {
+                write_log('DAFUCKKK');
+                
+                // check upload nonce
+                if( !check_ajax_referer( FRM::$namespace . '_remove_file_nonce', FRM::$namespace . '_remove_file_nonce', false ) )
+                    throw new \Exception( 'Not allowed' );
+
+                if( !isset( $_POST['file_path'] ) ) 
+                    throw new \Exception( 'No file path' ); 
+
+                unlink( $_POST['file_path'] );
+
+                echo json_encode( 'File successfully deleted.' );
+
+                exit;
+            } catch( \Exception $e ) {
+                echo $e->getMessage();
+                header( http_response_code( 500 ) );
                 exit;
             }
         } );

@@ -13,7 +13,9 @@ import 'core-js/es/promise';
 import { closest } from '@alanizcreative/formation/utils';
 
 // modules
-import fileUpload from './objects/file/file-upload';
+import fileUpload from './objects/file/upload';
+import fileRemove from './objects/file/remove';
+import wpMedia from './objects/file/wp-media';
 
 /*
  * DOM loaded
@@ -35,20 +37,20 @@ const initialize = () => {
 
 	if( n.hasOwnProperty( 'files' ) ) {
 		if( n.files.length > 0 ) {
-			let fileItems = Array.from( document.querySelectorAll( '.o-file' ) ),
+			let fileItems = Array.from( document.querySelectorAll( '.o-asset--upload' ) ),
 				nonceName = namespace + '_upload_file_nonce';
 
 			fileItems.forEach( ( item, i ) => {
-				fileUpload( {
-					selectButton: item.querySelector( '.o-file__select input' ),
-					removeButton: item.querySelector( '.o-file__remove' ),
-					fileContainer: item.querySelector( '.o-file__exists' ),
-					noFileContainer: item.querySelector( '.o-file__no' ),
-					fileImage: item.querySelector( '.o-file__image' ),
-					fileName: item.querySelector( '.o-file__name' ),
+				new fileUpload( {
+					selectButton: item.querySelector( '.o-asset__select input' ),
+					removeButton: item.querySelector( '.o-asset__remove' ),
+					fileContainer: item.querySelector( '.o-asset__exists' ),
+					noFileContainer: item.querySelector( '.o-asset__no' ),
+					fileImage: item.querySelector( '.o-asset__image' ),
+					fileName: item.querySelector( '.o-asset__name' ),
 					fileInput: document.getElementById( n.files[i].id ),
 					fileType: n.files[i].file_type,
-					loader: item.querySelector( '.o-loader' ),
+					loader: item.querySelector( '.js-loader-select' ),
 					url: n.ajax_url,
 					action: 'upload_file',
 					nonce: {
@@ -58,6 +60,32 @@ const initialize = () => {
 				} );
 			} );
 		}
+	}
+
+	/*
+	 * File remove
+	 * -----------
+	 */
+
+	let fileRemoveItems = Array.from( document.querySelectorAll( '.o-asset--remove' ) );
+
+	if( fileRemoveItems.length > 0 ) {
+		fileRemoveItems.forEach( ( item ) => {
+			let nonceName = namespace + '_remove_file_nonce';
+
+			fileRemove( {
+				item: item,
+				button: item.querySelector( '.o-asset__remove' ),
+				loader: item.querySelector( '.js-loader-remove' ),
+				filePath: item.querySelector( '.o-asset__input' ).value,
+				url: n.ajax_url,
+				action: 'remove_file',
+				nonce: {
+					nonce: n[nonceName],
+					name: nonceName
+				}
+			} );
+		} );
 	}
 
 	/*
