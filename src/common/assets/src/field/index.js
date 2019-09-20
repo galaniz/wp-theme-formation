@@ -16,6 +16,7 @@ import { closest } from '@alanizcreative/formation/utils';
 import fileUpload from './objects/file/upload';
 import fileRemove from './objects/file/remove';
 import wpMedia from './objects/file/wp-media';
+import link from './objects/link';
 
 /*
  * DOM loaded
@@ -41,23 +42,31 @@ const initialize = () => {
 				nonceName = namespace + '_upload_file_nonce';
 
 			fileItems.forEach( ( item, i ) => {
-				new fileUpload( {
-					selectButton: item.querySelector( '.o-asset__select input' ),
-					removeButton: item.querySelector( '.o-asset__remove' ),
-					fileContainer: item.querySelector( '.o-asset__exists' ),
-					noFileContainer: item.querySelector( '.o-asset__no' ),
-					fileImage: item.querySelector( '.o-asset__image' ),
-					fileName: item.querySelector( '.o-asset__name' ),
-					fileInput: document.getElementById( n.files[i].id ),
-					fileType: n.files[i].file_type,
-					loader: item.querySelector( '.js-loader-select' ),
-					url: n.ajax_url,
-					action: 'upload_file',
-					nonce: {
+				let wp = item.hasAttribute( 'data-wp' ),
+					args = {
+						selectButton: item.querySelector( '.o-asset__select input' ),
+						removeButton: item.querySelector( '.o-asset__remove' ),
+						fileContainer: item.querySelector( '.o-asset__exists' ),
+						noFileContainer: item.querySelector( '.o-asset__no' ),
+						fileImage: item.querySelector( '.o-asset__image' ),
+						fileName: item.querySelector( '.o-asset__name' ),
+						fileInput: item.querySelector( '.o-asset__input' ),
+						fileType: n.files[i].file_type
+					};
+
+				if( wp ) {
+					wpMedia( args );
+				} else {
+					args['loader'] = item.querySelector( '.js-loader-select' );
+					args['url'] = n.ajax_url;
+					args['action'] = 'upload_file';
+					args['nonce'] = {
 						nonce: n[nonceName],
 						name: nonceName
-					}
-				} );
+					};
+
+					fileUpload( args );
+				}
 			} );
 		}
 	}
@@ -86,6 +95,33 @@ const initialize = () => {
 				}
 			} );
 		} );
+	}
+
+	/*
+	 * Link select / edit
+	 * ------------------
+	 */
+
+	if( n.hasOwnProperty( 'links' ) ) {
+		if( n.links.length > 0 ) {
+			let linkItems = Array.from( document.querySelectorAll( '.o-asset--link' ) );
+
+			if( linkItems.length > 0 ) {
+				linkItems.forEach( ( item ) => {
+					link( {
+						selectButton: item.querySelector( '.o-asset__select input' ),
+						editButton: item.querySelector( '.o-asset__edit' ),
+						removeButton: item.querySelector( '.o-asset__remove' ),
+						linkContainer: item.querySelector( '.o-asset__exists' ),
+						noLinkContainer: item.querySelector( '.o-asset__no' ),
+						linkText: item.querySelector( '.o-asset__icon' ),
+						linkUrl: item.querySelector( '.o-asset__name' ),
+						linkTarget: item.querySelector( '.o-asset__target' ),
+						linkInput: item.querySelector( '.o-asset__input' )
+					} );
+				} );
+			}
+		}
 	}
 
 	/*

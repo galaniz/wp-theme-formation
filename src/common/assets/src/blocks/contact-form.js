@@ -76,4 +76,4 @@ registerBlockType( blockName, {
     save() {
         return <InnerBlocks.Content />; // this block is rendered in php
     }
-});
+} );

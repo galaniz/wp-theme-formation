@@ -284,13 +284,13 @@ class Formation {
 
 		/* Pass namespace to front end */
 		
-		additional_script_data( 'namespace', static::$namespace, true, false );
-		additional_script_data( 'namespace', static::$namespace, false, false );
+		additional_script_data( 'namespace', static::$namespace, true, true );
+		additional_script_data( 'namespace', static::$namespace, false, true );
 
 		$ajax_url = ['ajax_url' => admin_url( 'admin-ajax.php' )];
 
-		additional_script_data( static::$namespace, $ajax_url, true, false );
-		additional_script_data( static::$namespace, $ajax_url, false, false );
+		additional_script_data( static::$namespace, $ajax_url, true, true );
+		additional_script_data( static::$namespace, $ajax_url, false, true );
 
 		/* Set uploads variables */
 

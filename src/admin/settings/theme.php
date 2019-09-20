@@ -236,19 +236,23 @@ class Theme {
         /* Uploads */
 
         if( file_exists( FRM::$uploads_dir ) ) {
-            $this->sections[] = [
-                'id' => 'uploads',
-                'title' => 'Theme Uploads'
-            ];
-            
-            $this->fields[] = [
-                'name' => 'uploads_hidden',
-                'type' => 'hidden',
-                'value' => 1,
-                'section' => 'uploads',
-                'tab' => 'Uploads',
-                'after' => $this->get_uploads()
-            ];
+            $uploads = $this->get_uploads();
+
+            if( $uploads ) {
+                $this->sections[] = [
+                    'id' => 'uploads',
+                    'title' => 'Theme Uploads'
+                ];
+                
+                $this->fields[] = [
+                    'name' => 'uploads_hidden',
+                    'type' => 'hidden',
+                    'value' => 1,
+                    'section' => 'uploads',
+                    'tab' => 'Uploads',
+                    'after' => $uploads
+                ];
+            }
         }
 
         /* Addtional scripts */
@@ -345,6 +349,16 @@ class Theme {
 
             if( is_callable( $this->scripts ) )
                 call_user_func( $this->scripts );
+
+            if( $this->tab_nav ) {
+                wp_enqueue_script(
+                    FRM::$namespace . '-theme-settings-script',
+                    FRM::$src_url . 'admin/assets/public/js/settings.js',
+                    [],
+                    NULL,
+                    true
+                );
+            }
         }
     }
 
@@ -352,9 +366,10 @@ class Theme {
         $dir = scandir( FRM::$uploads_dir );
         $output = '';
 
-        if( $dir ) {
+        if( $dir )
             $dir = array_diff( $dir, ['..', '.'] );
 
+        if( count( $dir ) >= 1 ) {
             foreach( $dir as $i => $file_name ) {
                 $file_type = mime_content_type( FRM::$uploads_dir . $file_name );
                 $name = FRM::$namespace . '_theme_upload_' . $i;

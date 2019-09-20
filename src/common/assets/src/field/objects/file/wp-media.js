@@ -35,8 +35,6 @@ const wpMedia = ( args ) => {
 		let selection =  mediaModal.frame.state().get( 'selection' );
 
 		selection.forEach( ( attachment, i ) => {
-			console.log('ATTACHMENT', attachment);
-
 			let image = true;
 
 			if( image ) {
@@ -84,6 +82,7 @@ const wpMedia = ( args ) => {
     	return false;
 
     let f = args,
+    	wp = window.wp,
     	mediaModal = {};
 
     /* Media args */

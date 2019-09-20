@@ -94,6 +94,21 @@ trait Utils {
 	}
 
     /*
+     * Get current post id outside loop.
+     *
+     * @return int post id
+     */
+
+    public static function get_id_outside_loop() {
+        global $post;
+
+        if( is_object( $post ) && property_exists( $post, 'ID' ) )
+            return $post->ID;
+
+        return 0;
+    }
+
+    /*
      * Get excerpt from post, page, any string...
      *
      * @param array $args {
@@ -202,6 +217,59 @@ trait Utils {
 		}
 
 		return esc_url( get_comments_pagenum_link( $nextpage, $max_page ) );
+    }
+
+    /*
+     * Convert string to array of link data
+     *
+     * @see Field class
+     * @return array
+     */
+
+    public static function get_link( $str = '' ) {
+        if( !$str )
+            return false;
+
+        $v = explode( '|', $str );
+
+        if( $v ) {
+            $target = $v[2] ?? '';
+
+            if( $target === 'null' )
+                $target = '';
+
+            return [
+                'text' => $v[0] ?? '',
+                'url' => $v[1] ?? '',
+                'target' => $target
+            ];
+        } else {
+            return false;
+        }
+    }
+
+    /*
+     * Get image from id. 
+     *
+     * @return array
+     */
+
+    public static function get_image( $id = 0, $size = 'thumbnail' ) {
+        if( !$id )
+            return false;
+
+        $image = wp_get_attachment_image_src( $id, $size );
+
+        if( $image ) {
+            return [
+                'url' => $image[0],
+                'alt' => get_post_meta( $id, '_wp_attachment_image_alt', true ),
+                'srcset' => wp_get_attachment_image_srcset( $id, $size ),
+                'sizes' => wp_get_attachment_image_sizes( $id, $size )
+            ];
+        }
+
+        return false;
     }
 	
 } // end Utils

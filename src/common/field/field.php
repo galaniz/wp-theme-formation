@@ -57,6 +57,7 @@ class Field {
             /* file */
             'file_type' => 'file', // or image
             'accept' => '',
+            'wp' => false,
             /* richtext */
             'rows' => 4,
             'quicktags' => false,
@@ -93,7 +94,8 @@ class Field {
 
     public static $localize_data = [
         'multi' => [],
-        'files' => []
+        'files' => [],
+        'links' => []
     ];
 
    /*
@@ -472,7 +474,8 @@ class Field {
                     'accept' => $accept,
                     'name' => $name,
                     'id' => $id,
-                    'class' => 'o-asset--upload'
+                    'class' => 'o-asset--upload',
+                    'wp' => $wp
                 ] );
 
                 break;
@@ -540,6 +543,20 @@ class Field {
                 }
 
                 break;
+            case 'link':
+                self::$localize_data['links'][] = ['id' => $id];
+
+                $output .= self::render_asset( [
+                    'upload' => false,
+                    'type' => 'link',
+                    'value' => $val,
+                    'name' => $name,
+                    'id' => $id,
+                    'class' => 'o-asset--link',
+                    'wp' => $wp
+                ] );
+
+                break;
         }
 
         $output .= $after;
@@ -564,6 +581,7 @@ class Field {
     public static function render_asset( $args = [] ) {
         $args = array_merge( [
             'upload' => true,
+            'wp' => false,
             'class' => '',
             'type' => '',
             'value' => '',
@@ -580,6 +598,7 @@ class Field {
         $exists = $value ? true : false;
 
         $url = '';
+        $icon_text = '';
         $title = basename( parse_url( $value, PHP_URL_PATH ) );
 
         if( $upload ) {
@@ -587,10 +606,53 @@ class Field {
                 'id' => $id,
                 'file_type' => $type
             ];
+
+            // check if from wp media library
+            if( $wp ) {
+                if( $type == 'image' ) {
+                    $input_value = $value;
+
+                    $wp_image = FRM::get_image( (int) $value, 'medium' );
+
+                    if( $wp_image ) {
+                        $title = basename( get_attached_file( (int) $value ) );
+                        $value = $wp_image['url'];
+                    } else {
+                        $exists = false;
+                        $value = '';
+                    }
+                }
+            } else {
+                // check that file exists
+                if( !file_exists( FRM::$uploads_dir . $title ) )
+                    $exists = false;
+            }
         }
 
         if( $type == 'image' )
             $url = $value;
+
+        if( $type == 'file' ) {
+            $file_path_parts = pathinfo( $title );
+
+            if( isset( $file_path_parts['extension'] ) )
+                $icon_text = $file_path_parts['extension'];
+        }
+
+        if( $type == 'link' ) {
+            $title = '';
+            $target = '';
+
+            $v = FRM::get_link( $value );
+
+            if( $v ) {
+                $icon_text = $v['text'];
+                $title = $v['url'];
+                $target = $v['target'];
+            } else {
+                $exists = false;
+            }
+        }
 
         if( !$input_value )
             $input_value = $value;
@@ -598,28 +660,45 @@ class Field {
         $class = 'o-asset' . ( $class ? " $class" : '' );
 
         return 
-            "<div class='$class'>" .
+            "<div class='$class'" . ( $wp && $upload ? " data-wp='true'" : '' ) . ">" .
                 "<div class='o-asset__exists' style='display: " . ( $exists ? "block" : "none" ) . "'>" .
-                    "<div class='l-flex --align-center --wrap'>" .
-                        "<div class='o-asset__asset'>" .
-                            "<img class='o-asset__image' src='$url' alt='Asset preview'>" .
-                        "</div>" . 
-                        "<div class='o-asset__icon'></div>" .
-                        "<span class='o-asset__name'>$title</span>" .
-                        "<button type='button' class='o-asset__remove u-position-relative'>" .
-                            "<span class='dashicons dashicons-no-alt'></span>" .
-                            "<span class='u-visually-hidden'>Remove $type_cap</span>" .
-                            "<span class='o-asset__loader o-loader js-loader-remove'><span class='spinner is-active'></span></span>" .
-                        "</button>" .
+                    "<div class='l-flex --align-center'>" .
+                        "<img class='o-asset__image' src='$url' alt='Asset preview'>" .
+                        "<div class='o-asset__icon'>$icon_text</div>" .
+                        ( 
+                            $type == 'link' 
+                            ? 
+                            "<span class='o-asset__target' style='display: none;'>$target</span>" .
+                            "<a class='o-asset__name' href='$title' target='_blank'>$title</a>" 
+                            : 
+                            "<span class='o-asset__name'>$title</span>"
+                        ) .
+                        "<div class='o-asset__right l-flex'>" .
+                            (
+                                $type == 'link'
+                                ? 
+                                "<button type='button' class='o-asset__edit'>" .
+                                    "<span class='dashicons dashicons-edit'></span>" .
+                                    "<span class='u-visually-hidden'>Edit</span>" .
+                                "</button>"
+                                : 
+                                ''
+                            ) .
+                            "<button type='button' class='o-asset__remove u-position-relative'>" .
+                                "<span class='dashicons dashicons-no-alt'></span>" .
+                                "<span class='u-visually-hidden'>Remove $type_cap</span>" .
+                                "<span class='o-asset__loader o-loader js-loader-remove'><span class='spinner is-active'></span></span>" .
+                            "</button>" .
+                        "</div>" .
                     "</div>" .
                 "</div>" .
                 (   
-                    $upload 
+                    $upload || $type == 'link'
                     ?
                     "<div class='o-asset__no' style='display: " . ( $exists ? "none" : "block" ) . "'>" .
                         "<p style='margin: 0'>" .
                             "<label class='o-asset__select u-position-relative" . ( is_admin() ? ' button add-media' : '' ) . "'>" .
-                                "<input type='file' aria-label='Select $type_cap' class='u-hide-input' accept='$accept'>" .
+                                "<input type='" . ( $upload && !$wp ? 'file' : 'button' ) . "' aria-label='Select $type_cap' class='u-hide-input' accept='$accept'>" .
                                 "<span>Select $type_cap</span>" .
                                 "<span class='o-asset__loader o-loader js-loader-select'><span class='spinner is-active'></span></span>" .
                             "</label>" .
@@ -628,13 +707,7 @@ class Field {
                     :
                     ''
                 ) .
-                (
-                    $name && $id
-                    ?
-                    "<input class='o-asset__input' name='$name' id='$id' type='hidden' value='$input_value'>"
-                    : 
-                    ''
-                ) .
+                "<input class='o-asset__input' name='$name' id='$id' type='hidden' value='$input_value'>" .
             "</div>";
     }
 
@@ -728,6 +801,8 @@ class Field {
             get_template_directory_uri() . $path . 'css/field.css' 
         );
 
+        wp_enqueue_media();
+
         $handle = FRM::$namespace . '-field-script';
         $upload_nonce_name = FRM::$namespace . '_upload_file_nonce';
         $remove_nonce_name = FRM::$namespace . '_remove_file_nonce';
@@ -780,8 +855,6 @@ class Field {
 
         add_action( 'wp_ajax_remove_file', function() {
             try {
-                write_log('DAFUCKKK');
-                
                 // check upload nonce
                 if( !check_ajax_referer( FRM::$namespace . '_remove_file_nonce', FRM::$namespace . '_remove_file_nonce', false ) )
                     throw new \Exception( 'Not allowed' );

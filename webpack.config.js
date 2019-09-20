@@ -50,6 +50,22 @@ module.exports = [
     {
         mode: 'production',
         entry: {
+            'settings': [
+                __dirname + '/src/admin/assets/src/settings/index.js', 
+            ] 
+        },
+        output: {
+            path: __dirname + '/src/admin/assets/public/',
+            publicPath: '/',
+            filename: 'js/[name].js'
+        },
+        module: {
+            rules: rules
+        }
+    },
+    {
+        mode: 'production',
+        entry: {
             'blocks': __dirname + '/src/common/assets/src/blocks/index.scss',
             'field': [
                 __dirname + '/src/common/assets/src/field/index.js', 
@@ -93,6 +109,7 @@ module.exports = [
             'contact-form-field': __dirname + '/src/common/assets/src/blocks/contact-form-field.js',
             'contact-form': __dirname + '/src/common/assets/src/blocks/contact-form.js',
             'media': __dirname + '/src/common/assets/src/blocks/media.js',
+            'insert-block': __dirname + '/src/common/assets/src/blocks/insert-block.js'
         },
         output: {
             path: __dirname + '/src/common/assets/public/',
@@ -106,7 +123,7 @@ module.exports = [
     {
         mode: 'production',
         entry: {
-            'utils': __dirname + '/src/common/assets/src/blocks/utils.js',
+            'utils': __dirname + '/src/common/assets/src/blocks/utils.js'
         },
         output: {
             library: 'blockUtils',

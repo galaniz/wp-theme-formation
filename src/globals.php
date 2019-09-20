@@ -23,20 +23,24 @@ function additional_script_data( $name = false, $data = [], $admin = false, $hea
 
 	add_action( $action, 
 		function() use ( $name, $data ) { 
-			if( !$name || !$data ) return; ?>
+			if( !$name || !$data ) 
+				return; 
+
+			$var = 'data_' . uniqid(); ?>
 
 			<script type="text/javascript">
-	            var additionalData = <?php echo json_encode( $data ); ?>;
-	        	
-	            if( window.<?php echo $name; ?> ) {
-	        		// merge existing object with new data
-	                for( var key in additionalData ) {
-	                    if( additionalData.hasOwnProperty( key ) ) 
-	                        <?php echo $name; ?>[key] = additionalData[key];
-	                }
-	        	} else {
-	        		<?php echo $name; ?> = additionalData;
-	        	}
+				(function () {
+		            var <?php echo $var; ?> = <?php echo json_encode( $data ); ?>;
+		        	
+		            if( window.hasOwnProperty( '<?php echo $name; ?>' ) ) {
+		        		// merge existing object with new data
+		                for( var key in <?php echo $var; ?> ) {
+		                    window['<?php echo $name; ?>'][key] = <?php echo $var; ?>[key];
+		                }
+		        	} else {
+		        		window['<?php echo $name; ?>'] = <?php echo $var; ?>;
+		        	}
+		        })();
 	        </script>
 
 		<?php }

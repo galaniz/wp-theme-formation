@@ -13,6 +13,7 @@ namespace Formation\Common\Blocks;
  */
 
 use Formation\Formation as FRM; 
+use function Formation\additional_script_data;
 
 class Blocks {
 
@@ -91,7 +92,6 @@ class Blocks {
         $counter = 0;
 
         $data = [
-            'ajax_url' => admin_url( 'admin-ajax.php' ),
             'blocks' => []
         ];
 
@@ -117,7 +117,7 @@ class Blocks {
                     true 
                 );
 
-                wp_localize_script( $handle, FRM::$namespace, $data );
+                // wp_localize_script( $handle, FRM::$namespace, $data );
             }
 
             $register_args = ['editor_script' => $handle];
@@ -132,20 +132,32 @@ class Blocks {
 
             if( $counter === 0 ) {
                 if( is_admin() ) {
-                    if( self::$utils_script ) {
+                    $utils_script_handle = FRM::$namespace . '-block-utils-script';
+
+                    // if( self::$utils_script ) {
                         wp_enqueue_script(
-                            FRM::$namespace . '-block-utils-script', 
+                            $utils_script_handle, 
                             FRM::$src_url . 'common/assets/public/js/blocks/utils.js',
                             [],
                             NULL,
                             true
                         );
-                    }
+                    // }
+
+                    wp_enqueue_script(
+                        FRM::$namespace . '-insert-block-script', 
+                        FRM::$src_url . 'common/assets/public/js/blocks/insert-block.js',
+                        [$utils_script_handle],
+                        NULL,
+                        true
+                    );
                 }
             }
 
             $counter++;
         }
+
+        additional_script_data( FRM::$namespace, $data, true, true );
     } 
 
    /*

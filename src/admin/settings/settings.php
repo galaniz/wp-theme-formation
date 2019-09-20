@@ -173,7 +173,7 @@ class Settings {
         			$hide = '';
 
         			if( !in_array( $section_id, $section_ids ) ) 
-        				$hide = ' style="display: none;">';
+        				$hide = ' style="display: none;"';
 
         			echo "</div><div class='js-section'$hide>";
         		};

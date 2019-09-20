@@ -58,6 +58,9 @@ class Reading {
 		$fields = [];
 
 		foreach( FRM::$cpt as $c => $meta ) {
+			if( isset( $meta['parent'] ) )
+				continue;
+			
 			$name = $c . '_page';
 
 			$fields[] = [
