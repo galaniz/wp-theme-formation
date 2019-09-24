@@ -11,7 +11,7 @@ import {
 	removeClass,
 	show,
 	buttonLoader
-} from '@alanizcreative/formation/utils';
+} from 'Formation/utils';
 
 import DOMPurify from 'dompurify';
 

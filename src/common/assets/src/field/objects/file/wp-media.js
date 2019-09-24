@@ -4,7 +4,7 @@
  * -------
  */				
 
-import { mergeObjects, show } from '@alanizcreative/formation/utils';
+import { mergeObjects, show } from 'Formation/utils';
 
 /*
  * WP media select

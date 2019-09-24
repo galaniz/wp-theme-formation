@@ -1,7 +1,20 @@
 
+/* Imports */
+
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const OptimizeCssAssetsPlugin = require( 'optimize-css-assets-webpack-plugin' );
 const Fiber = require( 'fibers' );
+const path = require( 'path' );
+
+/* Resolve to root */
+
+let resolve = {
+    alias: {
+        Formation: path.resolve( '../formation/src/' )
+    }
+};
+
+/* Rules */
 
 let rules = [
     {
@@ -46,7 +59,12 @@ let rules = [
     }
 ];
 
+/* Exports */
+
 module.exports = [
+    
+    /* Admin: settings */
+
     {
         mode: 'production',
         entry: {
@@ -61,8 +79,12 @@ module.exports = [
         },
         module: {
             rules: rules
-        }
+        },
+        resolve: resolve
     },
+
+    /* Common: blocks and field */
+
     {
         mode: 'production',
         entry: {
@@ -80,6 +102,7 @@ module.exports = [
         module: {
             rules: rules
         },
+        resolve: resolve,
         plugins: [
             new MiniCssExtractPlugin( {
                 filename: 'css/[name].css'
@@ -87,6 +110,9 @@ module.exports = [
             new OptimizeCssAssetsPlugin()
         ]
     }, 
+
+    /* Common: select fields */
+
     {
         mode: 'production',
         entry: {
@@ -101,8 +127,12 @@ module.exports = [
         },
         module: {
             rules: rules
-        }
+        },
+        resolve: resolve
     },
+
+    /* Common: blocks */
+
     {
         mode: 'production',
         entry: {
@@ -118,8 +148,12 @@ module.exports = [
         },
         module: {
             rules: rules
-        }
+        },
+        resolve: resolve
     },
+
+    /* Common: block utilities */
+
     {
         mode: 'production',
         entry: {
@@ -133,6 +167,8 @@ module.exports = [
         },
         module: {
             rules: rules
-        }
+        },
+        resolve: resolve
     }
+
 ];

@@ -37,7 +37,7 @@ class Nav_Walker extends \Walker_Nav_Menu {
         $id = $item->ID;
 
         if( is_callable( $this->before_output ) )
-            call_user_func_array( $this->before_output, [&$this] );
+            call_user_func_array( $this->before_output, [&$this, &$output] );
 
         $classes = empty( $item->classes ) ? [] : (array) $item->classes;
         $classes[] = 'menu-item-' . $item->ID;
@@ -50,7 +50,7 @@ class Nav_Walker extends \Walker_Nav_Menu {
                 "<a class='" . $this->a_class . "' " . $this->a_attr . "href='$permalink'>$title</a>";
 
         if( is_callable( $this->after_output ) )
-            call_user_func_array( $this->after_output, [&$this] );
+            call_user_func_array( $this->after_output, [&$this, &$output] );
     }
 
 } // end Nav_Walker

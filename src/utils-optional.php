@@ -167,4 +167,50 @@ class Utils_Optional {
             '</div>';
     }
 
+    /*
+     * Output for search form.
+     *
+     * @param array $args
+     * @return string of html output
+     */
+
+    public static function render_search_form( $args = [] ) {
+        $s = FRM::$sprites['Search'];
+
+        $args = array_replace_recursive( [
+            'field_class' => '',
+            'input_class' => '',
+            'button_class' => '',
+            'icon' => [
+                'class' => '',
+                'w' => $s['w'],
+                'h' => $s['h'],
+                'id' => 'sprite-' . $s['id']
+            ]
+        ], $args );
+
+        extract( $args );
+
+        $field_class = 'o-field' . ( $field_class ? " $field_class" : '' );
+        $input_class = 'o-field__input' . ( $input_class ? " $input_class" : '' );
+
+        $unique_id = 'search-' . uniqid();
+
+        return
+            '<form role="search" method="get" class="o-field-container" action="' . esc_url( home_url( '/' ) ) . '">' .
+                "<div class='$field_class'>" .
+                    '<div class="u-position-relative">' .
+                        "<label class='u-visually-hidden' for='$unique_id'>Search for:</label>" .
+                        "<input type='search' id='$unique_id' class='$input_class' placeholder='Search' value='" . get_search_query() . "' name='s' />" .
+                        "<button type='submit' class='$button_class'>" .
+                            '<span class="u-visually-hidden">Submit search query</span>' .
+                            "<svg class='" . $icon['class'] . "' width='" . $icon['w'] . "' height='" . $icon['h'] . "' viewBox='0 0 " . $icon['w'] . " " . $icon['h'] . "'>" .
+                                "<use xlink:href='#" . $icon['id'] . "' />" .
+                            '</svg>' . 
+                        '</button>' . 
+                    '</div>' . 
+                '</div>' . 
+            '</form>';
+    }
+
 } // end Utils_Optional

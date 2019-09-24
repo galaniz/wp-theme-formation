@@ -12,7 +12,7 @@ import {
 	show,
 	buttonLoader,
 	urlEncode
-} from '@alanizcreative/formation/utils';
+} from 'Formation/utils';
 
 /*
  * Handle file removal

@@ -232,6 +232,11 @@ class Formation {
 			'id' => 'success',
 			'w' => 20,
 			'h' => 20
+		],
+		'Search' => [
+			'id' => 'search',
+			'w' => 26,
+			'h' => 28
 		]
 	];
 
