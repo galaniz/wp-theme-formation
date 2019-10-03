@@ -59,6 +59,25 @@ let rules = [
     }
 ];
 
+/* Block paths */
+
+let blocks = [
+    'contact-form/field',
+    'contact-form/form',
+    'contact-form/group',
+    'contact-form/group-top',
+    'contact-form/group-bottom',
+    'insert-block',
+    'media'
+];
+
+let blocksEntry = {};
+
+blocks.forEach( ( b ) => {
+    blocksEntry[b] = __dirname + '/src/common/assets/src/blocks/' + b + '.js';
+} );
+
+
 /* Exports */
 
 module.exports = [
@@ -135,12 +154,7 @@ module.exports = [
 
     {
         mode: 'production',
-        entry: {
-            'contact-form-field': __dirname + '/src/common/assets/src/blocks/contact-form-field.js',
-            'contact-form': __dirname + '/src/common/assets/src/blocks/contact-form.js',
-            'media': __dirname + '/src/common/assets/src/blocks/media.js',
-            'insert-block': __dirname + '/src/common/assets/src/blocks/insert-block.js'
-        },
+        entry: blocksEntry,
         output: {
             path: __dirname + '/src/common/assets/public/',
             publicPath: '/',

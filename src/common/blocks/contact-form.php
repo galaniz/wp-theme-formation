@@ -13,7 +13,7 @@ namespace Formation\Common\Blocks;
  */
 
 use Formation\Formation as FRM; 
-use Formation\Common\Field\Field;
+use Formation\Common\Field\Field; 
 use Formation\Common\Blocks\Blocks; 
 
 class Contact_Form {
@@ -44,7 +44,28 @@ class Contact_Form {
             ],
             'render' => [__CLASS__, 'render_contact_form'],
             'handle' => 'contact_form',
-            'script' => 'contact-form.js'
+            'script' => 'contact-form/form.js'
+        ], 
+        'contact-form-group' => [
+            'attr' => [
+                'email_label' => ['type' => 'string']
+            ],
+            'default' => [
+                'email_label' => ''
+            ],
+            'render' => [__CLASS__, 'render_contact_form_group'],
+            'handle' => 'contact_form_group',
+            'script' => 'contact-form/group.js'
+        ], 
+        'contact-form-group-top' => [
+            'render' => [__CLASS__, 'render_contact_form_group_top'],
+            'handle' => 'contact_form_group_top',
+            'script' => 'contact-form/group-top.js'
+        ], 
+        'contact-form-group-bottom' => [
+            'render' => [__CLASS__, 'render_contact_form_group_bottom'],
+            'handle' => 'contact_form_group_bottom',
+            'script' => 'contact-form/group-bottom.js'
         ], 
         'contact-form-field' => [
             'attr' => [
@@ -56,6 +77,10 @@ class Contact_Form {
                 'attr' => ['type' => 'string'],
                 'options' => ['type' => 'string'],
                 'width' => ['type' => 'string'],
+                'value' => ['type' => 'string'],
+                'label_after' => ['type' => 'boolean'],
+                'padding_small' => ['type' => 'boolean'],
+                'email_label' => ['type' => 'string']
             ],
             'default' => [
                 'type' => 'text',
@@ -65,11 +90,15 @@ class Contact_Form {
                 'required' => false,
                 'attr' => '',
                 'options' => '',
-                'width' => '100'
+                'width' => '100',
+                'value' => '',
+                'label_after' => false,
+                'padding_small' => false,
+                'email_label' => ''
             ],
             'render' => [__CLASS__, 'render_contact_form_field'],
             'handle' => 'contact_form_field',
-            'script' => 'contact-form-field.js'
+            'script' => 'contact-form/field.js'
         ]
     ];
 
@@ -118,7 +147,7 @@ class Contact_Form {
     * @return array 
     */
 
-    public static function get_assoc_array_from_str( $str = '', $order = 'key:value' ) {
+    public static function get_assoc_array_from_str( $str = '', $order = 'key:value', $indexed = false ) {
         if( !$str )
             return [];
 
@@ -130,14 +159,21 @@ class Contact_Form {
             foreach( $a as $b ) {
                 $c = explode( ' : ', $b );
 
-                if( isset( $c[0] ) ) {
+                if( isset( $c[0] ) && isset( $c[1] ) ) {
                     $key = $c[0];
                     $value = $c[1];
 
-                    if( $order == 'key:value' ) {
-                        $array[$key] = $value;
+                    if( $indexed ) {
+                        $array[] = [
+                            'label' => $key,
+                            'value' => $value
+                        ];
                     } else {
-                        $array[$value] = $key;
+                        if( $order == 'key:value' ) {
+                            $array[$key] = $value;
+                        } else {
+                            $array[$value] = $key;
+                        }
                     }
                 }
             }
@@ -158,7 +194,7 @@ class Contact_Form {
     */
 
     public static function render_contact_form( $attributes, $content = '' ) {
-        $attr = array_replace_recursive( self::$blocks[FRM::$namespace . '/contact-form']['default'], $attributes );
+        $attr = array_replace_recursive( self::$blocks['contact-form']['default'], $attributes );
         extract( $attr );
 
         if( !$email )
@@ -171,7 +207,7 @@ class Contact_Form {
             // make sure $id not greater than 64 characters
             $id = substr( $id, 0, 40 );
 
-            update_option( FRM::$namespace . '_' . $id, [
+            update_option( FRM::$namespace . '_form_' . $id, [
                 'email' => $email,
                 'subject' => $subject
             ] );
@@ -188,28 +224,51 @@ class Contact_Form {
         ] );
     }
 
-   /*
-    * Output contact form field.
-    *
-    * @param array $attributes
-    * @return string of markup
-    */
+    public static function render_contact_form_group( $attributes, $content ) {
+        return "<div class='o-field-group l-100'>$content</div>";
+    }
+
+    public static function render_contact_form_group_top( $attributes, $content ) {
+        return "<div class='o-field-group__top'>$content</div>";
+    }
+
+    public static function render_contact_form_group_bottom( $attributes, $content ) {
+        return "<div class='o-field-group__bottom l-flex --wrap'>$content</div>";
+    }
 
     public static function render_contact_form_field( $attributes ) {
-        $attr = array_replace_recursive( self::$blocks[FRM::$namespace . '/contact-form-field']['default'], $attributes );
+        $attr = array_replace_recursive( self::$blocks['contact-form-field']['default'], $attributes );
         extract( $attr );
 
         $output = '';
+        $prefix = FRM::$namespace . '_';
+
+        $field_class = "l-$width js-visible__item a-fade-in-y --sm-y";
+
+        if( $label_after )
+            $field_class .= ' --l-after';
+
+        if( $padding_small )
+            $field_class .= ' --p-sm';
+
         $field = [
             'name' => FRM::$namespace . '_' . $name,
             'label' => $label,
             'type' => $type,
             'placeholder' => $placeholder,
-            'field_class' => "l-$width"
+            'field_class' => $field_class,
+            'value' => $value
         ];
 
+        if( $type == 'radio' || $type == 'checkbox' )
+            $field['class'] = 'u-hide-input';
+
         $attr_array = self::get_assoc_array_from_str( $attr );
-        $options_array = self::get_assoc_array_from_str( $attr, 'value:key' );
+
+        $order = $type == 'select' ? 'value:key' : 'key:value';
+        $indexed = $type == 'select' ? false : true;
+
+        $options_array = self::get_assoc_array_from_str( $options, $order, $indexed );
 
         if( $required )
             $attr_array['aria-required'] = true;
@@ -217,20 +276,40 @@ class Contact_Form {
         if( $type == 'textarea' && !isset( $attr_array['rows'] ) )
             $attr_array['rows'] = 8;
 
+        if( $email_label ) 
+            $attr_array['data-email-label'] = $email_label;
+
         $field['attr'] = $attr_array;
         $field['options'] = $options_array;
 
-        Field::render( ['fields' => [$field]], $output );
+        if( $type == 'radio' || $type == 'checkbox' ) {
+            $field['class'] = 'u-hide-input';
+
+            if( $options_array ) {
+                $f = $field;
+                $field = [];
+
+                foreach( $options_array as $i => $opt ) {
+                    $args = $f;
+                    $args['label'] = $opt['label'];
+                    $args['value'] = $opt['value'];
+
+                    $field[] = $args;
+                }
+            }
+        }
+
+        $render_args = [ 
+            'fields' => ( isset( $field[0] ) ? $field : [$field] ) 
+        ];
+
+        if( $value && $options_array )
+            $render_args['value'] = $value;
+
+        Field::render( $render_args, $output );
 
         return $output;
     }
-
-   /*
-    * Preview contact form with rest api callback.
-    *
-    * @param array $data
-    * @return string of markup
-    */
 
     public function preview_contact_form( $data ) {
         $req = $data->get_param( 'required' );

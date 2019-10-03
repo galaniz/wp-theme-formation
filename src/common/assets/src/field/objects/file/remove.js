@@ -10,9 +10,9 @@ import {
 	addClass,
 	removeClass,
 	show,
-	buttonLoader,
+	disableButtonLoader,
 	urlEncode
-} from 'Formation/utils';
+} from 'Formation/utils/utils';
 
 /*
  * Handle file removal
@@ -24,7 +24,7 @@ const fileRemove = ( args ) => {
 	/* Helpers */
 
 	const disable = ( disable = true ) => {
-		buttonLoader( 
+		disableButtonLoader( 
 			f.button, // button 
 			f.loader, // loader
 			'--show', // class

@@ -7,6 +7,11 @@
 /* Dependencies */
 
 const { 
+    getNamespace,
+    getNamespaceObj
+} = blockUtils;
+
+const { 
     Panel,
     PanelBody,
     TextControl
@@ -17,19 +22,23 @@ const { InnerBlocks } = wp.blockEditor;
 const { Fragment } = wp.element;
 const { registerBlockType } = wp.blocks;
 
+/* Namespace */
+
+const n = getNamespace( true );
+const name = n + 'contact-form';
+
 /* Attributes from serverside */
 
-const namespace = window.namespace;
-const blockName = namespace + '/contact-form';
-
-const attr = window[namespace].blocks[blockName]['attr'];
-const def = window[namespace].blocks[blockName]['default'];
+const nO = getNamespaceObj( getNamespace() );
+const attr = nO.blocks[name]['attr'];
+const def = nO.blocks[name]['default'];
 
 /* Block */
 
-registerBlockType( blockName, {
+registerBlockType( name, {
     title: 'Contact Form',
     category: 'common',
+    attributes: attr,
     edit( props ) {
         const { attributes, setAttributes, clientId } = props;
 
@@ -64,10 +73,10 @@ registerBlockType( blockName, {
                     </PanelBody>
                 </InspectorControls>
             </Fragment>,
-            <Panel header="Fields" className="c-panel">
+            <Panel header="Fields">
                 <PanelBody>
                     <InnerBlocks 
-                        allowedBlocks={ [namespace + '/contact-form-field'] } 
+                        allowedBlocks={ [n + 'contact-form-field', n + 'contact-form-group'] } 
                     />  
                 </PanelBody>
             </Panel>   

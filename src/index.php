@@ -295,7 +295,6 @@ class Formation {
 		$ajax_url = ['ajax_url' => admin_url( 'admin-ajax.php' )];
 
 		additional_script_data( static::$namespace, $ajax_url, true, true );
-		additional_script_data( static::$namespace, $ajax_url, false, true );
 
 		/* Set uploads variables */
 
@@ -412,7 +411,10 @@ class Formation {
 		$n = static::$namespace . '_';
 		$nh = static::$namespace . '-';
 
-		$localize_data = [];
+		$localize_data = [
+			'ajax_url' => admin_url( 'admin-ajax.php' )
+		];
+		
 		$localize_script_handle = '';
 
 		$enqueue_scripts = [];

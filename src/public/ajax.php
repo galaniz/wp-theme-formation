@@ -78,14 +78,14 @@ trait Ajax {
     			throw new \Exception( 'Forbidden' ); 
 
     		$recaptcha = $_POST['recaptcha'];
+			$recaptcha_secret_key = get_option( static::$namespace . '_recaptcha_secret_key', '' );
 
     		// check recaptcha api keys exist
-    		if( !isset( static::$api_keys['recaptcha']['secret'] ) )
+    		if( !$recaptcha_secret_key )
     			throw new \Exception( 'Forbidden' ); 
 
 			// verify recaptcha token
-			$secret_key = static::$api_keys['recaptcha']['secret'];
-			$recaptcha_url = "https://www.google.com/recaptcha/api/siteverify?secret=$secret_key&response=$recaptcha";
+			$recaptcha_url = "https://www.google.com/recaptcha/api/siteverify?secret=$recaptcha_secret_key&response=$recaptcha";
 			$recaptcha_response = wp_remote_get( $recaptcha_url );
 
 			if( isset( $recaptcha_response['body'] ) ) {
@@ -123,15 +123,15 @@ trait Ajax {
      * @pass array $inputs
      * @echo string if successfully sent
      */
-
-    protected static function send_contact_form() {
+	
+	protected static function send_contact_form() {
     	// id with array of information ( email, subject... )
     	$id = $_POST['id'];
 
     	if( !$id )
     		throw new \Exception( 'No id' );
 
-    	$meta = get_option( static::$namespace . '_' . $id, '' );
+    	$meta = get_option( static::$namespace . '_form_' . $id, '' );
 
     	if( !$meta ) 
     		throw new \Exception( 'No meta' );
@@ -150,6 +150,7 @@ trait Ajax {
 
 		foreach( $inputs as $name => $input ) {
 			$input_type = $input['type'];
+			$input_label = $input['label'] ?? '';
 
 			if( $input_type ) {
 				$sanitize_type = 'sanitize_' . $input_type;
@@ -159,29 +160,54 @@ trait Ajax {
 					$input_value = nl2br( $input_value );
 			} else {
 				$input_value = $input['value'];
+			}
+
+			if( is_array( $input_value ) ) {
+				write_log( $input_value );
+				$input_value = implode( '<br>', $input_value );
 			}	
 
-			if( $input['label'] == 'subject' ) {
-				$subject .= ": " . $subject;
+			if( $input_label == 'subject' && $input_value ) {
+				$subject .= " - " . $input_value;
 				continue;
 			}
 
 			// make email name equal to sender name
-			if( $input['label'] == 'name' ) {
+			if( $input_label == 'name' && $input_value ) {
 				add_filter( 'wp_mail_from_name', function( $name ) use ( $input_value ) {
 					return $input_value;
-				} );
+				});
 			}
 
 			if( $input_type == 'email' ) {
-				$output .= "<strong>From:</strong> <a href='mailto:$input_value'>$input_value</a><br>";
+				$output .= "<strong>$input_label</strong>:" . ( $input_value ? "<a href='mailto:$input_value'>$input_value</a>" : '' ) . '<br>';
 
-				// make email from equal to sender email
-				add_filter( 'wp_mail_from', function( $email ) use ( $input_value ) {
-					return $input_value;
-				} );
+				if( $input_value ) {
+					// make email from equal to sender email
+					add_filter( 'wp_mail_from', function( $email ) use ( $input_value ) {
+						return $input_value;
+					});
+				}
 			} else {
-				$output .= '<strong>' . $input['label'] . '</strong>: ' . $input_value . '<br>';
+				$input_label_output = '';
+				$email_label_exists = isset( $input['email_label'] );
+
+				if( $input_label ) {
+					$input_label_output = '<strong>' . $input_label . '</strong>: ';
+
+					if( $input_type === 'textarea_field' && $input_value )
+						$input_label_output .= '<br>';
+				}
+
+				if( $email_label_exists )
+					$input_label_output = '<strong>' . $input['email_label'] . '</strong>:' . ( $input_value ? '<br>' : '' );
+
+				if( $input_value ) {
+					$output .= $input_label_output . $input_value . '<br>';
+				} else {
+					if( $input_label_output )
+						$output .= $input_label_output . $input_value . '<br>';
+				}
 			}
 		}
 
@@ -190,10 +216,13 @@ trait Ajax {
 		// allow html
 		add_filter( 'wp_mail_content_type', function() {
 			return 'text/html';
-		} );
+		});
+
+		if( !$subject )
+			$subject = "$site_name Contact Form";
 
 		// send email
-		$result = wp_mail( $to_email, $subject, $output );
+		$result = wp_mail( $to_email, $subject, "<p style='margin:0;font-family:sans-serif;'>$output</p>" );
 
 		if( !$result ) {
 			throw new \Exception( 'Error sending form' ); 

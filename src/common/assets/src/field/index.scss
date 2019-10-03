@@ -10,11 +10,11 @@ $g-breakpoints: (
 	782: 782px
 );
 
-@import 'Formation/index';
+@import '~Formation/index';
 
 /* Layouts */
 
-@import 'Formation/layouts/layouts';
+@import '~Formation/layouts/layouts';
 
 .l-table__cell {
 	@include breakpointMax( 600 ) {

@@ -258,14 +258,34 @@ trait Utils {
         if( !$id )
             return false;
 
-        $image = wp_get_attachment_image_src( $id, $size );
+        $single = false;
 
-        if( $image ) {
+        if( is_string( $size ) ) {
+            $single = true;
+            $size = [$size];
+        }
+
+        $urls = [];
+        $srcsets = [];
+        $sizes = [];
+
+        foreach( $size as $s ) {
+            $image = wp_get_attachment_image_src( $id, $s );
+
+            if( $image ) {
+                $urls[] = $image[0];
+                $srcsets[] = wp_get_attachment_image_srcset( $id, $s );
+                $sizes[] = wp_get_attachment_image_sizes( $id, $s );
+            }
+        }
+
+        if( $urls ) {
             return [
-                'url' => $image[0],
+                'url' => $single ? $urls[0] : $urls,
+                'title' => get_the_title( $id ),
                 'alt' => get_post_meta( $id, '_wp_attachment_image_alt', true ),
-                'srcset' => wp_get_attachment_image_srcset( $id, $size ),
-                'sizes' => wp_get_attachment_image_sizes( $id, $size )
+                'srcset' => $single ? $srcsets[0] : $srcsets,
+                'sizes' => $single ? $sizes[0] : $sizes
             ];
         }
 

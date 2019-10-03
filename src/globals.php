@@ -19,7 +19,7 @@ function additional_script_data( $name = false, $data = [], $admin = false, $hea
 	$action = $admin ? 'admin_print_footer_scripts' : 'wp_print_footer_scripts';
 
 	if( $head )
-		$action = $admin ? 'admin_head' : 'head';
+		$action = $admin ? 'admin_head' : 'wp_head';
 
 	add_action( $action, 
 		function() use ( $name, $data ) { 

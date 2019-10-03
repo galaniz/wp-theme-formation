@@ -4,7 +4,7 @@
  * -------
  */				
 
-import { mergeObjects, show } from 'Formation/utils';
+import { mergeObjects, show } from 'Formation/utils/utils';
 
 /*
  * WP media select

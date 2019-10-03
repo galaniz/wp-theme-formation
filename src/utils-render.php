@@ -153,15 +153,19 @@ trait Utils_Render {
      * @return string / array of html output
      */
 
-    public static function render_button_loader( $add_class = '' ) {
-        $class = '';
+    public static function render_button_loader( $loader_class = '', $icon_class = '', $id = '' ) {
+        if( $loader_class )
+            $loader_class = " $loader_class";
 
-        if( $add_class )
-            $class = " $add_class";
+        if( $icon_class )
+            $icon_class = " $icon_class";
+
+        if( $id )
+            $id = " id='$id'";
 
         return 
-            "<div class='o-loader$class'>" .
-                '<div class="o-loader__icon l-flex --align-center --justify-center u-position-center">' .
+            "<div class='o-loader$loader_class'$id>" .
+                "<div class='o-loader__icon u-position-center l-flex --align-center --justify-center$icon_class'>" .
                     static::$loader_icon .
                 '</div>' .
             '</div>';

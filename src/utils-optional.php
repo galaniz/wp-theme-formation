@@ -142,6 +142,7 @@ class Utils_Optional {
             return '';
 
         $class = $class ? " $class" : ""; 
+        $trigger_class = $trigger_class ? " $trigger_class" : "";
         $scale_transition = $scale_transition ? ' data-scale-transition="true"' : '';
         $alt_trigger = $alt_trigger ? ' data-alt-trigger=".js-trigger"' : '';
 
@@ -153,13 +154,13 @@ class Utils_Optional {
                     '</button>' .
                     '<div class="o-modal__window">' .
                         '<div class="o-modal__content">' .
-                            '<div>' .
+                            ( $scale_transition ? '<div>' : '' ) .
                                 $content .
                                 '<button class="o-modal__close">' .
                                     '<div class="u-visually-hidden">Close modal</div>' .
                                     "<div class='o-modal__x'>$x</div>" .
                                 '</button>' .
-                            '</div>' .
+                            ( $scale_transition ? '</div>' : '' ) .
                         '</div>' .
                     '</div>' .
                     '<div class="o-modal__overlay"></div>' .

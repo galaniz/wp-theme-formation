@@ -14,8 +14,11 @@ return array(
     'Formation\\Common\\Blocks\\Media' => $baseDir . '/src/common/blocks/media.php',
     'Formation\\Common\\Field\\Field' => $baseDir . '/src/common/field/field.php',
     'Formation\\Common\\Field\\File_Upload' => $baseDir . '/src/common/field/file-upload.php',
+    'Formation\\Common\\Field\\Select_Fields' => $baseDir . '/src/common/field/select-fields.php',
     'Formation\\Formation' => $baseDir . '/src/index.php',
     'Formation\\Pub\\Ajax' => $baseDir . '/src/public/ajax.php',
+    'Formation\\Pub\\Nav_Walker' => $baseDir . '/src/public/nav-walker.php',
     'Formation\\Utils' => $baseDir . '/src/utils.php',
+    'Formation\\Utils_Optional' => $baseDir . '/src/utils-optional.php',
     'Formation\\Utils_Render' => $baseDir . '/src/utils-render.php',
 );

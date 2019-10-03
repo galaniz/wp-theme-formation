@@ -33,9 +33,12 @@ class ComposerStaticIniteb7cdd6420d025868a0145250003a4d1
         'Formation\\Common\\Blocks\\Media' => __DIR__ . '/../..' . '/src/common/blocks/media.php',
         'Formation\\Common\\Field\\Field' => __DIR__ . '/../..' . '/src/common/field/field.php',
         'Formation\\Common\\Field\\File_Upload' => __DIR__ . '/../..' . '/src/common/field/file-upload.php',
+        'Formation\\Common\\Field\\Select_Fields' => __DIR__ . '/../..' . '/src/common/field/select-fields.php',
         'Formation\\Formation' => __DIR__ . '/../..' . '/src/index.php',
         'Formation\\Pub\\Ajax' => __DIR__ . '/../..' . '/src/public/ajax.php',
+        'Formation\\Pub\\Nav_Walker' => __DIR__ . '/../..' . '/src/public/nav-walker.php',
         'Formation\\Utils' => __DIR__ . '/../..' . '/src/utils.php',
+        'Formation\\Utils_Optional' => __DIR__ . '/../..' . '/src/utils-optional.php',
         'Formation\\Utils_Render' => __DIR__ . '/../..' . '/src/utils-render.php',
     );
 
