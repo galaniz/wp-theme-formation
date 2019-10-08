@@ -317,6 +317,7 @@ class Formation {
 		add_filter( 'nav_menu_css_class', [$this, 'cpt_nav_classes'], 10, 2 );
 		add_filter( 'script_loader_tag', [$this, 'add_defer_async_attributes'], 10, 2 );
 		add_filter( 'image_size_names_choose', [$this, 'custom_image_sizes'] );
+		add_filter( 'render_block', [$this, 'filter_block'], 10, 2 );
 
 		/* Admin customizations */
 
@@ -564,6 +565,23 @@ class Formation {
 			$sizes[$key] = str_replace( '_', ' ', ucfirst( $key ) );
 
 		return $sizes;
+	}
+
+   /*
+	* Add to gutenberg block content
+	*/ 
+
+	public function filter_block( $block_content, $block ) {
+		if( preg_match( '~^core/|core-embed/~', $block['blockName'] ) ) {
+			if( $block['blockName'] == 'core/video' ) {
+				$autoplay = strpos( $block_content, 'autoplay' ) !== false;
+
+				if( $autoplay )
+					$block_content = str_replace( '<video', '<video playsinline', $block_content );
+			}
+		}
+
+		return $block_content;
 	}
 
    /*
