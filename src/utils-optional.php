@@ -151,6 +151,7 @@ class Utils_Optional {
                 "<button class='o-modal__trigger$trigger_class' type='button'>" .
                     '<span class="o-button__text">' . $button_text . '</span>' .
                 '</button>' .
+                '<div class="o-modal__overlay"></div>' .
                 '<div class="o-modal__window">' .
                     '<div class="o-modal__content">' .
                         ( $scale_transition ? '<div>' : '' ) .
@@ -162,7 +163,6 @@ class Utils_Optional {
                         ( $scale_transition ? '</div>' : '' ) .
                     '</div>' .
                 '</div>' .
-                '<div class="o-modal__overlay"></div>' .
             '</div>';
     }
 
