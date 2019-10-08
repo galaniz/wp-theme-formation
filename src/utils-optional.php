@@ -148,23 +148,21 @@ class Utils_Optional {
 
         return 
             "<div class='o-modal$class'$scale_transition$alt_trigger>" .
-                '<div class="l-flex --align-center">' .
-                    "<button class='o-modal__trigger$trigger_class' type='button'>" .
-                        '<span class="o-button__text">' . $button_text . '</span>' .
-                    '</button>' .
-                    '<div class="o-modal__window">' .
-                        '<div class="o-modal__content">' .
-                            ( $scale_transition ? '<div>' : '' ) .
-                                $content .
-                                '<button class="o-modal__close">' .
-                                    '<div class="u-visually-hidden">Close modal</div>' .
-                                    "<div class='o-modal__x'>$x</div>" .
-                                '</button>' .
-                            ( $scale_transition ? '</div>' : '' ) .
-                        '</div>' .
+                "<button class='o-modal__trigger$trigger_class' type='button'>" .
+                    '<span class="o-button__text">' . $button_text . '</span>' .
+                '</button>' .
+                '<div class="o-modal__window">' .
+                    '<div class="o-modal__content">' .
+                        ( $scale_transition ? '<div>' : '' ) .
+                            $content .
+                            '<button class="o-modal__close">' .
+                                '<div class="u-visually-hidden">Close modal</div>' .
+                                "<div class='o-modal__x'>$x</div>" .
+                            '</button>' .
+                        ( $scale_transition ? '</div>' : '' ) .
                     '</div>' .
-                    '<div class="o-modal__overlay"></div>' .
                 '</div>' .
+                '<div class="o-modal__overlay"></div>' .
             '</div>';
     }
 

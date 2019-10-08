@@ -506,12 +506,12 @@ class Field {
                     'textarea_name' => $name,
                     'textarea_rows' => $rows,
                     'editor_class' => $classes,
-                    'tinymce' => array(
+                    'tinymce' => [
                         'toolbar1' => $toolbar,
                         'toolbar2' => '',
                         'toolbar3' => '',
                         'toolbar4' => ''
-                    )
+                    ]
                 ] );
 
                 $output .= ob_get_clean();
