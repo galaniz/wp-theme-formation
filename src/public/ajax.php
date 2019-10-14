@@ -180,7 +180,7 @@ trait Ajax {
 			}
 
 			if( $input_type == 'email' ) {
-				$output .= "<strong>$input_label</strong>:" . ( $input_value ? "<a href='mailto:$input_value'>$input_value</a>" : '' ) . '<br>';
+				$output .= "<strong>$input_label</strong>: " . ( $input_value ? "<a href='mailto:$input_value'>$input_value</a>" : '' ) . '<br>';
 
 				if( $input_value ) {
 					// make email from equal to sender email

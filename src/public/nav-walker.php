@@ -11,12 +11,14 @@ class Nav_Walker extends \Walker_Nav_Menu {
 
     /* Variables */
 
+    public $ul_class;
     public $li_class;
     public $li_attr;
     public $a_class;
     public $a_attr;
     public $before_output;
     public $after_output;
+    public $before_link_output;
 
     /* Constructor */
     
@@ -28,6 +30,7 @@ class Nav_Walker extends \Walker_Nav_Menu {
         $this->a_attr = $args['a_attr'] ?? '';
         $this->before_output = $args['before_output'] ?? false;
         $this->after_output = $args['after_output'] ?? false;
+        $this->before_link_output = $args['before_link_output'] ?? false;
     }
 
     /* Output ul element */
@@ -52,7 +55,7 @@ class Nav_Walker extends \Walker_Nav_Menu {
         $id = $item->ID;
 
         if( is_callable( $this->before_output ) )
-            call_user_func_array( $this->before_output, [&$this, &$output, $depth] );
+            call_user_func_array( $this->before_output, [&$this, &$output, $depth, $args] );
 
         $classes = empty( $item->classes ) ? [] : (array) $item->classes;
         $classes[] = 'menu-item-' . $item->ID;
@@ -60,12 +63,15 @@ class Nav_Walker extends \Walker_Nav_Menu {
 
         $class_names = join( ' ', apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item, $args, $depth ) );
 
-        $output .= 
-            "<li class='$class_names'" . $this->li_attr . " data-depth='$depth'>" .
-                "<a class='" . $this->a_class . "' " . $this->a_attr . "href='$permalink' data-depth='$depth'>$title</a>";
+        $output .= "<li class='$class_names'" . $this->li_attr . " data-depth='$depth'>";
+
+        if( is_callable( $this->before_link_output ) )
+            call_user_func_array( $this->before_link_output, [&$this, &$output, $depth, $args] );
+
+        $output .= "<a class='" . $this->a_class . "' " . $this->a_attr . "href='$permalink' data-depth='$depth'>$title</a>";
 
         if( is_callable( $this->after_output ) )
-            call_user_func_array( $this->after_output, [&$this, &$output, $depth] );
+            call_user_func_array( $this->after_output, [&$this, &$output, $depth, $args] );
     }
 
 } // end Nav_Walker
