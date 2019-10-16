@@ -69,7 +69,13 @@ trait Utils {
                 continue;
 
             $name = $cat->name;
-            $url = get_category_link( $cat->term_id );
+
+            if( $taxonomy ) {
+                $url = get_term_link( $cat->term_id, $taxonomy );
+            } else {
+                $url = get_category_link( $cat->term_id );
+            }
+
             $first_cat = [$name, $url];
 
             break;
