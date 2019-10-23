@@ -793,12 +793,13 @@ class Field {
     * Scripts and styles to enqueue.
     */
 
-    public static function scripts() {
+    public static function scripts( $child = false ) {
         $path = FRM::$src_path . 'common/assets/public/';
+        $uri = $child ? get_stylesheet_directory_uri() : get_template_directory_uri();
 
         wp_enqueue_style( 
             FRM::$namespace . '-field-styles', 
-            get_template_directory_uri() . $path . 'css/field.css' 
+            $uri . $path . 'css/field.css' 
         );
 
         wp_enqueue_media();
@@ -809,7 +810,7 @@ class Field {
 
         wp_register_script(
             $handle, 
-            get_template_directory_uri() . $path . 'js/field.js',
+            $uri . $path . 'js/field.js',
             [],
             NULL,
             true
