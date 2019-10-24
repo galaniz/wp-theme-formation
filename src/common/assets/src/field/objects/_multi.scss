@@ -7,8 +7,20 @@
 $border: 1px solid rgba( map-get( $g-colors, 'foreground-dark' ), 0.10 );
 
 .o-multi__fields {
+    .--col & {
+        width: 100%;
+        flex-direction: column;
+    }
     @include breakpointMin( 700 ) {
         padding-right: 18px;
+    }
+}
+
+.o-multi {
+    .--col & {
+        @extend %u-display-flex;
+        flex-wrap: wrap;
+        margin: -10px;
     }
 }
 
@@ -17,6 +29,10 @@ $border: 1px solid rgba( map-get( $g-colors, 'foreground-dark' ), 0.10 );
 	border: $border;
     padding: 8px 10px;
     margin-bottom: 20px;
+    .--col & {
+        flex-grow: 1;
+        margin: 10px;
+    }
     @include breakpointMin( 700 ) {
     	display: flex;
     	justify-content: space-between;

@@ -36,7 +36,8 @@ class Field {
             'data' => '',
             'multi' => false,
             'copy' => false,
-            'hidden' => false
+            'hidden' => false,
+            'multi_col' => false
         ],
         'field' => [
             'name' => false,
@@ -252,7 +253,8 @@ class Field {
         if( is_admin() ) {
             if( $top_level_name ) {
                 $hide = $hidden ? " style='display: none;'" : '';
-                $output .= "<div class='o-field-section o-field-section--$top_level_name'$hide>";
+                $col = $multi_col ? ' --col' : '';
+                $output .= "<div class='o-field-section o-field-section--$top_level_name$col'$hide>";
             }
         } else {
             $output .= '<div class="o-field-group l-flex --align-center --wrap">';
@@ -292,7 +294,8 @@ class Field {
                     $i,
                     $data,
                     false, // copy
-                    $multi
+                    $multi,
+                    $multi_col
                 );
 
                 if( $multi && $i === 0 ) {
@@ -302,7 +305,8 @@ class Field {
                         $i,
                         $data,
                         true, // copy
-                        $multi
+                        $multi,
+                        $multi_col
                     );
                 }
             }
@@ -357,7 +361,7 @@ class Field {
     * @param string $output Append to it as loop in render method.
     */
 
-    public static function render_field( $args = [], &$output, $index = 0, $data = '', $copy = false, $multi = false ) {
+    public static function render_field( $args = [], &$output, $index = 0, $data = '', $copy = false, $multi = false, $multi_col = false ) {
         $args = array_replace_recursive( self::$default['field'], $args );
         extract( $args );
 
@@ -480,6 +484,11 @@ class Field {
 
                 break;
             case 'textarea':
+                if( $multi_col ) {
+                    $classes .= ' js-fit-content';
+                    $attr .= ' oninput="textareaFitContent( this )"';
+                }
+
                 $output .= sprintf(
                     '<textarea name="%1$s" id="%5$s" class="%2$s" %4$s>%3$s</textarea>', 
                     $name, 

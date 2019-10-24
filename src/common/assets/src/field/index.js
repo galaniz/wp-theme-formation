@@ -171,6 +171,31 @@ const initialize = () => {
 		} );
 	};
 
+	/*
+	 * Resize textarea to fit content
+	 * ------------------------------
+	 */
+
+	window.textareaFitContent = function( t ) {
+		let txt = t.value,
+			cols = t.cols,
+			arraytxt = txt.split( '\n' ),
+			rows = arraytxt.length; 
+
+		for( let i = 0; i < arraytxt.length; i++ ) 
+			rows += parseInt( arraytxt[i].length / cols );
+
+		t.rows = rows;	
+	};
+
+	let textareas = Array.from( document.querySelectorAll( '.js-fit-content' ) );
+
+	if( textareas.length > 0 ) {
+		textareas.forEach( ( t ) => {
+			window.textareaFitContent( t );
+		} );
+	}
+
 }; // end initialize
 
 document.addEventListener( 'DOMContentLoaded', initialize );

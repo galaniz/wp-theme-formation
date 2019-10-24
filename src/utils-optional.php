@@ -44,6 +44,42 @@ class Utils_Optional {
     }
 
     /*
+     * Format table data into labels and rows.
+     *
+     * @param string $label_key 
+     * @param string $rows_key
+     * @param array $data
+     * @return string array
+     */
+
+    public static function format_table_data( $data = [], $label_key = 'label', $rows_key = 'data' ) {
+        if( !$data )
+            return [];
+
+        $labels = [];
+        $rows = [];
+
+        foreach( $data as $i => $d ) {
+            $labels[] = $d['label'];
+            $dd = explode( "\n", $d['data'] );
+
+            if( $i === 0 ) {
+                foreach( $dd as $ddd ) {
+                    $rows[] = [$ddd];
+                }
+            } else {
+                foreach( $dd as $ii => $ddd )
+                    $rows[$ii][] = $ddd;
+            }
+        }
+
+        return [
+            'labels' => $labels,
+            'rows' => $rows
+        ];
+    }
+
+    /*
      * Output for responsive tables.
      *
      * @param array $args
@@ -64,6 +100,9 @@ class Utils_Optional {
         );
 
         extract( $args );
+
+        if( !$rows )
+            return '';
 
         $class = $class ? " $class" : '';
         $row_class = $row_class ? " $row_class" : '';
