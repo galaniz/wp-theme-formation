@@ -86,6 +86,16 @@ class Theme {
             'tab' => 'General'
         ],
         [
+            'name' => 'logo',
+            'label' => 'PNG',
+            'type' => 'file',
+            'file_type' => 'image',
+            'accept' => 'image/png',
+            'section' => 'logo',
+            'wp' => true,
+            'tab' => 'General'
+        ],
+        [
             'name' => 'footer_text',
             'label' => 'Text',
             'type' => 'richtext',

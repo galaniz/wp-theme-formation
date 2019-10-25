@@ -811,26 +811,23 @@ class Field {
             $uri . $path . 'css/field.css' 
         );
 
-        wp_enqueue_media();
-
-        $handle = FRM::$namespace . '-field-script';
         $upload_nonce_name = FRM::$namespace . '_upload_file_nonce';
         $remove_nonce_name = FRM::$namespace . '_remove_file_nonce';
 
-        wp_register_script(
-            $handle, 
+        additional_script_data( FRM::$namespace, [
+            $upload_nonce_name => wp_create_nonce( $upload_nonce_name ),
+            $remove_nonce_name => wp_create_nonce( $remove_nonce_name )
+        ], true );
+
+        wp_enqueue_media();
+
+        wp_enqueue_script(
+            FRM::$namespace . '-field-script', 
             $uri . $path . 'js/field.js',
             [],
             NULL,
             true
         );
-
-        wp_localize_script( $handle, FRM::$namespace, [
-            $upload_nonce_name => wp_create_nonce( $upload_nonce_name ),
-            $remove_nonce_name => wp_create_nonce( $remove_nonce_name )
-        ] );
-
-        wp_enqueue_script( $handle );
     }
 
    /*
