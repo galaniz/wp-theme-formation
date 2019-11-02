@@ -14,6 +14,7 @@ namespace Formation\Common\Blocks;
 
 use Formation\Formation as FRM; 
 use function Formation\additional_script_data;
+use function Formation\write_log;
 
 class Blocks {
 
@@ -66,6 +67,9 @@ class Blocks {
 
         extract( $args );
 
+        write_log('FUCKCCC');
+        write_log($extend_media);
+
         self::$folder_url = $folder_url;
         self::$extend_media = $extend_media;
 
@@ -74,7 +78,7 @@ class Blocks {
 
         // modify media output if extend media
         if( $extend_media )
-            add_filter( 'render_block', [$this, 'extend_media'], 10, 2 );
+            add_filter( 'render_block', [$this, 'extend_media_filter'], 10, 2 );
 
         // ajax callbacks for previewing blocks in editor
         add_action( 'wp_ajax_nopriv_preview_blocks', [__CLASS__, 'preview_blocks'] );
@@ -154,7 +158,7 @@ class Blocks {
                         true
                     );
 
-                    if( $extend_media ) {
+                    if( self::$extend_media ) {
                         $scripts = ['attr', 'control'];
 
                         foreach( $scripts as $s ) {
@@ -184,7 +188,7 @@ class Blocks {
     * @return string $block_content.
     */ 
 
-    public static function extend_media( $block_content, $block ) {
+    public static function extend_media_filter( $block_content, $block ) {
         $name = $block['blockName'];
         $classes = '';
 
