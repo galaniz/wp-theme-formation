@@ -29,12 +29,12 @@ class Blocks {
     public static $folder_url = '';
 
    /*
-    * Optional utilities script.
+    * Optional extend media block.
     *
-    * @var boolean $utils_script 
+    * @var boolean $extend_media 
     */
 
-    public static $utils_script = false;
+    public static $extend_media = false;
 
    /*
     * Append blocks with args to register.
@@ -61,16 +61,20 @@ class Blocks {
 	public function __construct( $args = [] ) {
         $args = array_merge( [
             'folder_url' => '',
-            'utils' => false
+            'extend_media' => false
         ], $args );
 
         extract( $args );
 
         self::$folder_url = $folder_url;
-        self::$utils_script = $utils;
+        self::$extend_media = $extend_media;
 
         // add blocks
         add_action( 'init', [$this, 'register_blocks'], 999 );
+
+        // modify media output if extend media
+        if( $extend_media )
+            add_filter( 'render_block', [$this, 'extend_media'], 10, 2 );
 
         // ajax callbacks for previewing blocks in editor
         add_action( 'wp_ajax_nopriv_preview_blocks', [__CLASS__, 'preview_blocks'] );
@@ -134,15 +138,13 @@ class Blocks {
                 if( is_admin() ) {
                     $utils_script_handle = FRM::$namespace . '-block-utils-script';
 
-                    // if( self::$utils_script ) {
-                        wp_enqueue_script(
-                            $utils_script_handle, 
-                            FRM::$src_url . 'common/assets/public/js/blocks/utils.js',
-                            [],
-                            NULL,
-                            true
-                        );
-                    // }
+                    wp_enqueue_script(
+                        $utils_script_handle, 
+                        FRM::$src_url . 'common/assets/public/js/blocks/utils.js',
+                        [],
+                        NULL,
+                        true
+                    );
 
                     wp_enqueue_script(
                         FRM::$namespace . '-insert-block-script', 
@@ -151,6 +153,20 @@ class Blocks {
                         NULL,
                         true
                     );
+
+                    if( $extend_media ) {
+                        $scripts = ['attr', 'control'];
+
+                        foreach( $scripts as $s ) {
+                            wp_enqueue_script(
+                                FRM::$namespace . '-extend-media-' . $s . '-script',
+                                FRM::$src_url . "common/assets/public/js/blocks/extend-media/$s.js",
+                                ['wp-element', 'wp-blocks', 'wp-editor', 'wp-hooks'],
+                                NULL, 
+                                true 
+                            );
+                        }
+                    }
                 }
             }
 
@@ -159,6 +175,73 @@ class Blocks {
 
         additional_script_data( FRM::$namespace, $data, true, true );
     } 
+
+   /*
+    * Render block callback to extend media.
+    *
+    * @param string $block_content
+    * @pass array $block
+    * @return string $block_content.
+    */ 
+
+    public static function extend_media( $block_content, $block ) {
+        $name = $block['blockName'];
+        $classes = '';
+
+        // target core blocks
+        if( substr( $name, 0, 4 ) == 'core' ) {
+            $embed = false;
+
+            $embed_names = [
+                'core/image',
+                'core/video', 
+                'core-embed/youtube', 
+                'core-embed/vimeo'
+            ];
+
+            if( in_array( $name, $embed_names ) )
+                $embed = true;
+
+            if( !$embed )
+                return $block_content;
+
+            $b_attr = $block['attrs'];
+
+            $caption = strpos( $block_content, 'figcaption' ) !== false ? true : false; 
+            $caption_modifier = '--no-caption';
+            $width = '100';
+            $breakout = false;
+
+            if( isset( $b_attr['containerWidth'] ) ) {
+                $w = $b_attr['containerWidth'];
+
+                if( $w != 'breakout' ) {
+                    $width = $w;
+                } else {
+                    $breakout = true;
+                }
+            }
+
+            if( $caption )
+                $caption_modifier = '--caption';
+
+            $classes = "l-$width $caption_modifier";
+
+            if( $breakout ) { 
+                $classes .= ' --breakout';
+
+                $block_content = 
+                    '<div class="l-breakout">' . 
+                        $block_content .
+                    '</div>';
+            }
+
+            $block_content = sprintf( "<div class='$classes'>%s</div>", $block_content );
+        }
+
+        return $block_content;
+    }
+
 
    /*
     * Ajax callback to preview block in editor.

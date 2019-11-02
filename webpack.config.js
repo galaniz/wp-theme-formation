@@ -67,6 +67,8 @@ let blocks = [
     'contact-form/group',
     'contact-form/group-top',
     'contact-form/group-bottom',
+    'extend-media/attr',
+    'extend-media/control',
     'insert-block',
     'media'
 ];

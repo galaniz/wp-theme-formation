@@ -67,7 +67,7 @@
   "dependencies": {
     "core-js": "^3.2.1",
     "css-mqpacker": "^7.0.0",
-    "dompurify": "^2.0.0",
+    "dompurify": "^2.0.7",
     "postcss-combine-duplicated-selectors": "^8.0.2"
   }
 }

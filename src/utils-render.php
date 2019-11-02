@@ -145,7 +145,7 @@ trait Utils_Render {
     }
 
     /*
-     * Output for button loader animation.
+     * Output for loader animation.
      *
      * Note: can be overwritten by user.
      *
@@ -153,7 +153,7 @@ trait Utils_Render {
      * @return string / array of html output
      */
 
-    public static function render_button_loader( $loader_class = '', $icon_class = '', $id = '' ) {
+    public static function render_loader( $loader_class = '', $icon_class = '', $id = '' ) {
         if( $loader_class )
             $loader_class = " $loader_class";
 
@@ -218,7 +218,7 @@ trait Utils_Render {
                     "<div class='$button_field'>" .
                         '<button class="o-button js-submit%5$s" type="submit">' .
                             '<div class="o-button__text u-position-relative">%6$s</div>' .
-                            static::render_button_loader( '--hide' ) .
+                            static::render_loader( '--hide' ) .
                         '</button>' .
                     '</div>' .
                 '</div>' .
