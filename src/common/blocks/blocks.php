@@ -67,9 +67,6 @@ class Blocks {
 
         extract( $args );
 
-        write_log('FUCKCCC');
-        write_log($extend_media);
-
         self::$folder_url = $folder_url;
         self::$extend_media = $extend_media;
 

@@ -529,6 +529,15 @@ class Field {
             case 'select': 
                 if( $options ) {
                     $opt = '';
+                    
+                    if( isset( $options[0] ) ) {
+                        $o = [];
+
+                        foreach( $options as $op )
+                            $o[$op['value']] = $op['label'];
+
+                        $options = $o;
+                    }
 
                     foreach( $options as $key => $label ) {
                         $selected = $key == $val ? 'selected' : '';
