@@ -176,7 +176,7 @@ class Theme {
             $return_uri = admin_url( 'options-general.php?page=theme&tab=instagram' );
             $data_uri = FRM::$src_url . 'admin/settings/insta.php';
 
-            $redirect_uri = "https://www.gracielaalaniz.com/insta?return_uri=$return_uri" . "&data_uri=$data_uri";
+            $redirect_uri = urlencode( "https://www.gracielaalaniz.com/insta?return_uri=$return_uri" . "&data_uri=$data_uri" );
 
             $this->fields[] = [
                 'name' => 'insta_access_token',
