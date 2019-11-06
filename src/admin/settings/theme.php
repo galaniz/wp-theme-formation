@@ -169,21 +169,27 @@ class Theme {
 
         if( $instagram ) {
             $this->sections[] = [
-                'id' => 'insta-auth',
-                'title' => 'Authorize'
+                'id' => 'insta-config',
+                'title' => 'Configure'
             ];
+
+            $return_uri = urlencode( admin_url( 'options-general.php?page=theme&tab=instagram' ) );
+            $data_uri = urlencode( FRM::$src_url . 'admin/settings/insta.php' );
 
             $this->fields[] = [
                 'name' => 'insta_access_token',
                 'type' => 'hidden',
-                'section' => 'insta-auth',
+                'label' => 'Account',
+                'section' => 'insta-config',
                 'tab' => 'Instagram',
-                'before' => 
-                    '<a class="u-position-relative" id="js-insta-auth" href="https://api.instagram.com/oauth/authorize?app_id=1988348524600914&redirect_uri=https%3A%2F%2Fwww.gracielaalaniz.com%2Finsta&scope=user_profile,user_media&response_type=code&return_uri=https%3A%2F%2Fwww.twilio.com%2Fblog%2F2017%2F08%2Fhttp-requests-in-node-js.html" target="_blank">' .
+                'before' =>
+                    '<div class="u-display-inline-block">' . 
+                        '<a class="o-button button-secondary u-position-relative --lg" id="js-insta-auth" href="https://api.instagram.com/oauth/authorize?app_id=1988348524600914&redirect_uri=https%3A%2F%2Fwww.gracielaalaniz.com%2Finsta&scope=user_profile,user_media&response_type=code&return_uri=' . $return_uri . '" target="_blank">' .
                             "<span class='dashicons dashicons-instagram'></span>" .
                             "<span>Connect Account</span>" .
                             "<span class='o-loader'><span class='spinner is-active'></span></span>" .
-                    '</a>',
+                        '</a>' .
+                    '</div>',
                 'after' => '<input type="hidden" name="' . FRM::$namespace . '_insta_user_id">'
             ];
         }

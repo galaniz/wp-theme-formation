@@ -8,6 +8,7 @@ class ComposerStaticIniteb7cdd6420d025868a0145250003a4d1
 {
     public static $files = array (
         '532c6d2a428ecf5438f246ada896eddc' => __DIR__ . '/../..' . '/src/globals.php',
+        'e53fa5a78104a96fb6e78faecde571b5' => __DIR__ . '/../..' . '/src/admin/settings/insta.php',
     );
 
     public static $prefixLengthsPsr4 = array (

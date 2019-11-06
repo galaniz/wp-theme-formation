@@ -12,6 +12,10 @@ $g-breakpoints: (
 
 @import '~Formation/index';
 
+.u-display-inline-block {
+	@extend %u-display-inline-block;
+}
+
 /* Layouts */
 
 @import '~Formation/layouts/layouts';
@@ -29,3 +33,4 @@ $g-breakpoints: (
 @import 'objects/multi';
 @import 'objects/field';
 @import 'objects/loader';
+@import 'objects/button';
