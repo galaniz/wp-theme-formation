@@ -173,8 +173,10 @@ class Theme {
                 'title' => 'Configure'
             ];
 
-            $return_uri = urlencode( admin_url( 'options-general.php?page=theme&tab=instagram' ) );
-            $data_uri = urlencode( FRM::$src_url . 'admin/settings/insta.php' );
+            $return_uri = admin_url( 'options-general.php?page=theme&tab=instagram' );
+            $data_uri = FRM::$src_url . 'admin/settings/insta.php';
+
+            $redirect_uri = urlencode( "https://www.gracielaalaniz.com/insta?return_uri=$return_uri" . "&data_uri=$data_uri" );
 
             $this->fields[] = [
                 'name' => 'insta_access_token',
@@ -184,7 +186,7 @@ class Theme {
                 'tab' => 'Instagram',
                 'before' =>
                     '<div class="u-display-inline-block">' . 
-                        '<a class="o-button button-secondary u-position-relative --lg" id="js-insta-auth" href="https://api.instagram.com/oauth/authorize?app_id=1988348524600914&redirect_uri=https%3A%2F%2Fwww.gracielaalaniz.com%2Finsta&scope=user_profile,user_media&response_type=code&return_uri=' . $return_uri . '" target="_blank">' .
+                        '<a class="o-button button-secondary u-position-relative --lg" id="js-insta-auth" href="https://api.instagram.com/oauth/authorize?app_id=1988348524600914&redirect_uri=' . $redirect_uri . '&scope=user_profile,user_media&response_type=code" target="_blank">' .
                             "<span class='dashicons dashicons-instagram'></span>" .
                             "<span>Connect Account</span>" .
                             "<span class='o-loader'><span class='spinner is-active'></span></span>" .
