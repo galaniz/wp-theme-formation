@@ -167,12 +167,26 @@ class Theme {
 
         /* Instagram */
 
-        /*if( $instagram ) {
+        if( $instagram ) {
             $this->sections[] = [
-                'id' => 'instagram',
-                'title' => 'Instagram'
+                'id' => 'insta-auth',
+                'title' => 'Authorize'
             ];
-        }*/
+
+            $this->fields[] = [
+                'name' => 'insta_access_token',
+                'type' => 'hidden',
+                'section' => 'insta-auth',
+                'tab' => 'Instagram',
+                'before' => 
+                    '<a class="u-position-relative" id="js-insta-auth" href="https://api.instagram.com/oauth/authorize?app_id=1988348524600914&redirect_uri=https%3A%2F%2Fwww.gracielaalaniz.com%2Finsta&scope=user_profile,user_media&response_type=code&return_uri=https%3A%2F%2Fwww.twilio.com%2Fblog%2F2017%2F08%2Fhttp-requests-in-node-js.html" target="_blank">' .
+                            "<span class='dashicons dashicons-instagram'></span>" 
+                            "<span>Connect Account</span>" .
+                            "<span class='o-loader'><span class='spinner is-active'></span></span>" .
+                    '</a>',
+                'after' => '<input type="hidden" name="' . FRM::$namespace . '_insta_user_id">'
+            ];
+        }
 
         /* Mailchimp */
 
