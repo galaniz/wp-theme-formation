@@ -186,7 +186,7 @@ class Theme {
                 'tab' => 'Instagram',
                 'before' =>
                     '<div class="u-display-inline-block">' . 
-                        '<a class="o-button button-secondary u-position-relative --lg" id="js-insta-auth" href="https://api.instagram.com/oauth/authorize?app_id=1988348524600914&redirect_uri=' . $redirect_uri . '&scope=user_profile,user_media&response_type=code" target="_blank">' .
+                        '<a class="o-button button-secondary u-position-relative --lg" id="js-insta-auth" href="https://api.instagram.com/oauth/authorize?app_id=1988348524600914&scope=user_profile,user_media&response_type=code&redirect_uri=' . $redirect_uri . '" target="_blank">' .
                             "<span class='dashicons dashicons-instagram'></span>" .
                             "<span>Connect Account</span>" .
                             "<span class='o-loader'><span class='spinner is-active'></span></span>" .
