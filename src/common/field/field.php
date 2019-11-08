@@ -190,6 +190,19 @@ class Field {
     }
 
    /*
+    * Check if array is associative or indexed.
+    *
+    * source: http://thinkofdev.com/check-if-an-array-is-associative-or-sequentialindexed-in-php/
+    *
+    * @param array $arr
+    * @return boolean
+    */
+
+    public static function is_assoc( $arr ) {
+        return array_keys( $arr ) !== range( 0, count( $arr ) - 1 );
+    }
+
+   /*
     * Recursively filter out required empty multi fields. 
     *
     * @param array $array Contains multi fields value.
@@ -533,7 +546,7 @@ class Field {
                 if( $options ) {
                     $opt = '';
                     
-                    if( isset( $options[0] ) ) {
+                    if( !self::is_assoc( $options ) ) {
                         $o = [];
 
                         foreach( $options as $op )
