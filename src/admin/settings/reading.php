@@ -58,6 +58,9 @@ class Reading {
 		$fields = [];
 
 		foreach( FRM::$cpt as $c => $meta ) {
+			if( isset( $meta['no_reading'] ) )
+				continue;
+			
 			if( isset( $meta['parent'] ) )
 				continue;
 			
