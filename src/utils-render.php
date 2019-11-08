@@ -204,7 +204,7 @@ trait Utils_Render {
 
         $class = $class ? ' ' . $class : '';
         $button_class = ( static::$classes['button'] ? ' ' . static::$classes['button'] : '' ) . ( $button_class ? ' ' . $button_class : '' );
-        $button_field = 'o-field';
+        $button_field = 'o-field --submit';
 
         if( $single_field ) {
             $button_class .= ' --fill-inherit';
