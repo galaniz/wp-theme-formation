@@ -37,7 +37,8 @@ class Field {
             'multi' => false,
             'copy' => false,
             'hidden' => false,
-            'multi_col' => false
+            'multi_col' => false,
+            'no_group' => false
         ],
         'field' => [
             'name' => false,
@@ -257,10 +258,11 @@ class Field {
                 $output .= "<div class='o-field-section o-field-section--$top_level_name$col'$hide>";
             }
         } else {
-            $output .= '<div class="o-field-group l-flex --align-center --wrap">';
+            if( !$no_group )
+                $output .= '<div class="o-field-group l-flex --align-center --wrap">';
         }    
 
-        if( isset( $args['label'] ) && !isset( $args['label_hidden'] ) )
+        if( isset( $args['label'] ) && !isset( $args['label_hidden'] ) && !$no_group  )
             $output .= '<div class="o-field-group__label">' . $args['label'] . '</div>';
 
         if( $multi ) 
@@ -346,7 +348,8 @@ class Field {
         if( is_admin() ) {
             $output .= '</div>';
         } else {
-            $output .= '</div>';
+            if( !$no_group )
+                $output .= '</div>';
         }    
 
         additional_script_data( FRM::$namespace, self::$localize_data, true );

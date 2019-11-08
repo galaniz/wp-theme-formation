@@ -168,7 +168,7 @@ class Theme {
         /* Instagram */
 
         if( $instagram ) {
-            $this->sections[] = [
+            /*$this->sections[] = [
                 'id' => 'insta-config',
                 'title' => 'Configure'
             ];
@@ -193,7 +193,7 @@ class Theme {
                         '</a>' .
                     '</div>',
                 'after' => '<input type="hidden" name="' . FRM::$namespace . '_insta_user_id">'
-            ];
+            ];*/
         }
 
         /* Mailchimp */

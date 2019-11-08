@@ -49,7 +49,7 @@ class Utils_Optional {
      * @param string $label_key 
      * @param string $rows_key
      * @param array $data
-     * @return string array
+     * @return array
      */
 
     public static function format_table_data( $data = [], $label_key = 'label', $rows_key = 'data' ) {
@@ -60,7 +60,9 @@ class Utils_Optional {
         $rows = [];
 
         foreach( $data as $i => $d ) {
-            $labels[] = $d['label'];
+            if( isset( $d['label'] ) )
+                $labels[] = $d['label'];
+            
             $dd = explode( "\n", $d['data'] );
 
             if( $i === 0 ) {

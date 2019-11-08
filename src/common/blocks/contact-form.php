@@ -300,7 +300,8 @@ class Contact_Form {
         }
 
         $render_args = [ 
-            'fields' => ( isset( $field[0] ) ? $field : [$field] ) 
+            'fields' => ( isset( $field[0] ) ? $field : [$field] ),
+            'no_group' => true
         ];
 
         if( $value && $options_array )
