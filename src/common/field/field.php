@@ -259,7 +259,7 @@ class Field {
             }
         } else {
             if( !$no_group )
-                $output .= '<div class="o-field-group l-flex --align-center --wrap">';
+                $output .= '<div class="o-field-group 1-100 l-flex --align-center --wrap">';
         }    
 
         if( isset( $args['label'] ) && !isset( $args['label_hidden'] ) && !$no_group  )

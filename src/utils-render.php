@@ -213,12 +213,12 @@ trait Utils_Render {
 
         return sprintf(
             '<form class="js-form%1$s" id="%2$s" data-type="%3$s" novalidate>' .
-                '<div class="o-field-container u-position-relative">' .
+                '<div class="o-field-container u-position-relative l-flex --wrap">' .
                     '%4$s' .
                     "<div class='$button_field'>" .
                         '<button class="o-button js-submit%5$s" type="submit">' .
                             '<div class="o-button__text u-position-relative">%6$s</div>' .
-                            static::render_loader( '--hide' ) .
+                            static::render_loader( '--hide', static::$classes['icon'] ) .
                         '</button>' .
                     '</div>' .
                 '</div>' .

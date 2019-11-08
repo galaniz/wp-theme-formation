@@ -166,7 +166,8 @@ class Formation {
         'field' => '',
         'button' => '',
         'label' => '',
-        'input' => ''
+        'input' => '',
+        'icon' => ''
     ];
 
    /*
