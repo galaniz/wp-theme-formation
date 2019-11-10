@@ -81,19 +81,16 @@ class Reading {
 	            'value' => (int) get_option( $name, 0 ),
 	            'options' => $page_options,
 	            'label_hidden' => true,
-	            'on_save' => function( $value ) use ( $c, $get_pages ) {
+	            'on_save' => function( $value ) use ( $c, $meta ) {
+	            	if( isset( $meta['no_slug'] ) )
+	            		return $value; 
+
 	            	$id = (int) $value;
 
 		            // get page slug of assigned page
 					$slug = get_post_field( 'post_name', $id );
 
 					update_option( $c . '_slug', $slug );
-
-					// delete meta from all other pages
-					foreach( $get_pages as $page ) 
-						delete_post_meta( $page->ID, FRM::$namespace . '_insert_cpt_block', $c );
-					
-					update_post_meta( $id, FRM::$namespace . '_insert_cpt_block', $c );
 
 					flush_rewrite_rules();
 
