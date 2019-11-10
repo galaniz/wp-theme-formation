@@ -52,12 +52,23 @@ class Formation {
 	*     		@type string $slug Accepts string.
 	*     		@type string $label Accepts string.
 	*     		@type string $plural_label Accepts string.
+	*     		@type string $layout Accepts string.
 	*     		@type string $taxonomy Accepts string.
 	*		}
 	* }
 	*/
 
 	public static $cpt = [];
+
+   /*
+	* Store layouts for post types.
+	*
+	* @var array $pt_layout {
+	*		@type string $post_type Accepts string 
+	* }
+	*/
+
+	public static $pt_layout = [];
 
    /*
 	* Number of posts to display by type / post type
@@ -323,6 +334,35 @@ class Formation {
 		/* Admin customizations */
 
 		add_filter( 'tiny_mce_before_init', [$this, 'tiny_mce_remove_h1'] );
+	}
+
+   /*
+	* Setup default filters
+	*
+	* @uses add_action() to add various filters
+	*/
+
+	private function setup_filters() {
+		add_filter( 'document_title_separator', [$this, 'title_separator'] );
+		add_filter( 'nav_menu_css_class', [$this, 'cpt_nav_classes'], 10, 2 );
+		add_filter( 'script_loader_tag', [$this, 'add_defer_async_attributes'], 10, 2 );
+		add_filter( 'image_size_names_choose', [$this, 'custom_image_sizes'] );
+		add_filter( 'render_block', [$this, 'filter_block'], 10, 2 );
+
+		/* Admin customizations */
+
+		add_filter( 'tiny_mce_before_init', [$this, 'tiny_mce_remove_h1'] );
+	}
+
+   /*
+	* Setup pt layout variable
+	*/
+
+	private function setup_pt_layout() {
+		foreach( self::$cpt as $c => $meta ) {
+			if( isset( $meta['layout'] ) )
+				self::$pt_layout[$c] = $meta['layout'];
+		}
 	}
 
    /*

@@ -18,6 +18,13 @@ use Formation\Admin\Settings\Settings;
 class Reading {
 
    /*
+    * Variables
+    * ---------
+    */
+
+   	public static $additional_fields = [];
+
+   /*
     * Constructor
     * -----------
     */
@@ -107,6 +114,9 @@ class Reading {
 	            ]
 	        ];
 		}
+
+		if( self::$additional_fields ) 
+			$fields = array_merge( $fields, self::$additional_fields );
 
 		// add fields
 		new Settings( [

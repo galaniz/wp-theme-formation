@@ -249,4 +249,64 @@ trait Utils_Render {
         );
     }
 
+    /*
+     * Output for static page archives.
+     *
+     * @param array $args
+     * @return boolean
+     */
+
+    public static function render_cpt_archive( $args ) {
+        $args = array_merge(
+            [
+                'post_type' => '',
+                'templates_before' => [],
+                'templates_after' => [],
+                'content_before' => '',
+                'content_after' => ''
+            ],
+            $args
+        );
+
+        extract( $args );
+
+        if( !$post_type )
+            return false;
+
+        // check if page assigned to it
+        $page_id = (int) get_option( $post_type . '_page', 0 );
+
+        if( !$page_id )
+            return false;
+
+        $query = new \WP_Query( [
+            'page_id' => $page_id
+        ] );
+
+        if( $query->have_posts() ) {
+            while ( $query->have_posts() ) {
+                $query->the_post();
+
+                foreach( $templates_before as $tb )
+                    get_template_part( $tb['slug'], $tb['name'] );
+
+                echo $content_before;
+
+                the_content();
+
+                echo $content_after;
+
+                foreach( $templates_after as $ta )
+                    get_template_part( $ta['slug'], $ta['name'] );
+            }
+
+            // restore original post data
+            wp_reset_postdata();
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 } // end Utils_Render
