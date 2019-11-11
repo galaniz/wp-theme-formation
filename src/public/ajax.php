@@ -300,7 +300,7 @@ trait Ajax {
 				$args = array_replace_recursive( $processed_args, $args );
 	    	}
 
-	    	$output = FRM::render_ajax_posts( $type, $args );
+	    	$output = static::render_ajax_posts( $type, $args );
 
 	    	if( is_string( $output ) ) 
 	    		echo $output;

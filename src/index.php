@@ -623,7 +623,7 @@ class Formation {
 
 
     public static function render_ajax_postsss( $args = [] ) {
-        return 'jjkljjojlkj';
+        return 'INCORRECT';
     }
 
     /*
