@@ -39,7 +39,7 @@ class Reading {
 		// admin pages list add state if associated with custom post type
 		add_filter( 'display_post_states', function( $post_states, $post ) {
 			foreach( FRM::$cpt as $c => $meta ) {
-				$cpt_page_id = (int) get_option( $c . '_page', 0 );
+				$cpt_page_id = (int) get_option( MW::get_namespaced_str( $c ) . '_page', 0 );
 
 				if( $cpt_page_id === $post->ID )
 					$post_states[] = $meta['label'] . ' Page';
