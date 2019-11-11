@@ -18,8 +18,13 @@ trait Ajax {
 	*/
 
 	public static function ajax_actions() {
-		add_action( 'wp_ajax_nopriv_create_nonce', [__CLASS__, 'create_nonce'] );
-		add_action( 'wp_ajax_create_nonce', [__CLASS__, 'create_nonce'] );
+		add_action( 'wp_ajax_nopriv_create_nonce', function() {
+			static::create_nonce();
+		} );
+
+		add_action( 'wp_ajax_create_nonce', function() {
+			static::create_nonce();
+		} );
 
 		add_action( 'wp_ajax_nopriv_send_form', function() {
 			static::send_form( 'nopriv' );
@@ -29,10 +34,13 @@ trait Ajax {
 			static::send_form( 'priv' );
 		} );
 
-		add_action( 'wp_ajax_nopriv_get_posts', [__CLASS__, 'get_posts'] );
-		add_action( 'wp_ajax_get_posts', [__CLASS__, 'get_posts'] );
+		add_action( 'wp_ajax_nopriv_get_posts', function() {
+			static::get_posts();
+		} );
 
-		var_dump(static::render_ajax_posts( [] ));
+		add_action( 'wp_ajax_get_posts', function() {
+			static::get_posts();
+		} );
     }
 
     /*
