@@ -136,12 +136,12 @@ trait Utils_Render {
      * Note: meant to be overwritten by user.
      *
      * @param string $post_type 
-     * @param array $query_args
+     * @param array $args
      * @return string / array of html output
      */
 
-    public static function render_ajax_posts( $post_type = 'post', $query_args = [] ) {
-        return '';
+    public static function render_ajax_posts( $post_type = 'post', $args = [] ) {
+        return 'BOOOOOM';
     }
 
     /*

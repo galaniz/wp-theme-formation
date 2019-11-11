@@ -247,8 +247,6 @@ trait Ajax {
 
     public static function get_posts() {
     	try {
-    		write_log('TEST GET POSTS');
-
 	    	$offset = (int) $_POST['offset'];
 	    	$type = $_POST['type'];
 	    	$posts_per_page = (int) $_POST['ppp'];
