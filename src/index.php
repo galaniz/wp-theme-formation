@@ -621,23 +621,17 @@ class Formation {
 	use Utils;
 	use Utils_Render;
 
-
-    public static function render_ajax_postsss( $args = [] ) {
-        return 'INCORRECT';
-    }
-
     /*
      * Output posts requested through ajax.
      *
      * Note: meant to be overwritten by user.
      *
-     * @param string $post_type 
      * @param array $args
      * @return string / array of html output
      */
 
-    public static function render_ajax_posts( $post_type = 'post', $args = [] ) {
-    	return static::render_ajax_postsss( $args );
+    public static function render_ajax_posts( $args = [] ) {
+    	return 'INCORRECT';
     }
 
    /*

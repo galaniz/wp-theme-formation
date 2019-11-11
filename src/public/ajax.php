@@ -178,7 +178,7 @@ trait Ajax {
 			if( $input_label == 'name' && $input_value ) {
 				add_filter( 'wp_mail_from_name', function( $name ) use ( $input_value ) {
 					return $input_value;
-				});
+				} );
 			}
 
 			if( $input_type == 'email' ) {
@@ -188,7 +188,7 @@ trait Ajax {
 					// make email from equal to sender email
 					add_filter( 'wp_mail_from', function( $email ) use ( $input_value ) {
 						return $input_value;
-					});
+					} );
 				}
 			} else {
 				$input_label_output = '';
@@ -218,7 +218,7 @@ trait Ajax {
 		// allow html
 		add_filter( 'wp_mail_content_type', function() {
 			return 'text/html';
-		});
+		} );
 
 		if( !$subject )
 			$subject = "$site_name Contact Form";
@@ -300,7 +300,7 @@ trait Ajax {
 				$args = array_replace_recursive( $processed_args, $args );
 	    	}
 
-	    	$output = static::render_ajax_posts( $type, $args );
+	    	$output = static::render_ajax_posts( $args );
 
 	    	if( is_string( $output ) ) 
 	    		echo $output;
