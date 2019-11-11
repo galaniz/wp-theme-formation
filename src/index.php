@@ -621,6 +621,11 @@ class Formation {
 	use Utils;
 	use Utils_Render;
 
+
+    public static function render_ajax_postsss( $args = [] ) {
+        return 'jjkljjojlkj';
+    }
+
     /*
      * Output posts requested through ajax.
      *
@@ -632,7 +637,7 @@ class Formation {
      */
 
     public static function render_ajax_posts( $post_type = 'post', $args = [] ) {
-    	return self::render_ajax_postsss();
+    	return self::render_ajax_postsss( $args );
     }
 
    /*
