@@ -31,6 +31,8 @@ trait Ajax {
 
 		add_action( 'wp_ajax_nopriv_get_posts', [__CLASS__, 'get_posts'] );
 		add_action( 'wp_ajax_get_posts', [__CLASS__, 'get_posts'] );
+
+		var_dump(static::render_ajax_posts( [] ));
     }
 
     /*
