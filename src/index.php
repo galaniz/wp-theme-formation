@@ -632,6 +632,10 @@ class Formation {
      */
 
     public static function render_ajax_posts( $post_type = 'post', $args = [] ) {
+    	if( method_exists( __CLASS__, 'render_ajax_postsss' ) ) {
+            return __CLASS__::render_ajax_postsss();
+        }
+
         return 'BOOOOOM';
     }
 
