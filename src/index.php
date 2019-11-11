@@ -637,7 +637,7 @@ class Formation {
      */
 
     public static function render_ajax_posts( $post_type = 'post', $args = [] ) {
-    	return self::render_ajax_postsss( $args );
+    	return static::render_ajax_postsss( $args );
     }
 
    /*
