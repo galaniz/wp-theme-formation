@@ -631,7 +631,7 @@ class Formation {
      */
 
     public static function render_ajax_posts( $args = [] ) {
-    	return 'INCORRECT';
+    	return '';
     }
 
    /*
@@ -652,6 +652,9 @@ class Formation {
 
 	public function cpt_nav_classes( $classes, $item ) {
 		foreach( static::$cpt as $c => $meta ) {
+			if( isset( $meta['no_slug'] ) )
+				continue;
+
 			$c_archive = is_post_type_archive( $c );
 			$c_tax = isset( $meta['taxonomy'] ) ? is_tax( $meta['taxonomy'] ) : false;
 			$c_single = is_singular( $c );

@@ -243,7 +243,7 @@ class Contact_Form {
         $output = '';
         $prefix = FRM::$namespace . '_';
 
-        $field_class = "l-$width js-visible__item a-fade-in-y --sm-y";
+        $field_class = "l-$width";
 
         if( $label_after )
             $field_class .= ' --l-after';
