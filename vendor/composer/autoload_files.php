@@ -7,5 +7,4 @@ $baseDir = dirname($vendorDir);
 
 return array(
     '532c6d2a428ecf5438f246ada896eddc' => $baseDir . '/src/globals.php',
-    'e53fa5a78104a96fb6e78faecde571b5' => $baseDir . '/src/admin/settings/insta.php',
 );

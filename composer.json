@@ -14,8 +14,7 @@
     },
     "autoload": {
         "files": [
-            "src/globals.php",
-            "src/admin/settings/insta.php"
+            "src/globals.php"
         ],
         "psr-4": {
             "Formation\\": "src/"

@@ -8,7 +8,6 @@ class ComposerStaticIniteb7cdd6420d025868a0145250003a4d1
 {
     public static $files = array (
         '532c6d2a428ecf5438f246ada896eddc' => __DIR__ . '/../..' . '/src/globals.php',
-        'e53fa5a78104a96fb6e78faecde571b5' => __DIR__ . '/../..' . '/src/admin/settings/insta.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -31,7 +30,6 @@ class ComposerStaticIniteb7cdd6420d025868a0145250003a4d1
         'Formation\\Admin\\Settings\\Theme' => __DIR__ . '/../..' . '/src/admin/settings/theme.php',
         'Formation\\Common\\Blocks\\Blocks' => __DIR__ . '/../..' . '/src/common/blocks/blocks.php',
         'Formation\\Common\\Blocks\\Contact_Form' => __DIR__ . '/../..' . '/src/common/blocks/contact-form.php',
-        'Formation\\Common\\Blocks\\Media' => __DIR__ . '/../..' . '/src/common/blocks/media.php',
         'Formation\\Common\\Field\\Field' => __DIR__ . '/../..' . '/src/common/field/field.php',
         'Formation\\Common\\Field\\File_Upload' => __DIR__ . '/../..' . '/src/common/field/file-upload.php',
         'Formation\\Common\\Field\\Select_Fields' => __DIR__ . '/../..' . '/src/common/field/select-fields.php',
