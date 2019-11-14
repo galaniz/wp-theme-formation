@@ -13,7 +13,7 @@ const { assign } = lodash;
 const { addFilter } = wp.hooks;
 const { createHigherOrderComponent } = wp.compose;
 const { Fragment } = wp.element;
-const { InspectorControls } = wp.editor;
+const { InspectorControls } = wp.blockEditor;
 const { select } = wp.data;
 
 const { 

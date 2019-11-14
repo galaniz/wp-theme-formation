@@ -22,8 +22,11 @@ const {
     withSelect
 } = wp.data;
 
-const { InspectorControls } = wp.editor;
-const { InnerBlocks } = wp.blockEditor;
+const { 
+    InspectorControls,
+    InnerBlocks 
+} = wp.blockEditor;
+
 const { Fragment } = wp.element;
 const { registerBlockType } = wp.blocks;
 
@@ -55,7 +58,7 @@ const recurseInnerBlocks = ( innerBlocks, email_label) => {
 const dataSelector = withSelect( ( select, ownProps ) => {
     let { attributes } = ownProps;
     let { email_label = def.email_label } = attributes;
-    let blocks = select( 'core/editor' ).getBlocks( ownProps.clientId );
+    let blocks = select( 'core/block-editor' ).getBlocks( ownProps.clientId );
 
     recurseInnerBlocks( blocks, email_label );
 } );

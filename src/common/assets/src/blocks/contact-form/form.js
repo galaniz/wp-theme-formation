@@ -17,8 +17,11 @@ const {
     TextControl
 } = wp.components;
 
-const { InspectorControls } = wp.editor;
-const { InnerBlocks } = wp.blockEditor;
+const { 
+    InspectorControls,
+    InnerBlocks 
+} = wp.blockEditor;
+
 const { Fragment } = wp.element;
 const { registerBlockType } = wp.blocks;
 

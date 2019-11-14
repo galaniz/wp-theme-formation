@@ -17,10 +17,10 @@ const {
 
 const { 
     MediaUpload,
-    MediaUploadCheck 
-} = wp.editor;
+    MediaUploadCheck,
+    InspectorControls
+} = wp.blockEditor;
 
-const { InspectorControls } = wp.editor;
 const { Fragment } = wp.element;
 const { registerBlockType } = wp.blocks;
 

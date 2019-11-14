@@ -253,4 +253,29 @@ class Utils_Optional {
             '</form>';
     }
 
+    /*
+     * Output for canvas workaround to scale svg in older browsers.
+     *
+     * @param string $svg_str
+     * @return string of html output
+     */
+
+    public static function render_svg_scale_fix( $svg_str = '' ) {
+        if( !$svg_str )
+            return '';
+
+        $view_box = explode( 'viewBox="', $svg_str );
+
+        if( !isset( $view_box[1] ) )
+            return '';
+
+        $view_box = explode( '"', $view_box[1] )[0];
+        $view_box = explode( ' ', $view_box );
+
+        $w = (int) $view_box[2];
+        $h = (int) $view_box[3];
+
+        return "<canvas class='u-svg-scale-fix' width='$w' height='$h'></canvas>$svg_str"; 
+    }
+
 } // end Utils_Optional

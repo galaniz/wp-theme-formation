@@ -27,7 +27,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
         	return;
 
         let blockName = nO.insert_block,
-        	blocksInEditor = wp.data.select( 'core/editor' ).getEditorBlocks(),
+        	blocksInEditor = wp.data.select( 'core/block-editor' ).getEditorBlocks(),
             blockExists = false;
 
         blocksInEditor.forEach( ( b ) => {
@@ -39,7 +39,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 
         if( !blockExists ) {
             let block = wp.blocks.createBlock( blockName, nO.insert_block_defaults );
-            wp.data.dispatch( 'core/editor' ).insertBlock( block, 0 );
+            wp.data.dispatch( 'core/block-editor' ).insertBlock( block, 0 );
         }
     } );
 } );
