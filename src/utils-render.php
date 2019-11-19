@@ -203,8 +203,8 @@ trait Utils_Render {
                     '%4$s' .
                     "<div class='$button_field'>" .
                         '<button class="o-button js-submit%5$s" type="submit">' .
-                            '<div class="o-button__text u-position-relative">%6$s</div>' .
                             static::render_loader( '--hide', static::$classes['icon'] ) .
+                            '<div class="o-button__text">%6$s</div>' .
                         '</button>' .
                     '</div>' .
                 '</div>' .

@@ -23,23 +23,47 @@ document.addEventListener( 'DOMContentLoaded', () => {
         if( !nO )
         	return;
 
-        if( !nO.hasOwnProperty( 'insert_block' ) )
+        let insertBlock = false,
+            insertBlocks = false;
+
+        if( nO.hasOwnProperty( 'insert_block' ) )
+            insertBlock = nO.insert_block;
+
+        if( nO.hasOwnProperty( 'insert_blocks' ) )
+            insertBlocks = nO.insert_blocks;
+
+        if( !insertBlock || !insertBlocks )
         	return;
 
-        let blockName = nO.insert_block,
-        	blocksInEditor = wp.data.select( 'core/block-editor' ).getEditorBlocks(),
-            blockExists = false;
+        if( insertBlock ) {
+            insertBlocks = [
+                {
+                    name: insertBlock,
+                    defaults: nO.insert_block_defaults
+                }
+            ];
+        }
 
-        blocksInEditor.forEach( ( b ) => {
-            if( b.name == blockName ) {
-                blockExists = true;
-                return;
+        if( !insertBlocks.length )
+            return;
+
+        let blocksInEditor = wp.data.select( 'core/block-editor' ).getEditorBlocks();
+
+        insertBlocks.forEach( ( bb ) => {
+            let blockName = bb.name,
+                blockExists = false;
+
+            blocksInEditor.forEach( ( b ) => {
+                if( b.name == blockName ) {
+                    blockExists = true;
+                    return;
+                }
+            } );
+
+            if( !blockExists ) {
+                let block = wp.blocks.createBlock( blockName, bb.defaults );
+                wp.data.dispatch( 'core/block-editor' ).insertBlock( block, 0 );
             }
         } );
-
-        if( !blockExists ) {
-            let block = wp.blocks.createBlock( blockName, nO.insert_block_defaults );
-            wp.data.dispatch( 'core/block-editor' ).insertBlock( block, 0 );
-        }
     } );
 } );

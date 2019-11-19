@@ -136,21 +136,24 @@ trait Utils {
             $post_id = $args['post_id'] ?? get_the_ID();
             $post = $args['post'] ?? get_post( $post_id );
 
-            // check for meta description
-            $content = get_post_meta( $post_id, 'meta_description', true );
-
-            if( !$content )
-                $content = $post->post_excerpt ? $post->post_excerpt : $post->post_content;
+            if( $post->post_excerpt ) {
+                $content = $post->post_excerpt;
+                $max = 0;
+            } else {
+                $content = $post->post_content;
+            }
         }
 
         if( $content ) {
             $content = wp_strip_all_tags( $content, true );
             $content = strip_shortcodes( $content );
 
-            if( $words ) { // trim words
-                $content = wp_trim_words( $content, $max );
-            } else { // trim characters
-                $content = mb_strimwidth( $content, 0, $max );
+            if( $max ) {
+                if( $words ) { // trim words
+                    $content = wp_trim_words( $content, $max );
+                } else { // trim characters
+                    $content = mb_strimwidth( $content, 0, $max );
+                }
             }
         } else {
             $content = '';
