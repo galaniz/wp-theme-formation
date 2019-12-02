@@ -8,6 +8,7 @@
 namespace Formation\Pub;
 
 use \Formation\Formation as FRM; 
+use function \Formation\write_log;
 
 trait Ajax {
 
