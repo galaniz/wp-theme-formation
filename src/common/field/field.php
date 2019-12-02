@@ -12,10 +12,11 @@ namespace Formation\Common\Field;
  * -------
  */
 
-use function Formation\additional_script_data;
 use \Formation\Formation as FRM;
 use Formation\Common\Field\File_Upload;
-use function \Formation\write_log;
+
+use function Formation\additional_script_data;
+use function Formation\write_log;
 
 class Field {
 
