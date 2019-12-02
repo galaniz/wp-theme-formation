@@ -464,6 +464,13 @@ class Field {
                 $checked = '';
                 $v = $val;
 
+                write_log([
+                    'v' => $v,
+                    'val' => $val,
+                    'value' => $value,
+                    'data_value' => $data_value
+                ]);
+
                 if( $checkbox_radio ) {
                     if( $data_value == $value ) 
                         $checked = 'checked';
