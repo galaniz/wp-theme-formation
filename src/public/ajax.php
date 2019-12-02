@@ -167,6 +167,8 @@ trait Ajax {
 			'email' => 'email'
 		];
 
+		write_log($inputs);
+
 		foreach( $inputs as $name => $input ) {
 			$input_type = $input['type'];
 			$input_label = $input['label'] ?? '';
@@ -177,7 +179,7 @@ trait Ajax {
 					$sanitize_type = 'sanitize_' . $input_types[$input_type];
 
 					if( function_exists( $sanitize_type ) )
-						$input_value = $sanitize_type( $input['value'] );
+						$input_value = $sanitize_type( $input_value );
 				} 
 
 				if( $input_type === 'textarea' )
