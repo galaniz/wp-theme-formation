@@ -304,8 +304,9 @@ class Contact_Form {
             'no_group' => true
         ];
 
-        if( $value && $options_array )
+        if( $value && ( $options_array || ( $type == 'radio' || $type == 'checkbox' || $type == 'select' ) ) ) {
             $render_args['data'] = $value;
+        }
 
         Field::render( $render_args, $output );
 

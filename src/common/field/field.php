@@ -465,13 +465,6 @@ class Field {
                 $checked = '';
                 $v = $val;
 
-                write_log([
-                    'v' => $v,
-                    'val' => $val,
-                    'value' => $value,
-                    'data_value' => $data_value
-                ]);
-
                 if( $checkbox_radio ) {
                     if( $data_value == $value ) 
                         $checked = 'checked';
@@ -493,6 +486,17 @@ class Field {
 
                 if( $checkbox_radio )
                     $output .= '<span class="o-field__control"></span>';
+
+                break;
+            case 'checkbox_group':
+            case 'radio_group':
+                $output .= self::render_opt_button( [
+                    'options' => $options,
+                    'id' => $name,
+                    'type' => $type == 'checkbox_group' ? 'checkbox' : 'radio',
+                    'value' => $val,
+                    'attr' => $attr
+                ] );
 
                 break;
             case 'file':
@@ -611,6 +615,52 @@ class Field {
         }
 
         $output .= '</div>';
+    }
+
+   /*
+    * Output radio / checkbox buttons
+    *
+    * @param array $args
+    * @return string of markup
+    */
+
+    public static function render_opt_button( $args = [] ) {
+        $options = $args['options'] ?? [];
+        $id = $args['id'] ?? FRM::$namespace . '_' . uniqid();
+        $type = $args['type'] ?? 'radio';
+        $value = $args['value'] ?? '';
+        $class = $args['class'] ?? '';
+        $attr = $args['attr'] ?? '';
+
+        $class = 'o-radio__input u-hide-input js-input' . ( $class ? " $class" : '' );
+
+        if( $attr )
+            $attr = " $attr";
+
+        $output = '';
+
+        foreach( $options as $index => $o ) {
+            $operator = $o['operator'] ?? false;
+            $operator = $operator ? ' data-operator="' . $operator . '"' : '';
+
+            $o_id = $id;
+            $o_label = $o['label'];
+            $o_value = $o['value'];
+
+            $checked = ( $value && $o_value == $value ) ? ' checked' : '';
+
+            $output .= 
+                '<div class="o-radio__item">' .
+                    '<label>' .
+                        "<input class='$class' type='$type' id='$o_id' name='$o_id' value='$o_value'$checked$operator$attr>" .
+                        '<div class="o-radio__field o-field__input --sm">' .
+                            "<div class='o-radio__label'>$o_label</div>" .
+                        '</div>' .
+                    '</label>' .
+                '</div>';
+        }
+
+        return "<div class='o-radio l-flex --wrap --align-center'>$output</div>";
     }
 
    /*
