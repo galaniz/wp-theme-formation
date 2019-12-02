@@ -160,15 +160,24 @@ trait Ajax {
 		$site_name = get_bloginfo( 'name' );
 		$output = '';
 
+		$input_types = [
+			'text' => 'text_field',
+			'select' => 'text_field',
+			'textarea' => 'textarea_field',
+			'email' => 'email'
+		];
+
 		foreach( $inputs as $name => $input ) {
 			$input_type = $input['type'];
 			$input_label = $input['label'] ?? '';
 
 			if( $input_type ) {
-				$sanitize_type = 'sanitize_' . $input_type;
+				if( isset( $input_types[$input_type] ) ) {
+					$sanitize_type = 'sanitize_' . $input_types[$input_type];
 
-				if( function_exists( $sanitize_type ) )
-					$input_value = $sanitize_type( $input['value'] );
+					if( function_exists( $sanitize_type ) )
+						$input_value = $sanitize_type( $input['value'] );
+				}
 
 				if( $input_type === 'textarea_field' )
 					$input_value = nl2br( $input_value );

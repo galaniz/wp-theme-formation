@@ -319,15 +319,6 @@ class Formation {
 
 		additional_script_data( static::$namespace, $ajax_url, true, true );
 
-		additional_script_data( static::$namespace, [
-			'input_types' => [
-				'text' => 'text_field',
-				'select' => 'text_field',
-				'textarea' => 'textarea_field',
-				'email' => 'email'
-			]
-		], true, true );
-
 		/* Set uploads variables */
 
 		self::$uploads_dir = WP_CONTENT_DIR . '/' . static::$namespace . '_uploads/';
