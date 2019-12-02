@@ -305,7 +305,7 @@ class Contact_Form {
         ];
 
         if( $value && $options_array )
-            $render_args['value'] = $value;
+            $render_args['data'] = $value;
 
         Field::render( $render_args, $output );
 
