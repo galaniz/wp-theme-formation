@@ -170,6 +170,7 @@ trait Ajax {
 		foreach( $inputs as $name => $input ) {
 			$input_type = $input['type'];
 			$input_label = $input['label'] ?? '';
+			$input_value = $input['value'];
 
 			if( $input_type ) {
 				if( isset( $input_types[$input_type] ) ) {
@@ -177,18 +178,14 @@ trait Ajax {
 
 					if( function_exists( $sanitize_type ) )
 						$input_value = $sanitize_type( $input['value'] );
-				}
+				} 
 
-				if( $input_type === 'textarea_field' )
+				if( $input_type === 'textarea' )
 					$input_value = nl2br( $input_value );
-			} else {
-				$input_value = $input['value'];
 			}
 
-			if( is_array( $input_value ) ) {
-				write_log( $input_value );
+			if( is_array( $input_value ) ) 
 				$input_value = implode( '<br>', $input_value );
-			}	
 
 			if( $input_label == 'subject' && $input_value ) {
 				$subject .= " - " . $input_value;
@@ -218,7 +215,7 @@ trait Ajax {
 				if( $input_label ) {
 					$input_label_output = '<strong>' . $input_label . '</strong>: ';
 
-					if( $input_type === 'textarea_field' && $input_value )
+					if( $input_type === 'textarea' && $input_value )
 						$input_label_output .= '<br>';
 				}
 
