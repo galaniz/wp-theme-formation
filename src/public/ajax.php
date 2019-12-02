@@ -166,7 +166,9 @@ trait Ajax {
 
 			if( $input_type ) {
 				$sanitize_type = 'sanitize_' . $input_type;
-				$input_value = $sanitize_type( $input['value'] );
+
+				if( function_exists( $sanitize_type ) )
+					$input_value = $sanitize_type( $input['value'] );
 
 				if( $input_type === 'textarea_field' )
 					$input_value = nl2br( $input_value );

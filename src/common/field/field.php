@@ -432,7 +432,7 @@ class Field {
             "<div class='o-field" . ( $field_class ? " $field_class" : '' ) . " --$type'$hidden>";
 
         if( $label && !$label_hidden ) {
-            $label_class = "o-field__label" . ( $label_class ? " $label_class" : '' ) . $req;
+            $label_class = "o-field__label" . ( $label_class ? "$label_class" : '' ) . $req;
 
             $output .= '<label>';
 
