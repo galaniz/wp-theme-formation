@@ -168,8 +168,6 @@ trait Ajax {
 			'email' => 'email'
 		];
 
-		write_log($inputs);
-
 		foreach( $inputs as $name => $input ) {
 			$input_type = $input['type'];
 			$input_label = $input['label'] ?? '';

@@ -127,7 +127,7 @@ trait Utils {
      * @return string trimmed to specified length 
      */
 
-    public static function get_excerpt( $args ) {
+    public static function get_excerpt( $args = [] ) {
         $content = $args['content'] ?? '';
         $words = $args['words'] ?? false;
         $max = $args['length'] ?? 55;
