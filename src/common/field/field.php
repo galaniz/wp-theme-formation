@@ -435,7 +435,8 @@ class Field {
         if( $label && !$label_hidden ) {
             $label_class = "o-field__label" . ( $label_class ? "$label_class" : '' ) . $req;
 
-            $output .= '<label>';
+            if( $type != 'checkbox_group' && $type != 'radio_group' )
+                $output .= '<label>';
 
             $label = "<div class='$label_class'>$label</div>";
 
@@ -611,7 +612,8 @@ class Field {
             if( !$label_above )
                 $output .= $label;
 
-            $output .= '</label>';
+            if( $type != 'checkbox_group' && $type != 'radio_group' )
+                $output .= '</label>';
         }
 
         $output .= '</div>';
