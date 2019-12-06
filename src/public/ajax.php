@@ -282,6 +282,9 @@ trait Ajax {
 	    		'posts_per_page' => $posts_per_page
 	    	];
 
+	    	write_log($_POST['query_args']);
+	    	write_log($_POST['filters']);
+
 	    	if( isset( $_POST['query_args'] ) && isset( $_POST['filters'] ) ) {
 	    		$filters = $_POST['filters'];
 	    		$query_args = $_POST['query_args'];
