@@ -80,6 +80,9 @@ class Blocks {
         // ajax callbacks for previewing blocks in editor
         add_action( 'wp_ajax_nopriv_preview_blocks', [__CLASS__, 'preview_blocks'] );
         add_action( 'wp_ajax_preview_blocks', [__CLASS__, 'preview_blocks'] );
+
+        // theme block category
+        add_filter( 'block_categories', [$this, 'block_theme_category'], 10, 2 );
     }
 
    /*
@@ -243,7 +246,6 @@ class Blocks {
         return $block_content;
     }
 
-
    /*
     * Ajax callback to preview block in editor.
     *
@@ -269,6 +271,26 @@ class Blocks {
             echo $e->getMessage();
             exit;
         }
+    }
+
+   /*
+    * Add theme block category
+    *
+    * @param array $categories
+    * @param object $post
+    * @return array 
+    */ 
+
+    public function block_theme_category( $categories, $post ) {
+        return array_merge(
+            $categories,
+            [
+                [
+                    'slug' => 'theme-blocks',
+                    'title' => 'Theme Blocks'
+                ]
+            ]
+        );
     }
 
 } // end Blocks
