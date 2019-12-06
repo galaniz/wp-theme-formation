@@ -110,6 +110,21 @@ class Reading {
 	            	'min' => '1'
 	            ]
 	        ];
+
+	        if( isset( $meta['ajax_posts_per_page'] ) ) {
+		        $fields[] = [
+		            'name' => $c . '_ajax_posts_per_page',
+		            'label' => $meta['label'] . ' page loads at most (ajax)',
+		            'section' => 'default',
+		            'type' => 'number',
+		            'label_hidden' => true,
+		            'class' => 'c-cpt',
+		            'attr' => [
+		            	'step' => '1',
+		            	'min' => '1'
+		            ]
+		        ];
+	        }
 		}
 
 		if( self::$additional_fields ) 

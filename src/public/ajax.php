@@ -282,9 +282,6 @@ trait Ajax {
 	    		'posts_per_page' => $posts_per_page
 	    	];
 
-	    	write_log($_POST['query_args']);
-	    	write_log($_POST['filters']);
-
 	    	if( isset( $_POST['query_args'] ) && isset( $_POST['filters'] ) ) {
 	    		$filters = $_POST['filters'];
 	    		$query_args = $_POST['query_args'];
@@ -320,10 +317,6 @@ trait Ajax {
 	    		}
 
 				$args = array_merge_recursive( $processed_args, $args );
-
-				write_log('ARGS');
-				write_log( $processed_args );
-				write_log( $args );
 	    	}
 
 	    	$output = static::render_ajax_posts( $args );
