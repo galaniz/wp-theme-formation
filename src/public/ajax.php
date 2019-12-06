@@ -316,7 +316,11 @@ trait Ajax {
 	    			}		
 	    		}
 
-				$args = array_replace_recursive( $processed_args, $args );
+				$args = array_merge_recursive( $processed_args, $args );
+
+				write_log('ARGS');
+				write_log( $processed_args );
+				write_log( $args );
 	    	}
 
 	    	$output = static::render_ajax_posts( $args );
