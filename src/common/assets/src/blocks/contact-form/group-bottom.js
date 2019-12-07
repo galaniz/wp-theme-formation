@@ -28,7 +28,7 @@ const name = n + 'contact-form-group-bottom';
 
 registerBlockType( name, {
     title: 'Field Group Bottom',
-    category: 'common',
+    category: 'theme-blocks',
     parent: [n + 'contact-form-group'],
     edit( props ) {
         return [

@@ -40,7 +40,7 @@ const def = nO.blocks[name]['default'];
 
 registerBlockType( name, {
     title: 'Contact Form',
-    category: 'common',
+    category: 'theme-blocks',
     attributes: attr,
     edit( props ) {
         const { attributes, setAttributes, clientId } = props;

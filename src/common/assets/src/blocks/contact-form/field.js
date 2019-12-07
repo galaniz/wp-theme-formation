@@ -47,7 +47,7 @@ const def = nO.blocks[name]['default'];
 
 registerBlockType( name, {
     title: 'Field',
-    category: 'common',
+    category: 'theme-blocks',
     parent: [n + 'contact-form', n + 'contact-form-group-bottom'],
     attributes: attr,
     edit( props ) {

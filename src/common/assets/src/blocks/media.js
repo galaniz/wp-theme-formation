@@ -37,7 +37,7 @@ const parent = window[namespace].blocks[blockName]['parent'];
 
 let args = {
     title: 'Media',
-    category: 'common',
+    category: 'theme-blocks',
     attributes: attr,
     edit: props => {
         const { attributes, setAttributes } = props;

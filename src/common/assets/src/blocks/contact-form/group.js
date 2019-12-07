@@ -67,7 +67,7 @@ const dataSelector = withSelect( ( select, ownProps ) => {
 
 registerBlockType( name, {
     title: 'Field Group',
-    category: 'common',
+    category: 'theme-blocks',
     attributes: attr,
     parent: [n + 'contact-form'],
     edit: dataSelector( ( props ) => {  

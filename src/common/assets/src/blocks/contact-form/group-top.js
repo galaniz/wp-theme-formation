@@ -28,7 +28,7 @@ const name = n + 'contact-form-group-top';
 
 registerBlockType( name, {
     title: 'Field Group Top',
-    category: 'common',
+    category: 'theme-blocks',
     parent: [n + 'contact-form-group'],
     edit( props ) {
         return [
