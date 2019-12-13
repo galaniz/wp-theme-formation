@@ -62,13 +62,17 @@ class Reading {
 		foreach( $get_pages as $page )
 		    $page_options[$page->ID] = esc_attr( $page->post_title );
 
-		$fields = [];
+		$fields = [
+			[
+				'name' => 'post_more_label',
+				'label' => 'Post more posts label',
+				'section' => 'default',
+				'type' => 'text'
+			]
+		];
 
 		foreach( FRM::$cpt as $c => $meta ) {
 			if( isset( $meta['no_reading'] ) )
-				continue;
-			
-			if( isset( $meta['parent'] ) )
 				continue;
 			
 			$name = $c . '_page';
@@ -109,6 +113,13 @@ class Reading {
 	            	'step' => '1',
 	            	'min' => '1'
 	            ]
+	        ];
+
+	        $fields[] = [
+	            'name' => $c . '_more_label',
+	            'label' => $meta['label'] . ' more posts label',
+	            'section' => 'default',
+	            'type' => 'text'
 	        ];
 
 	        if( isset( $meta['ajax_posts_per_page'] ) ) {

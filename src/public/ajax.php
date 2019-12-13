@@ -117,6 +117,8 @@ trait Ajax {
 
 			if( $type == 'contact' ) {
 				static::send_contact_form();
+			} else if( $type == 'mailchimp' ) {
+				static::mailchimp_signup();
 			} else if( $type == 'comment' ) {
 				// static::send_comment( $priv_type );
 			}
@@ -127,6 +129,120 @@ trait Ajax {
     		header( http_response_code( 500 ) );
 			exit;
     	}
+    }
+
+    /*
+     * Process mailchimp signup form.
+     *
+     * @pass array $inputs
+     * @echo string if successfully sent
+     */
+	
+    protected static function mailchimp_signup() {
+	    if( !$_POST['location'] ) 
+	    	throw new Exception( 'No location' ); 
+
+	    if( !$_POST['inputs'] ) 
+	    	throw new Exception( 'No inputs' ); 
+
+	    /* Inputs */
+
+	    $inputs = $_POST['inputs'];
+	    $location = $_POST['location'];
+
+	    $email = '';
+	    $tags = [];
+	    $merge_fields = [];
+
+	    foreach( $inputs as $name => $input ) {
+			$input_type = $input['type'];
+			$input_label = $input['label'] ?? '';
+			$input_value = $input['value'];
+
+			if( $input_type ) {
+				if( isset( $input_types[$input_type] ) ) {
+					$sanitize_type = 'sanitize_' . $input_types[$input_type];
+
+					if( function_exists( $sanitize_type ) )
+						$input_value = $sanitize_type( $input_value );
+				} 
+
+				if( $input_type === 'textarea' )
+					$input_value = nl2br( $input_value );
+
+				if( $input_type === 'email' )
+					$email = urldecode( $input_value );
+			}
+
+			$input_value = urldecode( $input_value );
+
+			if( isset( $input['tag'] ) )
+				$tags[] = $input_value;
+
+			if( isset( $input['merge_field'] ) )
+				$merge_fields[strtoupper( $name )] = $input_value;
+		}
+
+		if( !$email )
+			throw new Exception( 'No email' ); 
+
+		$error = false;
+
+		/* Credentials */
+
+		$key = get_option( self::$namespace . '_mailchimp_api_key', '' );
+
+		if( !$key )
+			throw new Exception( 'No API key' );
+
+		$data_center = explode( '-', $key )[1];
+
+		$list_id = get_option( self::$namespace . '_mailchimp_list_' . $location . '_id', '' );
+
+		if( !$list_id )
+			throw new Exception( 'No List ID' );
+
+		/* Url */
+
+		$url = "https://$data_center.api.mailchimp.com/3.0/lists/$list_id/members/";
+
+		/* Body */
+		
+		$body = [
+			'email_address' => $email,
+			'status' => 'subscribed',
+		];
+
+		if( count( $tags ) > 0 )
+			$body['tags'] = $tags;
+
+		if( count( $merge_fields ) > 0 )
+			$body['merge_fields'] = $merge_fields;
+
+		/* Post */
+
+		$response = wp_safe_remote_post( $url, [
+			'headers' => [
+				'Content-type' => 'application/json',
+				'Authorization' => 'Basic ' . base64_encode( "anystring:$key" )
+			],
+			'body' => json_encode( $body )
+		] );
+
+		if( is_wp_error( $response ) ) {
+			$error = true;
+		} else {
+			$code = isset( $response['response']['code'] ) ? $response['response']['code'] : 500;
+
+			if( $code !== 200 )
+				$error = true;
+		}
+
+		if( $error ) {
+			throw new \Exception( 'Error Mailchimp API' ); 
+		} else {
+			echo 'Success';
+		}
     }
 
     /*
@@ -281,6 +397,13 @@ trait Ajax {
 	    		'post_status' => 'publish',
 	    		'posts_per_page' => $posts_per_page
 	    	];
+
+	    	if( isset( $_POST['query_args_static'] ) ) {
+	    		$query_args_static = $_POST['query_args_static'];
+
+	    		if( $query_args_static && is_array( $query_args_static ) )
+	    			$args = array_replace_recursive( $query_args_static, $args );
+	    	}
 
 	    	if( isset( $_POST['query_args'] ) && isset( $_POST['filters'] ) ) {
 	    		$filters = $_POST['filters'];

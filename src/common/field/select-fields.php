@@ -72,7 +72,7 @@ class Select_Fields {
     * @return string of markup
     */
 
-	public static function render( $fields = [] ) {
+	public static function render( $fields = [], $group = true ) {
 		if( !$fields )
 			return '';
 
@@ -127,7 +127,8 @@ class Select_Fields {
 		}, $fields );
 
 		Field::render( [
-			'fields' => $fields
+			'fields' => $fields,
+            'no_group' => !$group
 		], $output );
 
 		return $output;
