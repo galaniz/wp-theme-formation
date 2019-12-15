@@ -139,11 +139,11 @@ trait Ajax {
      */
 	
     protected static function mailchimp_signup() {
-	    if( !$_POST['location'] ) 
-	    	throw new Exception( 'No location' ); 
+	    if( !isset( $_POST['location'] ) ) 
+	    	throw new \Exception( 'No location' ); 
 
-	    if( !$_POST['inputs'] ) 
-	    	throw new Exception( 'No inputs' ); 
+	    if( !isset( $_POST['inputs'] ) ) 
+	    	throw new \Exception( 'No inputs' ); 
 
 	    /* Inputs */
 
@@ -153,6 +153,8 @@ trait Ajax {
 	    $email = '';
 	    $tags = [];
 	    $merge_fields = [];
+
+	    $n = self::$namespace . '_';
 
 	    foreach( $inputs as $name => $input ) {
 			$input_type = $input['type'];
@@ -180,27 +182,27 @@ trait Ajax {
 				$tags[] = $input_value;
 
 			if( isset( $input['merge_field'] ) )
-				$merge_fields[strtoupper( $name )] = $input_value;
+				$merge_fields[strtoupper( str_replace( $n, '', $name ) )] = $input_value;
 		}
 
 		if( !$email )
-			throw new Exception( 'No email' ); 
+			throw new \Exception( 'No email' ); 
 
 		$error = false;
 
 		/* Credentials */
 
-		$key = get_option( self::$namespace . '_mailchimp_api_key', '' );
+		$key = get_option( $n . 'mailchimp_api_key', '' );
 
 		if( !$key )
-			throw new Exception( 'No API key' );
+			throw new \Exception( 'No API key' );
 
 		$data_center = explode( '-', $key )[1];
 
-		$list_id = get_option( self::$namespace . '_mailchimp_list_' . $location . '_id', '' );
+		$list_id = get_option( $n . 'mailchimp_list_' . $location . '_id', '' );
 
 		if( !$list_id )
-			throw new Exception( 'No List ID' );
+			throw new \Exception( 'No List ID' );
 
 		/* Url */
 
@@ -241,7 +243,7 @@ trait Ajax {
 		if( $error ) {
 			throw new \Exception( 'Error Mailchimp API' ); 
 		} else {
-			echo 'Success';
+			echo json_encode( ['success' => 'Successfully subscribed.'] );
 		}
     }
 

@@ -15,7 +15,8 @@ namespace Formation\Admin\Settings;
 use Formation\Formation as FRM;  
 use Formation\Common\Field\Field; 
 use Formation\Common\Field\Select_Fields; 
-use Formation\Admin\Settings\Settings; 
+use Formation\Admin\Settings\Settings;
+use function Formation\write_log;
 
 class Theme {
 
@@ -133,7 +134,6 @@ class Theme {
 
         $args = array_replace_recursive( [
             'recaptcha' => false, 
-            'instagram' => false,
             'mailchimp_list_locations' => [],
             'sections' => [],
             'fields' => [],
@@ -165,37 +165,6 @@ class Theme {
             ];
         }
 
-        /* Instagram */
-
-        if( $instagram ) {
-            /*$this->sections[] = [
-                'id' => 'insta-config',
-                'title' => 'Configure'
-            ];
-
-            $return_uri = admin_url( 'options-general.php?page=theme&tab=instagram' );
-            $data_uri = FRM::$src_url . 'admin/settings/insta.php';
-
-            $redirect_uri = urlencode( "https://www.gracielaalaniz.com/insta?return_uri=$return_uri" . "&data_uri=$data_uri" );
-
-            $this->fields[] = [
-                'name' => 'insta_access_token',
-                'type' => 'hidden',
-                'label' => 'Account',
-                'section' => 'insta-config',
-                'tab' => 'Instagram',
-                'before' =>
-                    '<div class="u-display-inline-block">' . 
-                        '<a class="o-button button-secondary u-position-relative --lg" id="js-insta-auth" href="https://api.instagram.com/oauth/authorize?app_id=1988348524600914&scope=user_profile,user_media&response_type=code&redirect_uri=' . $redirect_uri . '" target="_blank">' .
-                            "<span class='dashicons dashicons-instagram'></span>" .
-                            "<span>Connect Account</span>" .
-                            "<span class='o-loader'><span class='spinner is-active'></span></span>" .
-                        '</a>' .
-                    '</div>',
-                'after' => '<input type="hidden" name="' . FRM::$namespace . '_insta_user_id">'
-            ];*/
-        }
-
         /* Mailchimp */
 
         if( $mailchimp_list_locations ) {
@@ -215,6 +184,22 @@ class Theme {
                 $cap_location = ucfirst( $location );
                 $section_id = 'mailchimp_' . $location;
                 $name_fields = $name . '_fields';
+
+                $f = Select_Fields::get( $name_fields );
+
+                $f[] = [
+                    'type' => 'checkbox',
+                    'label' => 'Tag',
+                    'name' => $name_fields . '[%i][tag]',
+                    'value' => 1
+                ];
+
+                $f[] = [
+                    'type' => 'checkbox',
+                    'label' => 'Merge Field',
+                    'name' => $name_fields . '[%i][merge_field]',
+                    'value' => 1
+                ];
 
                 $this->sections[] = [
                     'id' => $section_id,
@@ -247,8 +232,26 @@ class Theme {
                     'label' => 'Fields',
                     'label_hidden' => true,
                     'multi' => true,
-                    'on_save' => ['Select_Fields', 'filter'],
-                    'fields' => Select_Fields::get( $name_fields ),
+                    'on_save' => function( $value ) {
+                        foreach( $value as &$v ) {
+                            $tag = $v['tag'] ?? false;
+                            $merge_field = $v['merge_field'] ?? false;
+
+                            if( $tag || $merge_field ) {
+                                if( !isset( $v['attr'] ) )
+                                    $v['attr'] = [];
+
+                                if( $tag )
+                                    $v['attr']['data-tag'] = 'true';
+
+                                if( $merge_field )
+                                    $v['attr']['data-merge-field'] = 'true';
+                            }
+                        }
+
+                        return Select_Fields::filter( $value );
+                    },
+                    'fields' => $f,
                     'section' => $section_id,
                     'tab' => 'Mailchimp'
                 ];

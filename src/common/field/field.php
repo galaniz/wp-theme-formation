@@ -429,6 +429,9 @@ class Field {
 
         $hidden = $hidden === '100' || ( $hidden && !$val ) ? ' style="display: none;"' : '';
 
+        if( $type == 'hidden' )
+            $field_class .= ( $field_class ? ' ' : '' ) . 'u-visually-hidden';
+
         $output .= 
             "<div class='o-field" . ( $field_class ? " $field_class" : '' ) . " --$type'$hidden>";
 
@@ -452,6 +455,7 @@ class Field {
             case 'checkbox':
             case 'radio':
             case 'number':
+            case 'hidden':
                 if( is_admin() ) {
                     if( $type !== 'checkbox' && $type !== 'number' )
                         $classes .= ' regular-text';

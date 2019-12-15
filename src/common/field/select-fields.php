@@ -14,6 +14,7 @@ namespace Formation\Common\Field;
 
 use Formation\Formation as FRM;  
 use Formation\Common\Field\Field; 
+use function Formation\write_log;
 
 class Select_Fields {
 
@@ -26,6 +27,10 @@ class Select_Fields {
 
 	public static function get( $name ) {
 		return [
+            [
+                'name' => $name . '[%i][name]',
+                'label' => 'Name'
+            ],
             [
                 'name' => $name . '[%i][label]',
                 'label' => 'Label'
@@ -43,7 +48,8 @@ class Select_Fields {
                     'radio' => 'Radio',
                     'email' => 'Email',
                     'select' => 'Select',
-                    'textarea' => 'Text Area'
+                    'textarea' => 'Text Area',
+                    'hidden' => 'Hidden'
                 ]
             ],
             [
@@ -55,6 +61,11 @@ class Select_Fields {
                 	'rows' => 5,
                 	'cols' => 40
                 ]
+            ],
+            [
+                'type' => 'text',
+                'name' => $name . '[%i][value]',
+                'label' => 'Value'
             ],
             [
                 'type' => 'checkbox',
@@ -82,10 +93,14 @@ class Select_Fields {
 			$fields = [$fields];
 
 		$fields = array_map( function( $v ) {
-			$v['name'] = FRM::$namespace . '_' . str_replace( ' ', '_', strtolower( $v['label'] ) );
+			if( !isset( $v['name'] ) )
+                $v['name'] = FRM::$namespace . '_' . str_replace( ' ', '_', strtolower( $v['label'] ) );
 
 			$type = $v['type'];
 			$options = $v['options'] ?? '';
+
+            if( !isset( $v['attr'] ) )
+                $v['attr'] = [];
 
 			if( $options ) {
 				$options = explode( "\n", $options );
@@ -117,11 +132,8 @@ class Select_Fields {
 				}
 			}
 
-			if( isset( $v['required'] ) ) {
-				$v['attr'] = [
-					'aria-required' => 'true'
-				];
-			}
+			if( isset( $v['required'] ) )
+                $v['attr']['aria-required'] = 'true';
 
 			return $v;
 		}, $fields );

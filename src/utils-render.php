@@ -168,6 +168,7 @@ trait Utils_Render {
         $args = array_merge(
             [
                 'class' => '',
+                'attr' => [],
                 'id' => uniqid(),
                 'data_type' => 'default',
                 'fields' => '',
@@ -197,8 +198,19 @@ trait Utils_Render {
             $button_field .= ' --single';
         }
 
+        if( $attr ) {
+            $attr_formatted = [];
+
+            foreach( $attr as $a => $v )
+                $attr_formatted[] = $a . '="' . $v . '"';
+
+            $attr = ' ' . implode( ' ', $attr_formatted );
+        } else {
+            $attr = '';
+        }
+
         return sprintf(
-            '<form class="js-form%1$s" id="%2$s" data-type="%3$s" novalidate>' .
+            '<form class="js-form%1$s" id="%2$s" data-type="%3$s" novalidate%11$s>' .
                 '<div class="o-field-container u-position-relative l-flex --wrap">' .
                     '%4$s' .
                     "<div class='$button_field'>" .
@@ -231,7 +243,8 @@ trait Utils_Render {
             $icon_error_width,
             $icon_error_height,
             $icon_success_width,
-            $icon_success_height
+            $icon_success_height,
+            $attr
         );
     }
 
