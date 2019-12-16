@@ -155,7 +155,7 @@ self::$classes = [
 Stores svg sprite meta. Svgs can be found in assets/svg.  
 *Type:* `array`  
 *Default:* 
-```php
+<pre lang="php"> 
 self::$sprites = [
 	'Icon' => [
 		'id' => 'icon-id',
@@ -164,7 +164,7 @@ self::$sprites = [
 	]
 	...
 ];
-```
+</pre>
 
 #### Global Functions
 
