@@ -139,7 +139,7 @@ Markup for default loader icon.
 
 Optional classes to add to fields, labels, buttons...  
 *Type:* `array`  
-*Default:* 
+*Default:*
 ```php
 self::$classes = [
 	'field' => '',
@@ -154,8 +154,8 @@ self::$classes = [
 
 Stores svg sprite meta. Svgs can be found in assets/svg.  
 *Type:* `array`  
-*Default:* 
-<pre lang="php"> 
+*Default:*
+```php
 self::$sprites = [
 	'Icon' => [
 		'id' => 'icon-id',
@@ -164,7 +164,7 @@ self::$sprites = [
 	]
 	...
 ];
-</pre>
+```
 
 #### Global Functions
 
@@ -177,7 +177,7 @@ Pass data to front end.
 | `$name` | `boolean` | `false` | Name of variable on front end.
 | `$data` | `array` | `[]` | Data to pass to front end.
 | `$admin` | `boolean` | `false` | Only apply to admin.
-| `$head` | `boolean` | `false` | Outputs in footer otherwise in head. 
+| `$head` | `boolean` | `false` | Outputs in footer otherwise in head.
 
 #### `write_log( $log )`
 
@@ -197,16 +197,16 @@ Write to debug log.
 
 ### Settings
 
-`Class` that uses [WordPress' Settings API](https://developer.wordpress.org/plugins/settings/using-settings-api/) to build out settings pages. 
+`Class` that uses [WordPress' Settings API](https://developer.wordpress.org/plugins/settings/using-settings-api/) to build out settings pages.
 
 #### Options
 
 | Name | Type | Default | Required | Description
 |--|--|--|--|--|
 | `page` | `string` | `''` | ✓ | Page to register settings.
-| `fields` | `array` | `[]` | ✓ | See [field](#field). Includes section and tab options. 
+| `fields` | `array` | `[]` | ✓ | See [field](#field). Includes section and tab options.
 | `sections` | `array` | `[]` |  | Add section to page. Provide id and title.
-| `tabs` | `boolean` | `false` |  | Organize as tabs. 
+| `tabs` | `boolean` | `false` |  | Organize as tabs.
 
 #### Example
 
@@ -217,25 +217,25 @@ $settings = new Settings( [
 	'page' => 'Business Information',
 	'fields' => [
 		[
-		'name' => 'address',
-		'label' => 'Address',
-		'section' => 'location'
+			'name' => 'address',
+			'label' => 'Address',
+			'section' => 'location'
 		],
 		[
-		'name' => 'city',
-		'label' => 'City',
-		'section' => 'location'
+			'name' => 'city',
+			'label' => 'City',
+			'section' => 'location'
 		],
 		[
-		'name' => 'postal_code',
-		'label' => 'Postal Code',
-		'section' => 'location'
+			'name' => 'postal_code',
+			'label' => 'Postal Code',
+			'section' => 'location'
 		]
-		],
-		'sections' => [
+	],
+	'sections' => [
 		[
-		'id' => 'location',
-		'title' => 'Location'
+			'id' => 'location',
+			'title' => 'Location'
 		]
 	]
 ] );
@@ -275,7 +275,7 @@ How many posts to load with ajax. This field is added if `ajax_posts_per_page` i
 | `recaptcha` | `boolean` | `false` | Include Google Recaptcha tab and fields.  
 | `mailchimp_list_locations` | `associative array` | `[]` | Include Mailchimp tab and fields. Name => location.  
 | `sections` | `array` | `[]` | See [settings](#settings).
-| `fields` | `array` | `[]` | See [settings](#settings). 
+| `fields` | `array` | `[]` | See [settings](#settings).
 | `scripts` | `function|null` | `null` | Pass custom scripts to page.
 
 ## Common
