@@ -53,7 +53,7 @@ function additional_script_data( $name = false, $data = [], $admin = false, $hea
  * @param array/object/string $log 
  */
 
-function write_log( $log )  {
+function write_log( $log = '' )  {
     if( is_array( $log ) || is_object( $log ) ) {
         error_log( print_r( $log, true ) );
     } else {
