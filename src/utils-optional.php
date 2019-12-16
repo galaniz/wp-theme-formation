@@ -12,18 +12,18 @@ namespace Formation;
  * -------
  */
 
-use Formation\Formation as FRM; 
+use Formation\Formation as FRM;
 
 class Utils_Optional {
 
     /*
-     * Get mailchimp list. 
+     * Get mailchimp list.
      *
      * @param string $list_name
-     * @return string boolean/array
+     * @return boolean|array
      */
 
-    public static function get_mailchimp_list( $list_name ) {
+    public static function get_mailchimp_list( $list_name = '' ) {
         // check for api
         if( !get_option( FRM::$namespace . '_mailchimp_api_key' ) )
             return false;
@@ -46,7 +46,7 @@ class Utils_Optional {
     /*
      * Format table data into labels and rows.
      *
-     * @param string $label_key 
+     * @param string $label_key
      * @param string $rows_key
      * @param array $data
      * @return array
@@ -62,7 +62,7 @@ class Utils_Optional {
         foreach( $data as $i => $d ) {
             if( isset( $d['label'] ) )
                 $labels[] = $d['label'];
-            
+
             $dd = explode( "\n", $d['data'] );
 
             if( $i === 0 ) {
@@ -128,11 +128,11 @@ class Utils_Optional {
             foreach( $labels as $l )
                 $lr .= "<th>$l</th>";
 
-            $output .= 
+            $output .=
                 '<thead>' .
                     "<tr class='o-table__row$row_class'>" .
                         $lr .
-                    '</tr>' . 
+                    '</tr>' .
                 '</thead>';
         }
 
@@ -144,7 +144,7 @@ class Utils_Optional {
 
                 foreach( $r as $i => $d ) {
                     $data_label = $labels[$i] ? ' data-label="' . $labels[$i] . '" class="o-table__label"' : '';
-                    
+
                     $output .= "<td$data_label><div>" . $d . '</div></td>';
                 }
 
@@ -170,7 +170,7 @@ class Utils_Optional {
         $args = array_merge( [
             'class' => '',
             'scale_transition' => false,
-            'alt_trigger' => '',
+            'alt_trigger' => false,
             'trigger_class' => '',
             'content' => '',
             'button_text' => '',
@@ -182,12 +182,12 @@ class Utils_Optional {
         if( !$content )
             return '';
 
-        $class = $class ? " $class" : ""; 
+        $class = $class ? " $class" : "";
         $trigger_class = $trigger_class ? " $trigger_class" : "";
         $scale_transition = $scale_transition ? ' data-scale-transition="true"' : '';
         $alt_trigger = $alt_trigger ? ' data-alt-trigger=".js-trigger"' : '';
 
-        return 
+        return
             "<div class='o-modal$class'$scale_transition$alt_trigger>" .
                 "<button class='o-modal__trigger$trigger_class' type='button'>" .
                     '<span class="o-button__text">' . $button_text . '</span>' .
@@ -246,10 +246,10 @@ class Utils_Optional {
                             '<span class="u-visually-hidden">Submit search query</span>' .
                             "<svg class='" . $icon['class'] . "' width='" . $icon['w'] . "' height='" . $icon['h'] . "' viewBox='0 0 " . $icon['w'] . " " . $icon['h'] . "'>" .
                                 "<use xlink:href='#" . $icon['id'] . "' />" .
-                            '</svg>' . 
-                        '</button>' . 
-                    '</div>' . 
-                '</div>' . 
+                            '</svg>' .
+                        '</button>' .
+                    '</div>' .
+                '</div>' .
             '</form>';
     }
 
@@ -275,7 +275,7 @@ class Utils_Optional {
         $w = (int) $view_box[2];
         $h = (int) $view_box[3];
 
-        return "<canvas class='u-svg-scale-fix' width='$w' height='$h'></canvas>$svg_str"; 
+        return "<canvas class='u-svg-scale-fix' width='$w' height='$h'></canvas>$svg_str";
     }
 
 } // end Utils_Optional

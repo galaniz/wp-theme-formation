@@ -38,7 +38,7 @@ self::$cpt = [
 
 #### `public static $pt_layout`
 
-Store layouts by post type. Appends layouts from `[$cpt link](#user-content-public-static-cpt)`.   
+Store layouts by post type. Appends layouts from [`$cpt`](#user-content-public-static-cpt).     
 _Type:_ `associative array`  
 _Default:_ `[]`
 
@@ -125,7 +125,7 @@ $this->scripts = [
 
 #### `public static $loader_icon`
 
-Markup for default loader icon.  
+Markup for default loader icon. Used in [`render_loader`](#user-content-public-static-function-render_loader-loader_class-icon_class-id-).  
 _Type:_ `string`  
 _Default:_ `''`  
 
@@ -165,6 +165,7 @@ self::$sprites = [
 #### `additional_script_data( $name, $data, $admin, $head )`
 
 Pass data to front end.  
+
 _Parameters:_
 
 | Name | Type | Default | Description
@@ -175,7 +176,9 @@ _Parameters:_
 | `$head` | `boolean` | `false` | Outputs in footer otherwise in head.
 
 #### `write_log( $log )`
+
 Write to debug log.  
+
 _Parameters:_
 * `$log`  
 Data to output in debug log.  
@@ -188,7 +191,8 @@ _Default:_ `''`
 
 #### `public static function get_namespaced_str( $name )`
 
-Prefix string with `[$namespace](#public-static-namespace)` only if not already prefixed.  
+Prefix string with [`$namespace`](#user-content-public-static-namespace) only if not already prefixed.  
+
 _Parameters:_
 * `$name`  
 _Type:_ `string`  
@@ -199,6 +203,7 @@ _Returns:_ `string`
 #### `public static function get_posts_per_page( $post_type )`
 
 Get posts per page by post type.
+
 _Parameters:_
 * `$post_type`  
 _Type:_ `string`  
@@ -209,6 +214,7 @@ _Returns:_ `int`
 #### `public static function get_first_cat( $id, $taxonomy )`
 
 Get first category for post.  
+
 _Parameters:_
 * `$id`  
 _Type:_ `int`  
@@ -229,16 +235,19 @@ _Returns:_ `boolean|array`
 #### `public static function get_id_early_admin()`
 
 Get id early in admin.  
+
 _Returns:_ `int`
 
 #### `public static function get_id_outside_loop()`
 
 Get current post id outside loop.  
+
 _Returns:_ `int`
 
 #### `public static function get_excerpt( $args )`
 
 Get excerpt from post, page, any string.  
+
 _Parameters:_
 * `$args`  
 _Type:_ `associative array`  
@@ -257,17 +266,19 @@ _Returns:_ `string`
 
 #### `public static function get_next_posts_link()`
 
-Get url of next posts page as fallback for ajax load more posts.  
+Get url of next posts page as fallback for ajax load more posts.
+
 _Returns:_ `string|boolean`
 
 #### `public static function get_next_comments_link()`
 
 Get url of next comments page as fallback for ajax load more comments.  
+
 _Returns:_ `string`
 
 #### `public static function get_link( $str )`
 
-Convert string to array of link data. See `[Field class](#)`.
+Convert string to array of link data. See [`Field class`](#).
 
 _Parameters:_
 * `$str`  
@@ -332,6 +343,7 @@ _Returns:_ `string`
 #### `public static function render_loader( $loader_class, $icon_class, $id )`
 
 Output for default loader.  
+
 _Parameters:_
 * `$loader_class`  
 _Type:_ `string`  
@@ -349,7 +361,7 @@ _Returns:_ `string`
 
 #### `public static function render_form( $args )`
 
-Output for general forms (contact, sign ups)
+Output for general forms (contact, sign ups).
 
 _Parameters:_
 * `$args`  
@@ -363,13 +375,159 @@ _Parameters:_
 | `attr` | `array` | `[]` | Form attributes.
 | `id` | `boolean` | `uniqid()` | Form id.
 | `data_type` | `string` | `default` | Form data type.
-| `fields` | `string` | `''` | Field output. See `[Field class](#)`.
-| `single_field` | `boolean` | `false` |
-| `button_class` | `string` | `''` |
+| `fields` | `string` | `''` | Field output. See [`Field class`](#).
+| `single_field` | `boolean` | `false` | If form contains one field.
+| `button_class` | `string` | [`$classes['button']`](#user-content-public-static-classes) | Classes to add to submit button.
 | `submit_label` | `string` | `'Submit'` | Submit button label.
 
 _Returns:_ `string`
 
+#### `public static function render_cpt_archive( $args )`
 
+Output for static page archives.
+
+_Parameters:_
+* `$args`  
+_Type:_ `associative array`  
+_Default:_ `[]`  
+_Parameters:_
+
+| Name | Type | Default | Description
+|--|--|--|--|
+| `post_type` | `string` | `''` | Required.
+| `templates_before` | `array` | `[]` | Templates to call with `get_template_part`. Pass in associative array(s) with `'slug'` and `'name'` props.
+| `templates_after` | `array` | `[]` |  Templates to call with `get_template_part`. Pass in associative array(s) with `'slug'` and `'name'` props.
+| `content_before` | `string` | `''` | HTML markup.
+| `content_after` | `string` | `''` | HTML markup.
+
+_Returns:_ `boolean`
 
 ### Optional
+
+#### `public static function get_mailchimp_list( $list_name )`
+
+Get mailchimp list.
+
+_Parameters:_
+* `$list_name`  
+_Type:_ `string`  
+_Default:_ `''`  
+
+_Returns:_ `boolean|array`
+<pre lang="php">
+[
+		'id' => '928a12b4c1',
+		'title' => 'Sign up for our newsletter',
+		'submit_label' => 'Go',
+		'fields' => See '<a href="#">Theme class</a>' // array
+];
+</pre>
+
+#### `public static function format_table_data( $data, $label_key, $rows_key )`
+
+Format table data into labels and rows.
+
+_Parameters:_
+* `$data`  
+_Type:_ `array`  
+_Default:_ `[]`  
+_Required:_ true  
+
+* `$label_key`  
+_Type:_ `string`  
+_Default:_ `'label'`
+
+* `$rows_key`  
+_Type:_ `string`  
+_Default:_ `'data'`
+
+_Returns:_ `array`
+```php
+[
+		'labels' => ['Label One', 'Label Two'],
+		'rows' => [
+			[
+				'Lorem',
+				'Ipsum'
+			],
+			[
+				'Sed',
+				'Dolorem'
+			]
+		]
+];
+```
+
+#### `public static function render_table( $args )`
+
+Format table data into labels and rows.
+
+_Parameters:_
+* `$args`  
+_Type:_ `associative array`  
+_Default:_ `[]`  
+_Parameters:_
+
+| Name | Type | Default | Description
+|--|--|--|--|
+| `labels` | `array` | `[]` |
+| `rows` | `array` | `[]` | Required.
+| `class` | `string` | `''` | Table class.
+| `row_class` | `string` | `''` | tr class.
+| `row` | `boolean` | `false` | If true only output row, not table.
+| `attr` | `array` | `[]` | Table attributes.
+
+_Returns:_ `string`
+
+#### `public static function render_modal( $args )`
+
+Output for modals.
+
+_Parameters:_
+* `$args`  
+_Type:_ `associative array`  
+_Default:_ `[]`  
+_Parameters:_
+
+| Name | Type | Default | Description
+|--|--|--|--|
+| `class` | `string` | `''` | Modal class.  
+| `scale_transition` | `boolean` | `false` | If true, add transition to modal where trigger scales to modal size.
+| `alt_trigger` | `boolean` | `false` | If true, other triggers with class .js-trigger exist.
+| `trigger_class` | `string` | `''` | Add class to trigger button.  
+| `content` | `string` | `''` | Modal html content markup.
+| `button_text` | `string` | `''` | Trigger button text.
+| `x` | `string` | `'&#10005;'` | Close modal icon.
+
+_Returns:_ `string`
+
+#### `public static function render_search_form( $args )`
+
+Output for search form.
+
+_Parameters:_
+* `$args`  
+_Type:_ `associative array`  
+_Default:_ `[]`  
+_Parameters:_
+
+| Name | Type | Default | Description
+|--|--|--|--|
+| `field_class` | `string` | `''` | Add class to field.
+| `input_class` | `string` | `''` | Add class to search input.
+| `button_class` | `string` | `''` | Add class to submit button.
+| `icon` | `associative array` | [`$sprites`](#user-content-public-static-sprites)`['Search']` | Search icon.
+
+_Returns:_ `string`
+
+#### `public static function render_svg_scale_fix( $svg_str )`
+
+Output for canvas workaround to scale svg in older browsers.
+
+_Parameters:_
+* `$svg_str`  
+_Type:_ `string`  
+_Default:_ `''`,  
+_Required:_ true
+
+_Returns:_ `string`

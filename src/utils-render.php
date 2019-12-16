@@ -253,7 +253,7 @@ trait Utils_Render {
      * @return boolean
      */
 
-    public static function render_cpt_archive( $args ) {
+    public static function render_cpt_archive( $args = [] ) {
         $args = array_merge(
             [
                 'post_type' => '',
