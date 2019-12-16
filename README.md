@@ -246,17 +246,17 @@ $settings = new Settings( [
 
 #### `{$cpt}_page`
 
-*Type:* `int`
+*Type:* `int`  
 Select page to display custom post type.  
 
 #### `{$cpt}_posts_per_page`
 
-*Type:* `int`
+*Type:* `int`  
 Page displays selected number of posts.  
 
 #### `{$cpt}_more_label`
 
-*Type:* `string`
+*Type:* `string`  
 More posts title.   
 
 #### `{$cpt}_ajax_posts_per_page`
