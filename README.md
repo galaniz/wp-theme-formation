@@ -38,7 +38,7 @@ self::$cpt = [
 
 #### `public static $pt_layout`
 
-Store layouts by post type. Appends layouts from `[$cpt](#public-static-cpt)`.   
+Store layouts by post type. Appends layouts from `[$cpt](#user-content-public-static-cpt)`.   
 _Type:_ `associative array`  
 _Default:_ `[]`
 
@@ -247,11 +247,11 @@ _Parameters:_
 
 | Name | Type | Default | Description
 |--|--|--|--|
-| `$content` | `string` | `''` |
-| `$words` | `boolean` | `false` | Whether to trim by words.
-| `$length` | `int` | `55` | In words or characters.
-| `$post_id` | `int` | `get_the_ID()` | Only if no `$content`, defaults to
-| `$post` | `string` | `get_post( $post_id )` | Only if no `$content`. Becomes `$content`
+| `content` | `string` | `''` |
+| `words` | `boolean` | `false` | Whether to trim by words.
+| `length` | `int` | `55` | In words or characters.
+| `post_id` | `int` | `get_the_ID()` | Only if no `$content`, defaults to
+| `post` | `string` | `get_post( $post_id )` | Only if no `$content`. Becomes `$content`
 
 _Returns:_ `string`
 
@@ -299,11 +299,11 @@ _Default:_ `'thumbnail'`
 _Returns:_ `boolean|array`
 ```php
 [
-	'url' => 'http://imageurl.com', // string/array if multiple sizes
+	'url' => 'http://imageurl.com', // string|array if multiple sizes
 	'title' => 'Image title',
 	'alt' => 'Image alt text',
-	'srcset' => 'image-320w.jpg 320w, image-480w.jpg 480w, image-800w.jpg 800w', // string/array if multiple sizes
-	'sizes' => '(max-width: 320px) 280px, (max-width: 480px) 440px, 800px' // string/array if multiple sizes
+	'srcset' => 'image-320w.jpg 320w, image-480w.jpg 480w, image-800w.jpg 800w', // string|array if multiple sizes
+	'sizes' => '(max-width: 320px) 280px, (max-width: 480px) 440px, 800px' // string|array if multiple sizes
 ]
 ```
 
@@ -321,11 +321,11 @@ _Parameters:_
 
 | Name | Type | Default | Description
 |--|--|--|--|
-| `$links` | `string` | `''` | Menu location.
-| `$share` | `array` | `[]` | What to share on: Facebook, Twitter, Linkedin, Email
-| `$div` | `boolean` | `false` | Use div instead of ul.
-| `$class` | `string` | `''` | Class for items.
-| `$list_class` | `string` | `''` | Class for container div/ul.
+| `links` | `string` | `''` | Menu location.
+| `share` | `array` | `[]` | What to share on: Facebook, Twitter, Linkedin, Email
+| `div` | `boolean` | `false` | Use div instead of ul.
+| `class` | `string` | `''` | Class for items.
+| `list_class` | `string` | `''` | Class for container div/ul.
 
 _Returns:_ `string`
 
@@ -359,14 +359,14 @@ _Parameters:_
 
 | Name | Type | Default | Description
 |--|--|--|--|
-| `$class` | `string` | `''` | Form class.
-| `$attr` | `array` | `[]` | Form attributes.
-| `$id` | `boolean` | `uniqid()` | Form id.
-| `$data_type` | `string` | `default` | Form data type.
-| `$fields` | `string` | `''` | Field output. See `[Field class](#)`.
-| `$single_field` | `boolean` | `false` |
-| `$button_class` | `string` | `''` |
-| `$submit_label` | `string` | `'Submit'` | Submit button label.
+| `class` | `string` | `''` | Form class.
+| `attr` | `array` | `[]` | Form attributes.
+| `id` | `boolean` | `uniqid()` | Form id.
+| `data_type` | `string` | `default` | Form data type.
+| `fields` | `string` | `''` | Field output. See `[Field class](#)`.
+| `single_field` | `boolean` | `false` |
+| `button_class` | `string` | `''` |
+| `submit_label` | `string` | `'Submit'` | Submit button label.
 
 _Returns:_ `string`
 
