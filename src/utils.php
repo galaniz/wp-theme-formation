@@ -10,7 +10,7 @@ namespace Formation;
 trait Utils {
 
    /*
-    * Prefix input name with namespace only if not already prefixed.
+    * Prefix string with namespace only if not already prefixed.
     *
     * @param string $name
     * @return string prefixed name
@@ -62,7 +62,7 @@ trait Utils {
         	return false;
 
         $first_cat = [];
-        
+
         foreach( $category as $cat ) {
             // exclude uncatgorized
             if( $cat->cat_ID === 1 )
@@ -124,7 +124,7 @@ trait Utils {
      *      @type string $post_id Accepts int.
      *      @type string $post Accepts string.
      * }
-     * @return string trimmed to specified length 
+     * @return string trimmed to specified length
      */
 
     public static function get_excerpt( $args = [] ) {
@@ -165,17 +165,17 @@ trait Utils {
     /*
      * Ajax load more posts fallback.
      *
-     * @return string url of next posts page
+     * @return boolean|string url of next posts page
      */
 
     public static function get_next_posts_link() {
         global $wp_query;
         global $paged;
 
-        if( empty( $paged ) ) 
+        if( empty( $paged ) )
             $paged = 1;
 
-        if( $paged === 0 ) 
+        if( $paged === 0 )
             $paged = 1;
 
         $paged++;
@@ -196,7 +196,7 @@ trait Utils {
 
     public static function get_next_comments_link() {
 		if( !is_singular() )
-			return;
+			return '';
 
 		$page = get_query_var( 'cpage' );
 		$max_page = 0;
@@ -258,7 +258,7 @@ trait Utils {
     }
 
     /*
-     * Get image from id. 
+     * Get image from id.
      *
      * @return array
      */
@@ -300,5 +300,5 @@ trait Utils {
 
         return false;
     }
-	
+
 } // end Utils

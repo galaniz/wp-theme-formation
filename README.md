@@ -1,65 +1,59 @@
 # WP Theme Formation
 
 Base class, utilities and added functionality for building WordPress themes.
-+ [Base](#base)
-+ [Utilites](#utilities)
-+ [Admin](#admin)
-+ [Common](#common)
-+ [Public](#public)
 
-## Base
-
-#### Variables
+## Variables
 
 #### `public static $namespace`
 
 Namespace for handles, option and meta names.  
-*Type:* `string`  
-*Default:* `'frm'`
+_Type:_ `string`  
+_Default:_ `'frm'`
 
 #### `public static $src_path`
 
 Path from vendor to src folder.  
-*Type:* `string`  
-*Default:* `'/vendor/alanizcreative/wp-theme-formation/src/'`
+_Type:_ `string`  
+_Default:_ `'/vendor/alanizcreative/wp-theme-formation/src/'`
 
 #### `public static $cpt`
 
-Store post type names and data.  
-*Type:* `associative array`  
-*Default:* `[]`  
-*Example:*
+Store post type names and data (can add custom key => value pairs).  
+_Type:_ `associative array`  
+_Default:_ `[]`  
+_Example:_
 ```php
 self::$cpt = [
 	'custom_post_type' => [
 		'slug' => 'custom_post_type_slug',
 		'label' => 'Custom Post Type',
 		'layout' => 'cards',
-		'no_reading' => true, // exclude from reading settings
-		'no_slug' => true, // exclude from saving selected post page slug as custom post type slug,
-		'ajax_posts_per_page' => true // add field in reading settings to select number of posts to load with ajax
+		/* reading settings*/
+		'no_reading' => true, // exclude from settings
+		'no_slug' => true, // do not save post page slug as custom post type slug,
+		'ajax_posts_per_page' => true // add field to select number of posts to load with ajax
 	]
 ];
 ```
 
 #### `public static $pt_layout`
 
-Store layouts by post type. Appends layouts from `[$cpt](#public-static-cpt)`.  
-*Type:* `associative array`  
-*Default:* `[]`
+Store layouts by post type. Appends layouts from `[$cpt](#public-static-cpt)`.   
+_Type:_ `associative array`  
+_Default:_ `[]`
 
 #### `public static $posts_per_page`
 
 Default number of posts to display by type/post type.  
-*Type:* `associative array`  
-*Default:* `[]`
+_Type:_ `associative array`  
+_Default:_ `[]`
 
 #### `public $editor_color_palette`
 
-Editor color palette theme support args.  
-*Type:* `array`  
-*Default:* `[]`  
-*Example:*
+Editor color palette theme support arguments.   
+_Type:_ `array`  
+_Default:_ `[]`  
+_Example:_
 ```php
 $this->editor_color_palette[] = [
 	'name' => 'Background Light',
@@ -71,27 +65,27 @@ $this->editor_color_palette[] = [
 #### `public $image_sizes`
 
 Custom image sizes to register. Name => size.  
-*Type:* `associative array`  
-*Default:* `[]`
+_Type:_ `associative array`  
+_Default:_ `[]`
 
 #### `public $nav_menus`
 
 Nav menus to register. Slug => label.  
-*Type:* `associative array`  
-*Default:* `[]`
+_Type:_ `associative array`  
+_Default:_ `[]`
 
 #### `public $editor_style_url`
 
 Stylesheet url for admin editor styles.  
-*Type:* `string`  
-*Default:* `''`
+_Type:_ `string`  
+_Default:_ `''`
 
 #### `public $styles`
 
-Stylesheets to register. See [wp_enqueue_style](https://developer.wordpress.org/reference/functions/wp_enqueue_style/).  
-*Type:* `array`  
-*Default:* `[]`  
-*Example:*
+Stylesheets to register. See [wp_enqueue_style](https://developer.wordpress.org/reference/functions/wp_enqueue_style/).     
+_Type:_ `array`  
+_Default:_ `[]`  
+_Example:_
 ```php
 $this->styles = [
 	[
@@ -110,9 +104,9 @@ $this->styles = [
 #### `public $scripts`
 
 Scripts to register. See [wp_enqueue_script](https://developer.wordpress.org/reference/functions/wp_enqueue_script/).  
-*Type:* `array`  
-*Default:* `[]`  
-*Example:*
+_Type:_ `array`  
+_Default:_ `[]`  
+_Example:_
 ```php
 $this->scripts = [
 	[
@@ -132,14 +126,14 @@ $this->scripts = [
 #### `public static $loader_icon`
 
 Markup for default loader icon.  
-*Type:* `string`  
-*Default:* `''`  
+_Type:_ `string`  
+_Default:_ `''`  
 
 #### `public static $classes`
 
-Optional classes to add to fields, labels, buttons...  
-*Type:* `array`  
-*Default:*
+Optional classes to add to fields, labels, buttons, inputs and icons.   
+_Type:_ `array`  
+_Default:_
 ```php
 self::$classes = [
 	'field' => '',
@@ -153,8 +147,8 @@ self::$classes = [
 #### `public static $sprites`
 
 Stores svg sprite meta. Svgs can be found in assets/svg.  
-*Type:* `array`  
-*Default:*
+_Type:_ `array`  
+_Default:_
 ```php
 self::$sprites = [
 	'Icon' => [
@@ -166,13 +160,14 @@ self::$sprites = [
 ];
 ```
 
-#### Global Functions
+## Global Functions
 
 #### `additional_script_data( $name, $data, $admin, $head )`
 
-Pass data to front end.
+Pass data to front end.  
+_Parameters:_
 
-| Variable | Type | Default | Description
+|  | Type | Default | Description
 |--|--|--|--|
 | `$name` | `boolean` | `false` | Name of variable on front end.
 | `$data` | `array` | `[]` | Data to pass to front end.
@@ -180,104 +175,94 @@ Pass data to front end.
 | `$head` | `boolean` | `false` | Outputs in footer otherwise in head.
 
 #### `write_log( $log )`
+Write to debug log.  
+_Parameters:_
+* `$log`  
+Data to output in debug log.  
+_Type:_ `string|array|object`  
+_Default:_ `''`
 
-Write to debug log.
+## Utilities
 
-| Variable | Type | Default | Description
-|--|--|--|--|
-| `$log` | `string|array|object` | `''` | Data to output in debug log.
+### Getters
 
-#### Utilities
+#### `public static function get_namespaced_str( $name )`
 
-##### Getters
-##### Render
-##### Optional
+Prefix string with `[$namespace](#public-static-namespace)` only if not already prefixed.  
+_Parameters:_
+* `$name`  
+_Type:_ `string`  
+_Default:_ `''`  
 
-## Admin
+_Returns:_ `string`
 
-### Settings
+#### `public static function get_posts_per_page( $post_type )`
 
-`Class` that uses [WordPress' Settings API](https://developer.wordpress.org/plugins/settings/using-settings-api/) to build out settings pages.
+Get posts per page by post type.
+_Parameters:_
+* `$post_type`  
+_Type:_ `string`  
+_Default:_ `'post'`  
 
-#### Options
+_Returns:_ `int`
 
-| Name | Type | Default | Required | Description
-|--|--|--|--|--|
-| `page` | `string` | `''` | ✓ | Page to register settings.
-| `fields` | `array` | `[]` | ✓ | See [field](#field). Includes section and tab options.
-| `sections` | `array` | `[]` |  | Add section to page. Provide id and title.
-| `tabs` | `boolean` | `false` |  | Organize as tabs.
+#### `public static function get_first_cat( $id, $taxonomy )`
 
-#### Example
+Get first category for post.  
+_Parameters:_
+* `$id`  
+_Type:_ `int`  
+_Default:_ `0`
 
+* `$taxonomy`  
+_Type:_ `string`  
+_Default:_ `''`
+
+_Returns:_ `boolean|array`
 ```php
-use Formation\Admin\Settings\Settings;
-
-$settings = new Settings( [
-	'page' => 'Business Information',
-	'fields' => [
-		[
-			'name' => 'address',
-			'label' => 'Address',
-			'section' => 'location'
-		],
-		[
-			'name' => 'city',
-			'label' => 'City',
-			'section' => 'location'
-		],
-		[
-			'name' => 'postal_code',
-			'label' => 'Postal Code',
-			'section' => 'location'
-		]
-	],
-	'sections' => [
-		[
-			'id' => 'location',
-			'title' => 'Location'
-		]
-	]
-] );
+[
+	'category_name',
+	'http://site.com/category/category_name'
+]
 ```
-### Reading
 
-`Class` that adds the following fields to WordPress' default reading settings page using base class variable `[$cpt](#public-static-cpt)`. Note: if `no_reading` is set, these fields are not added for that custom post type. Additional fields can be pushed to `Reading::$additional_fields` before instantiating class.
+#### `public static function get_id_early_admin()`
 
-#### `{$cpt}_page`
+Get id early in admin.  
+_Returns:_ `int`
 
-*Type:* `int`  
-Select page to display custom post type.  
+#### `public static function get_id_outside_loop()`
 
-#### `{$cpt}_posts_per_page`
+Get current post id outside loop.  
+_Returns:_ `int`
 
-*Type:* `int`  
-Page displays selected number of posts.  
+#### `public static function get_excerpt( $args )`
 
-#### `{$cpt}_more_label`
-
-*Type:* `string`  
-More posts title.   
-
-#### `{$cpt}_ajax_posts_per_page`
-
-*Type:* `int`
-How many posts to load with ajax. This field is added if `ajax_posts_per_page` is set in `[$cpt](#public-static-cpt)`.   
-
-### Theme
-
-`Class` that adds a new settings page with fields for commonly used theme items. It includes default fields for svg and png logos as well as footer text.
-
-#### Options
-
-| Name | Type | Default | Description
+Get excerpt from post, page, any string.  
+_Parameters:_
+* `$args`  
+_Type:_ `associative array`  
+_Default:_ `[]`  
+_Parameters:_
+|  | Type | Default | Description
 |--|--|--|--|
-| `recaptcha` | `boolean` | `false` | Include Google Recaptcha tab and fields.  
-| `mailchimp_list_locations` | `associative array` | `[]` | Include Mailchimp tab and fields. Name => location.  
-| `sections` | `array` | `[]` | See [settings](#settings).
-| `fields` | `array` | `[]` | See [settings](#settings).
-| `scripts` | `function|null` | `null` | Pass custom scripts to page.
+| `$content` | `string` | `''` |
+| `$words` | `boolean` | `false` | Whether to trim by words.
+| `$length` | `int` | `55` | In words or characters.
+| `$post_id` | `int` | get_the_ID() | Only if no `$content`, defaults to
+| `$post` | `string` | get_post( `$post_id` ) | Only if no `$content`, becomes `$content`
 
-## Common
+_Returns:_ `string`
 
-## Public
+#### `public static function get_next_posts_link()`
+
+Get url of next posts page as fallback for ajax load more posts.  
+_Returns:_ `string|boolean`
+
+#### `public static function get_next_comments_link()`
+
+Get url of next comments page as fallback for ajax load more comments.  
+_Returns:_ `string`
+
+### Render
+### Optional
