@@ -232,7 +232,7 @@ trait Utils {
      * Convert string to array of link data
      *
      * @see Field class
-     * @return array
+     * @return boolean|array
      */
 
     public static function get_link( $str = '' ) {
@@ -260,7 +260,7 @@ trait Utils {
     /*
      * Get image from id.
      *
-     * @return array
+     * @return boolean|array
      */
 
     public static function get_image( $id = 0, $size = 'thumbnail' ) {

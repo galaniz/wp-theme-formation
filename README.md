@@ -167,7 +167,7 @@ self::$sprites = [
 Pass data to front end.  
 _Parameters:_
 
-|  | Type | Default | Description
+| Name | Type | Default | Description
 |--|--|--|--|
 | `$name` | `boolean` | `false` | Name of variable on front end.
 | `$data` | `array` | `[]` | Data to pass to front end.
@@ -244,13 +244,14 @@ _Parameters:_
 _Type:_ `associative array`  
 _Default:_ `[]`  
 _Parameters:_
-|  | Type | Default | Description
+
+| Name | Type | Default | Description
 |--|--|--|--|
 | `$content` | `string` | `''` |
 | `$words` | `boolean` | `false` | Whether to trim by words.
 | `$length` | `int` | `55` | In words or characters.
-| `$post_id` | `int` | get_the_ID() | Only if no `$content`, defaults to
-| `$post` | `string` | get_post( `$post_id` ) | Only if no `$content`, becomes `$content`
+| `$post_id` | `int` | `get_the_ID()` | Only if no `$content`, defaults to
+| `$post` | `string` | `get_post( $post_id )` | Only if no `$content`. Becomes `$content`
 
 _Returns:_ `string`
 
@@ -264,5 +265,111 @@ _Returns:_ `string|boolean`
 Get url of next comments page as fallback for ajax load more comments.  
 _Returns:_ `string`
 
+#### `public static function get_link( $str )`
+
+Convert string to array of link data. See `[Field class](#)`.
+
+_Parameters:_
+* `$str`  
+_Type:_ `string`  
+_Default:_ `''`
+
+_Returns:_ `boolean|array`
+```php
+[
+	'text' => 'Link Text',
+	'url' => 'http://url.com',
+	'target' => '' // '_blank'
+]
+```
+
+#### `public static function get_image( $id, $size )`
+
+Get image from id.
+
+_Parameters:_
+* `$id`  
+_Type:_ `int`  
+_Default:_ `0`
+
+* `$size`  
+_Type:_ `string|array`  
+_Default:_ `'thumbnail'`
+
+_Returns:_ `boolean|array`
+```php
+[
+	'url' => 'http://imageurl.com', // string/array if multiple sizes
+	'title' => 'Image title',
+	'alt' => 'Image alt text',
+	'srcset' => 'image-320w.jpg 320w, image-480w.jpg 480w, image-800w.jpg 800w', // string/array if multiple sizes
+	'sizes' => '(max-width: 320px) 280px, (max-width: 480px) 440px, 800px' // string/array if multiple sizes
+]
+```
+
 ### Render
+
+#### `public static function render_social( $args )`
+
+Output for social media links/sharing.
+
+_Parameters:_
+* `$args`  
+_Type:_ `associative array`  
+_Default:_ `[]`  
+_Parameters:_
+
+| Name | Type | Default | Description
+|--|--|--|--|
+| `$links` | `string` | `''` | Menu location.
+| `$share` | `array` | `[]` | What to share on: Facebook, Twitter, Linkedin, Email
+| `$div` | `boolean` | `false` | Use div instead of ul.
+| `$class` | `string` | `''` | Class for items.
+| `$list_class` | `string` | `''` | Class for container div/ul.
+
+_Returns:_ `string`
+
+#### `public static function render_loader( $loader_class, $icon_class, $id )`
+
+Output for default loader.  
+_Parameters:_
+* `$loader_class`  
+_Type:_ `string`  
+_Default:_ `''`
+
+* `$icon_class`  
+_Type:_ `string`  
+_Default:_ `''`
+
+* `$id`  
+_Type:_ `string`  
+_Default:_ `''`
+
+_Returns:_ `string`
+
+#### `public static function render_form( $args )`
+
+Output for general forms (contact, sign ups)
+
+_Parameters:_
+* `$args`  
+_Type:_ `associative array`  
+_Default:_ `[]`  
+_Parameters:_
+
+| Name | Type | Default | Description
+|--|--|--|--|
+| `$class` | `string` | `''` | Form class.
+| `$attr` | `array` | `[]` | Form attributes.
+| `$id` | `boolean` | `uniqid()` | Form id.
+| `$data_type` | `string` | `default` | Form data type.
+| `$fields` | `string` | `''` | Field output. See `[Field class](#)`.
+| `$single_field` | `boolean` | `false` |
+| `$button_class` | `string` | `''` |
+| `$submit_label` | `string` | `'Submit'` | Submit button label.
+
+_Returns:_ `string`
+
+
+
 ### Optional

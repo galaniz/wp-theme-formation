@@ -15,7 +15,7 @@ trait Utils_Render {
      * Note: assumes svg sprite with social icons.
      *
      * @param array $args {
-     *      @type string $links Accepts string of menu location.   
+     *      @type string $links Accepts string of menu location.
      *      @type string $share Accepts array.
      *      @type string $div Accepts boolean.
      *      @type string $class Accepts string.
@@ -70,7 +70,7 @@ trait Utils_Render {
                         'source' => ''
                     ]
                 ),
-                'Email' => 
+                'Email' =>
                     'mailto:?' .
                     '&subject=' . get_the_title() . '%20%7C%20' . $blog_name .
                     '&body=' . get_the_excerpt() . '%0D%0A%0D%0A' . $url
@@ -87,7 +87,7 @@ trait Utils_Render {
         }
 
 		if( $links ) {
-			$theme_locations = get_nav_menu_locations(); 
+			$theme_locations = get_nav_menu_locations();
 
 			if( isset( $theme_locations[$links] ) ) {
 				$social_links = wp_get_nav_menu_items( $links );
@@ -114,9 +114,9 @@ trait Utils_Render {
                 $w = " onclick=\"window.open( '$url', 'newwindow', 'width=$w_width, height=$w_height' ); return false;\"";
             }
 
-			$output .= 
+			$output .=
 				"<$child_tag class='$item_class'>".
-					'<a' . ( $share && $w ? $w : '' ) . ' class="o-social__link" href="' . $url . '">' . 
+					'<a' . ( $share && $w ? $w : '' ) . ' class="o-social__link" href="' . $url . '">' .
 						'<span class="u-visually-hidden">' . ucwords( $id ) . '</span>' .
 						'<svg class="o-social__icon u-position-relative" width="' . $d['w'] . '" height="' . $d['h'] . '" viewBox="0 0 ' . $d['w'] . ' ' . $d['h'] . '">' .
 							'<use xlink:href="#sprite-' . $id . '" />' .
@@ -133,9 +133,9 @@ trait Utils_Render {
     /*
      * Output for loader animation.
      *
-     * Note: can be overwritten by user.
-     *
-     * @param string $add_class
+     * @param string $loader_class
+     * @param string $icon_class
+     * @param string $id
      * @return string / array of html output
      */
 
@@ -149,7 +149,7 @@ trait Utils_Render {
         if( $id )
             $id = " id='$id'";
 
-        return 
+        return
             "<div class='o-loader$loader_class'$id>" .
                 "<div class='o-loader__icon u-position-center l-flex --align-center --justify-center$icon_class'>" .
                     static::$loader_icon .
@@ -193,10 +193,8 @@ trait Utils_Render {
         $button_class = ( static::$classes['button'] ? ' ' . static::$classes['button'] : '' ) . ( $button_class ? ' ' . $button_class : '' );
         $button_field = 'o-field --submit';
 
-        if( $single_field ) {
-            $button_class .= ' --fill-inherit';
+        if( $single_field )
             $button_field .= ' --single';
-        }
 
         if( $attr ) {
             $attr_formatted = [];
@@ -233,8 +231,8 @@ trait Utils_Render {
                         '<div class="o-result__text"></div>' .
                     '</div>' .
                 '</div>' .
-            '</form>', 
-            $class, 
+            '</form>',
+            $class,
             $id,
             $data_type,
             $fields,
