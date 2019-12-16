@@ -142,11 +142,11 @@ Optional classes to add to fields, labels, buttons...
 *Default:* 
 ```php
 self::$classes = [
-    'field' => '',
-    'button' => '',
-    'label' => '',
-    'input' => '',
-    'icon' => ''
+	'field' => '',
+	'button' => '',
+	'label' => '',
+	'input' => '',
+	'icon' => ''
 ];
 ```
 
@@ -215,29 +215,29 @@ use Formation\Admin\Settings\Settings;
 
 $settings = new Settings( [
 	'page' => 'Business Information',
-    'fields' => [
-        [
-            'name' => 'address',
-            'label' => 'Address',
-            'section' => 'location'
-        ],
-        [
-            'name' => 'city',
-            'label' => 'City',
-            'section' => 'location'
-        ],
-        [
-            'name' => 'postal_code',
-            'label' => 'Postal Code',
-            'section' => 'location'
-        ]
-	],
-    'sections' => [
-	    [
-		    'id' => 'location',
-		    'title' => 'Location'
-	    ]
-    ]
+	'fields' => [
+		[
+		'name' => 'address',
+		'label' => 'Address',
+		'section' => 'location'
+		],
+		[
+		'name' => 'city',
+		'label' => 'City',
+		'section' => 'location'
+		],
+		[
+		'name' => 'postal_code',
+		'label' => 'Postal Code',
+		'section' => 'location'
+		]
+		],
+		'sections' => [
+		[
+		'id' => 'location',
+		'title' => 'Location'
+		]
+	]
 ] );
 ```
 ### Reading
