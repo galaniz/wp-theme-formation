@@ -38,7 +38,7 @@ self::$cpt = [
 
 #### `public static $pt_layout`
 
-Store layouts by post type. Appends layouts from `[$cpt](#user-content-public-static-cpt)`.   
+Store layouts by post type. Appends layouts from `[$cpt link](#user-content-public-static-cpt)`.   
 _Type:_ `associative array`  
 _Default:_ `[]`
 
