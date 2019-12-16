@@ -35,25 +35,16 @@ class Formation {
 	public static $src_url = '';
 
    /*
-	* Pass query args to front end when loading posts with ajax.
-	*
-	* @var array $load_posts_query {
-	*		@type string $id Accepts array.
-	* }
-	*/
-
-	public static $load_posts_query = [];
-
-   /*
-	* Store custom post type names and meta.
+	* Store custom post type names and unlimited meta data.
 	*
 	* @var array $cpt {
 	*		@type string $post_type Accepts array {
 	*     		@type string $slug Accepts string.
 	*     		@type string $label Accepts string.
-	*     		@type string $plural_label Accepts string.
-	*     		@type string $layout Accepts string.
-	*     		@type string $taxonomy Accepts string.
+	*     		@type string $layout Accepts string.	
+	*     		@type string $no_reading Accepts boolean.
+	*     		@type string $no_slug Accepts boolean.
+	*     		@type string $ajax_posts_per_page Accepts boolean.
 	*		}
 	* }
 	*/
@@ -160,9 +151,9 @@ class Formation {
 	public $defer_script_handles = [];
 
    /*
-    * Optional classes to add to fields, labels, buttons...
+    * Markup for default loader icon.
     *
-    * @var array $classes
+    * @var string $loader_icon
     */
 
 	public static $loader_icon = '';
@@ -183,8 +174,6 @@ class Formation {
 
    /*
 	* Stores svg sprite meta.
-	*
-	* Note: svg can be found: 
 	*
 	* @var array $sprites
 	*/
@@ -207,6 +196,11 @@ class Formation {
 		],
 		'YouTube' => [
 			'id' => 'youtube',
+			'w' => 28,
+			'h' => 28
+		],
+		'Vimeo' => [
+			'id' => 'vimeo',
 			'w' => 28,
 			'h' => 28
 		],
@@ -234,6 +228,16 @@ class Formation {
 			'id' => 'caret',
 			'w' => 24,
 			'h' => 24
+		],
+		'Carousel' => [
+			'id' => 'carousel',
+			'w' => 20,
+			'h' => 20
+		],
+		'Play' => [
+			'id' => 'play',
+			'w' => 20,
+			'h' => 23
 		],
 		'Error' => [
 			'id' => 'error',

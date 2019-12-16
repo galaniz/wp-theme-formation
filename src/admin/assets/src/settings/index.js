@@ -1,7 +1,7 @@
 
 /*
- * Move title to correction section under tabs
- * -------------------------------------------
+ * Move title to correct section under tabs
+ * ----------------------------------------
  */
 
 const initialize = () => {
