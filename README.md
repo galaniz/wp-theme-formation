@@ -13,21 +13,21 @@ Base class, utilities and added functionality for building WordPress themes.
 
 #### `public static $namespace`
 
-Namespace for handles, option and meta names.
-*Type:* `string`
+Namespace for handles, option and meta names.  
+*Type:* `string`  
 *Default:* `'frm'`
 
 #### `public static $src_path`
 
-Path from vendor to src folder.
-*Type:* `string`
+Path from vendor to src folder.  
+*Type:* `string`  
 *Default:* `'/vendor/alanizcreative/wp-theme-formation/src/'`
 
 #### `public static $cpt`
 
-Store post type names and data.
-*Type:* `associative array`
-*Default:* `[]`
+Store post type names and data.  
+*Type:* `associative array`  
+*Default:* `[]`  
 *Example:*
 ```php
 self::$cpt = [
@@ -44,21 +44,21 @@ self::$cpt = [
 
 #### `public static $pt_layout`
 
-Store layouts by post type. Appends layouts from `[$cpt](#public-static-cpt)`.
-*Type:* `associative array`
+Store layouts by post type. Appends layouts from `[$cpt](#public-static-cpt)`.  
+*Type:* `associative array`  
 *Default:* `[]`
 
 #### `public static $posts_per_page`
 
-Default number of posts to display by type/post type.
-*Type:* `associative array`
+Default number of posts to display by type/post type.  
+*Type:* `associative array`  
 *Default:* `[]`
 
 #### `public $editor_color_palette`
 
-Editor color palette theme support args.
-*Type:* `array`
-*Default:* `[]`
+Editor color palette theme support args.  
+*Type:* `array`  
+*Default:* `[]`  
 *Example:*
 ```php
 $this->editor_color_palette[] = [
@@ -70,27 +70,27 @@ $this->editor_color_palette[] = [
 
 #### `public $image_sizes`
 
-Custom image sizes to register. Name => size.
-*Type:* `associative array`
+Custom image sizes to register. Name => size.  
+*Type:* `associative array`  
 *Default:* `[]`
 
 #### `public $nav_menus`
 
-Nav menus to register. Slug => label.
-*Type:* `associative array`
+Nav menus to register. Slug => label.  
+*Type:* `associative array`  
 *Default:* `[]`
 
 #### `public $editor_style_url`
 
-Stylesheet url for admin editor styles.
-*Type:* `string`
+Stylesheet url for admin editor styles.  
+*Type:* `string`  
 *Default:* `''`
 
 #### `public $styles`
 
-Stylesheets to register. See [wp_enqueue_style](https://developer.wordpress.org/reference/functions/wp_enqueue_style/).
-*Type:* `array`
-*Default:* `[]`
+Stylesheets to register. See [wp_enqueue_style](https://developer.wordpress.org/reference/functions/wp_enqueue_style/).  
+*Type:* `array`  
+*Default:* `[]`  
 *Example:*
 ```php
 $this->styles = [
@@ -109,9 +109,9 @@ $this->styles = [
 
 #### `public $scripts`
 
-Scripts to register. See [wp_enqueue_script](https://developer.wordpress.org/reference/functions/wp_enqueue_script/).
-*Type:* `array`
-*Default:* `[]`
+Scripts to register. See [wp_enqueue_script](https://developer.wordpress.org/reference/functions/wp_enqueue_script/).  
+*Type:* `array`  
+*Default:* `[]`  
 *Example:*
 ```php
 $this->scripts = [
@@ -131,14 +131,14 @@ $this->scripts = [
 
 #### `public static $loader_icon`
 
-Markup for default loader icon.
-*Type:* `string`
-*Default:* `''`
+Markup for default loader icon.  
+*Type:* `string`  
+*Default:* `''`  
 
 #### `public static $classes`
 
-Optional classes to add to fields, labels, buttons...
-*Type:* `array`
+Optional classes to add to fields, labels, buttons...  
+*Type:* `array`  
 *Default:* 
 ```php
 self::$classes = [
@@ -152,8 +152,8 @@ self::$classes = [
 
 #### `public static $sprites`
 
-Stores svg sprite meta. Svgs can be found in assets/svg.
-*Type:* `array`
+Stores svg sprite meta. Svgs can be found in assets/svg.  
+*Type:* `array`  
 *Default:* 
 ```php
 self::$sprites = [
