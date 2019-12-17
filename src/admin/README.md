@@ -2,11 +2,15 @@
 
 Admin settings generation and pages.
 
-## Settings
+## `class Settings`
 
-`Class` that uses [WordPress' Settings API](https://developer.wordpress.org/plugins/settings/using-settings-api/) to build out settings pages.
+Uses [WordPress' Settings API](https://developer.wordpress.org/plugins/settings/using-settings-api/) to build out settings pages.
 
-### Options
+_Parameters:_
+* `$args`  
+_Type:_ `associative array`  
+_Default:_ `[]`  
+_Parameters:_
 
 | Name | Type | Default | Required | Description
 |--|--|--|--|--|
@@ -47,9 +51,9 @@ $settings = new Settings( [
 	]
 ] );
 ```
-## Reading
+## `class Reading`
 
-`Class` that adds the following fields to WordPress' default reading settings page using base class variable [`$cpt`](https://github.com/galaniz/wp-theme-formation#user-content-public-static-cpt). Note: if `no_reading` is set, these fields are not added for that custom post type. Additional fields can be pushed to `Reading::$additional_fields` before instantiating class.
+Adds the following fields to WordPress' default reading settings page using base class variable [`$cpt`](https://github.com/galaniz/wp-theme-formation#user-content-public-static-cpt). Note: if `no_reading` is set, these fields are not added for that custom post type. Additional fields can be pushed to `Reading::$additional_fields` before instantiating class.
 
 #### `{$cpt}_page`
 
@@ -71,11 +75,15 @@ More posts title.
 How many posts to load with ajax. This field is added if `ajax_posts_per_page` is set in [`$cpt`](https://github.com/galaniz/wp-theme-formation#user-content-public-static-cpt).  
 *Type:* `int`
 
-## Theme
+## `class Theme`
 
-`Class` that adds a new settings page with fields for commonly used theme items. It includes default fields for svg and png logos as well as footer text.
+Adds a new settings page with fields for commonly used theme items. It includes default fields for uploading svg and png logos as well as a textbox for footer text.
 
-### Options
+_Parameters:_
+* `$args`  
+_Type:_ `associative array`  
+_Default:_ `[]`  
+_Parameters:_
 
 | Name | Type | Default | Description
 |--|--|--|--|

@@ -26,14 +26,13 @@ class Field {
     *
     * Default arguments to render fields.
     *
-    * @var array $default 
+    * @var array $default
     */
 
     private static $default = [
         'render' => [
             'name' => '',
             'fields' => [],
-            'index' => 0,
             'data' => '',
             'multi' => false,
             'copy' => false,
@@ -73,16 +72,16 @@ class Field {
    /*
     * Multi buttons markup.
     *
-    * @var array $multi_buttons 
+    * @var array $multi_buttons
     */
 
     public static $multi_buttons = [
-        'add' => 
+        'add' =>
             '<button type="button" class="o-multi__button --add" data-type="add" onclick="multi( this )">' .
                 '<span class="u-visually-hidden">Add Input</span>' .
                 '<span class="dashicons dashicons-plus o-multi__icon"></span>' .
             '</button>',
-        'remove' => 
+        'remove' =>
             '<button type="button" class="o-multi__button --remove" data-type="remove" onclick="multi( this )">' .
                 '<span class="u-visually-hidden">Remove Input</span>' .
                 '<span class="dashicons dashicons-minus o-multi__icon"></span>' .
@@ -107,7 +106,7 @@ class Field {
     *
     * Get base name without keys or indexes.
     *
-    * @param string $name 
+    * @param string $name
     * @return string base name
     */
 
@@ -128,15 +127,15 @@ class Field {
     * Replace %i placeholder with actual index.
     *
     * @param string $name
-    * @param int $index 
+    * @param int $index
     * @return string indexed name
     */
 
     public static function index_name( $name, $index ) {
-        return str_replace( 
+        return str_replace(
             array( '%i' ),
             array( $index ),
-            $name 
+            $name
         );
     }
 
@@ -148,10 +147,10 @@ class Field {
     */
 
     public static function format_id( $id ) {
-        $id = str_replace( 
+        $id = str_replace(
             array( '[', ']' ),
             array( '_' ),
-            $id 
+            $id
         );
 
         return rtrim( $id, '_' );
@@ -161,17 +160,17 @@ class Field {
     * Get value in data array from name ( lorem[%i][ipsum] )
     *
     * @param array $array
-    * @param string $key 
+    * @param string $key
     * @return string/array value of $key in $array
     */
 
     public static function get_array_value( $array, $key ) {
         if( !$key ) return false;
 
-        $key = str_replace( 
-            array( '[]', '[', ']' ), 
-            array( '', '.', '', ), 
-            $key 
+        $key = str_replace(
+            array( '[]', '[', ']' ),
+            array( '', '.', '', ),
+            $key
         );
 
         $key = explode( '.', $key );
@@ -204,7 +203,7 @@ class Field {
     }
 
    /*
-    * Recursively filter out required empty multi fields. 
+    * Recursively filter out required empty multi fields.
     *
     * @param array $array Contains multi fields value.
     * @param array $required Contains required keys.
@@ -225,7 +224,7 @@ class Field {
                 }
 
                 if( $unset )
-                    unset( $array[$k] ); 
+                    unset( $array[$k] );
 
                 self::filter_multi_fields( $v );
 
@@ -274,23 +273,23 @@ class Field {
         } else {
             if( !$no_group )
                 $output .= '<div class="o-field-group l-100 l-flex --align-center --wrap">';
-        }    
+        }
 
         if( isset( $args['label'] ) && !isset( $args['label_hidden'] ) && !$no_group  )
             $output .= '<div class="o-field-group__label">' . $args['label'] . '</div>';
 
-        if( $multi ) 
+        if( $multi )
             $output .= '<div class="o-multi">';
-        
+
         $copy_output = '';
 
         for( $i = 0; $i < $count; $i++ ) {
             if( $multi ) {
-                $mi_start = 
+                $mi_start =
                     '<div class="o-multi__item" data-name="' . $top_level_name . '">' .
                         '<div class="o-multi__fields l-flex --wrap">';
 
-                if( $i === 0 ) 
+                if( $i === 0 )
                     $copy_output .= $mi_start;
 
                 $output .= $mi_start;
@@ -304,8 +303,8 @@ class Field {
                     }
                 }
 
-                self::render_field( 
-                    $f, 
+                self::render_field(
+                    $f,
                     $output,
                     $i,
                     $data,
@@ -315,8 +314,8 @@ class Field {
                 );
 
                 if( $multi && $i === 0 ) {
-                    self::render_field( 
-                        $f, 
+                    self::render_field(
+                        $f,
                         $copy_output,
                         $i,
                         $data,
@@ -328,9 +327,9 @@ class Field {
             }
 
             if( $multi ) {
-                $mi_end =  
+                $mi_end =
                     '</div>' .
-                    '<div class="o-multi__buttons l-flex">' . 
+                    '<div class="o-multi__buttons l-flex">' .
                         self::$multi_buttons['add'];
 
                 $output .= $mi_end;
@@ -342,7 +341,7 @@ class Field {
                     $copy_output .= $mi_end . self::$multi_buttons['remove'];
 
                 $mi_end =
-                        '</div>' . 
+                        '</div>' .
                     '</div>';
 
                 $output .= $mi_end;
@@ -364,7 +363,7 @@ class Field {
         } else {
             if( !$no_group )
                 $output .= '</div>';
-        }    
+        }
 
         additional_script_data( FRM::$namespace, self::$localize_data, true );
 
@@ -374,7 +373,7 @@ class Field {
    /*
     * Output fields.
     *
-    * @param array $args @see self::$default['render'] and self::$default['field']
+    * @param array $args @see self::$default['field']
     * @param string $output Append to it as loop in render method.
     */
 
@@ -400,8 +399,8 @@ class Field {
             $classes .= ( FRM::$classes['input'] ? ' ' . FRM::$classes['input'] : '' );
             $field_class .= ( FRM::$classes['field'] ? ' ' . FRM::$classes['field'] : '' );
             $label_class .= ( FRM::$classes['label'] ? ' ' . FRM::$classes['label'] : '' );
-        } 
-       
+        }
+
         $req = '';
 
         if( is_array( $data ) ) {
@@ -419,7 +418,7 @@ class Field {
                 $attr_formatted[] = $a . '="' . $v . '"';
 
                 if( $a == 'aria-required' && $v == 'true' )
-                   $req = ' --req'; 
+                   $req = ' --req';
             }
 
             $attr = implode( ' ', $attr_formatted );
@@ -432,7 +431,7 @@ class Field {
         if( $type == 'hidden' )
             $field_class .= ( $field_class ? ' ' : '' ) . 'u-visually-hidden';
 
-        $output .= 
+        $output .=
             "<div class='o-field" . ( $field_class ? " $field_class" : '' ) . " --$type'$hidden>";
 
         if( $label && !$label_hidden ) {
@@ -466,22 +465,22 @@ class Field {
 
                 if( $type === 'text' || $type === 'email' )
                     $classes .= ' o-field__input';
-                
+
                 $checked = '';
                 $v = $val;
 
                 if( $checkbox_radio ) {
-                    if( $data_value == $value ) 
+                    if( $data_value == $value )
                         $checked = 'checked';
 
                     $v = $value;
                 }
 
-                $output .= sprintf( 
-                    '<input name="%1$s" id="%8$s" type="%2$s" value="%4$s" class="%5$s" %6$s %7$s %3$s>', 
-                    $name, 
-                    $type, 
-                    $placeholder, 
+                $output .= sprintf(
+                    '<input name="%1$s" id="%8$s" type="%2$s" value="%4$s" class="%5$s" %6$s %7$s %3$s>',
+                    $name,
+                    $type,
+                    $placeholder,
                     $v,
                     $classes,
                     $checked,
@@ -523,8 +522,8 @@ class Field {
                 }
 
                 $output .= sprintf(
-                    '<textarea name="%1$s" id="%5$s" class="%2$s" %4$s>%3$s</textarea>', 
-                    $name, 
+                    '<textarea name="%1$s" id="%5$s" class="%2$s" %4$s>%3$s</textarea>',
+                    $name,
                     $classes,
                     $val,
                     $attr,
@@ -559,10 +558,10 @@ class Field {
                 $output .= ob_get_clean();
 
                 break;
-            case 'select': 
+            case 'select':
                 if( $options ) {
                     $opt = '';
-                    
+
                     if( !self::is_assoc( $options ) ) {
                         $o = [];
 
@@ -575,17 +574,17 @@ class Field {
                     foreach( $options as $key => $label ) {
                         $selected = $key == $val ? 'selected' : '';
 
-                        $opt .= sprintf( 
-                            '<option value="%s" %s>%s</option>', 
-                            $key, 
-                            $selected, 
-                            $label 
+                        $opt .= sprintf(
+                            '<option value="%s" %s>%s</option>',
+                            $key,
+                            $selected,
+                            $label
                         );
                     }
 
                     $output .= sprintf(
-                        '<select name="%1$s" id="%5$s" class="%3$s" %4$s>%2$s</select>', 
-                        $name, 
+                        '<select name="%1$s" id="%5$s" class="%3$s" %4$s>%2$s</select>',
+                        $name,
                         $opt,
                         $classes,
                         $attr,
@@ -655,7 +654,7 @@ class Field {
 
             $checked = ( $value && $o_value == $value ) ? ' checked' : '';
 
-            $output .= 
+            $output .=
                 '<div class="o-radio__item">' .
                     '<label>' .
                         "<input class='$class' type='$type' id='$o_id' name='$o_id' value='$o_value'$checked$operator$attr>" .
@@ -757,29 +756,29 @@ class Field {
 
         $class = 'o-asset' . ( $class ? " $class" : '' );
 
-        return 
+        return
             "<div class='$class'" . ( $wp && $upload ? " data-wp='true'" : '' ) . ">" .
                 "<div class='o-asset__exists' style='display: " . ( $exists ? "block" : "none" ) . "'>" .
                     "<div class='l-flex --align-center'>" .
                         "<img class='o-asset__image' src='$url' alt='Asset preview'>" .
                         "<div class='o-asset__icon'>$icon_text</div>" .
-                        ( 
-                            $type == 'link' 
-                            ? 
+                        (
+                            $type == 'link'
+                            ?
                             "<span class='o-asset__target' style='display: none;'>$target</span>" .
-                            "<a class='o-asset__name' href='$title' target='_blank'>$title</a>" 
-                            : 
+                            "<a class='o-asset__name' href='$title' target='_blank'>$title</a>"
+                            :
                             "<span class='o-asset__name'>$title</span>"
                         ) .
                         "<div class='o-asset__right l-flex'>" .
                             (
                                 $type == 'link'
-                                ? 
+                                ?
                                 "<button type='button' class='o-asset__edit'>" .
                                     "<span class='dashicons dashicons-edit'></span>" .
                                     "<span class='u-visually-hidden'>Edit</span>" .
                                 "</button>"
-                                : 
+                                :
                                 ''
                             ) .
                             "<button type='button' class='o-asset__remove u-position-relative'>" .
@@ -790,7 +789,7 @@ class Field {
                         "</div>" .
                     "</div>" .
                 "</div>" .
-                (   
+                (
                     $upload || $type == 'link'
                     ?
                     "<div class='o-asset__no' style='display: " . ( $exists ? "none" : "block" ) . "'>" .
@@ -801,7 +800,7 @@ class Field {
                                 "<span class='o-asset__loader o-loader js-loader-select'><span class='spinner is-active'></span></span>" .
                             "</label>" .
                         "</p>" .
-                    "</div>" 
+                    "</div>"
                     :
                     ''
                 ) .
@@ -870,18 +869,18 @@ class Field {
             $caret_w = $caret_meta['w'];
             $caret_h = $caret_meta['h'];
 
-            $caret = 
+            $caret =
                 "<svg class='o-listbox__caret u-flex-shrink-0' width='$caret_w' height='$caret_h' viewBox='0 0 $caret_w $caret_h'>" .
                     "<use xlink:href='#sprite-caret' />" .
                 "</svg>";
         }
 
-        return 
+        return
             '<div class="o-listbox">' .
-                "<button class='o-listbox__btn l-flex --align-center --justify' type='button' aria-haspopup='listbox' aria-labelledby='$id' id='$id'><div class='o-listbox__text u-flex-shrink-0'>$selected_index_label</div>$caret</button>" . 
+                "<button class='o-listbox__btn l-flex --align-center --justify' type='button' aria-haspopup='listbox' aria-labelledby='$id' id='$id'><div class='o-listbox__text u-flex-shrink-0'>$selected_index_label</div>$caret</button>" .
                 '<div class="o-listbox__container">' .
-                    "<ul class='$list_classes' id='$list_id' tabindex='-1' role='listbox' aria-labelledby='$id' aria-activedescendant='$selected_index_id'>" . 
-                        $options_output . 
+                    "<ul class='$list_classes' id='$list_id' tabindex='-1' role='listbox' aria-labelledby='$id' aria-activedescendant='$selected_index_id'>" .
+                        $options_output .
                     '</ul>' .
                 '</div>' .
             '</div>';
@@ -895,9 +894,9 @@ class Field {
         $path = FRM::$src_path . 'common/assets/public/';
         $uri = $child ? get_stylesheet_directory_uri() : get_template_directory_uri();
 
-        wp_enqueue_style( 
-            FRM::$namespace . '-field-styles', 
-            $uri . $path . 'css/field.css' 
+        wp_enqueue_style(
+            FRM::$namespace . '-field-styles',
+            $uri . $path . 'css/field.css'
         );
 
         $upload_nonce_name = FRM::$namespace . '_upload_file_nonce';
@@ -911,7 +910,7 @@ class Field {
         wp_enqueue_media();
 
         wp_enqueue_script(
-            FRM::$namespace . '-field-script', 
+            FRM::$namespace . '-field-script',
             $uri . $path . 'js/field.js',
             [],
             NULL,
@@ -955,8 +954,8 @@ class Field {
                 if( !check_ajax_referer( FRM::$namespace . '_remove_file_nonce', FRM::$namespace . '_remove_file_nonce', false ) )
                     throw new \Exception( 'Not allowed' );
 
-                if( !isset( $_POST['file_path'] ) ) 
-                    throw new \Exception( 'No file path' ); 
+                if( !isset( $_POST['file_path'] ) )
+                    throw new \Exception( 'No file path' );
 
                 unlink( $_POST['file_path'] );
 
