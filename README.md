@@ -64,13 +64,13 @@ $this->editor_color_palette[] = [
 
 #### `public $image_sizes`
 
-Custom image sizes to register. Name => size.  
+Custom image sizes to register. name `str` => size `int`  
 _Type:_ `associative array`  
 _Default:_ `[]`
 
 #### `public $nav_menus`
 
-Nav menus to register. Slug => label.  
+Nav menus to register. slug `str` => label `str`  
 _Type:_ `associative array`  
 _Default:_ `[]`
 
@@ -172,8 +172,8 @@ _Parameters:_
 |--|--|--|--|
 | `$name` | `boolean` | `false` | Name of variable on front end.
 | `$data` | `array` | `[]` | Data to pass to front end.
-| `$admin` | `boolean` | `false` | Only apply to admin.
-| `$head` | `boolean` | `false` | Outputs in footer otherwise in head.
+| `$admin` | `boolean` | `false` | If true, only apply to admin, otherwise only frontend.
+| `$head` | `boolean` | `false` | If true, outputs in head, otherwise in footer.
 
 #### `write_log( $log )`
 
@@ -257,7 +257,7 @@ _Parameters:_
 | Name | Type | Default | Description
 |--|--|--|--|
 | `content` | `string` | `''` |
-| `words` | `boolean` | `false` | Whether to trim by words.
+| `words` | `boolean` | `false` | If true, trim by words, otherwise by characters.
 | `length` | `int` | `55` | In words or characters.
 | `post_id` | `int` | `get_the_ID()` | Only if no `$content`, defaults to
 | `post` | `string` | `get_post( $post_id )` | Only if no `$content`. Becomes `$content`
@@ -334,7 +334,7 @@ _Parameters:_
 |--|--|--|--|
 | `links` | `string` | `''` | Menu location.
 | `share` | `array` | `[]` | What to share on: Facebook, Twitter, Linkedin, Email
-| `div` | `boolean` | `false` | Use div instead of ul.
+| `div` | `boolean` | `false` | If true, use div instead of ul.
 | `class` | `string` | `''` | Class for items.
 | `list_class` | `string` | `''` | Class for container div/ul.
 
@@ -376,7 +376,7 @@ _Parameters:_
 | `id` | `boolean` | `uniqid()` | Form id.
 | `data_type` | `string` | `default` | Form data type.
 | `fields` | `string` | `''` | Field output. See [`Field class`](#).
-| `single_field` | `boolean` | `false` | If form contains one field.
+| `single_field` | `boolean` | `false` | If true, form contains one field.
 | `button_class` | `string` | [`$classes['button']`](#user-content-public-static-classes) | Classes to add to submit button.
 | `submit_label` | `string` | `'Submit'` | Submit button label.
 
@@ -474,7 +474,7 @@ _Parameters:_
 | `rows` | `array` | `[]` | Required.
 | `class` | `string` | `''` | Table class.
 | `row_class` | `string` | `''` | tr class.
-| `row` | `boolean` | `false` | If true only output row, not table.
+| `row` | `boolean` | `false` | If true, only output row, not table.
 | `attr` | `array` | `[]` | Table attributes.
 
 _Returns:_ `string`
@@ -516,7 +516,7 @@ _Parameters:_
 | `field_class` | `string` | `''` | Add class to field.
 | `input_class` | `string` | `''` | Add class to search input.
 | `button_class` | `string` | `''` | Add class to submit button.
-| `icon` | `associative array` | [`$sprites`](#user-content-public-static-sprites)`['Search']` | Search icon.
+| `icon` | `associative array` | [`$sprites['Search']`](#user-content-public-static-sprites) | Search icon.
 
 _Returns:_ `string`
 
