@@ -4,7 +4,7 @@ Classes/methods used on the frontend.
 
 ### `trait Ajax`
 
-Actions and callbacks for ajax requests. Inserted into [`class Base`](https://github.com/galaniz/wp-theme-formation).
+Actions and callbacks for ajax requests. Inserted into [`class Formation`](https://github.com/galaniz/wp-theme-formation/tree/master/src/admin/#user-content-class-formation).
 
 #### `public static function create_nonce()`
 
@@ -20,7 +20,7 @@ _Echo:_ `string` JSON containing nonce.
 
 #### `public static function send_form( $priv_type )`
 
-Validate nonces and recaptcha for contact and comment forms. Recaptcha API keys required from [`Theme`](#) settings.
+Validate nonces and recaptcha for contact and comment forms. Recaptcha API keys required from [`Theme`](https://github.com/galaniz/wp-theme-formation/tree/master/src/admin/#user-content-class-theme) settings.
 
 _Parameters:_
 
@@ -67,7 +67,7 @@ _Echo:_ `string` JSON with success message.
 
 #### `protected static function mailchimp_signup()`
 
-Process mailchimp signup form. Mailchimp API key required from [`Theme`](#) settings.
+Process mailchimp signup form. Mailchimp API key required from [`Theme`](https://github.com/galaniz/wp-theme-formation/tree/master/src/admin/#user-content-class-theme) settings.
 
 _Post:_
 

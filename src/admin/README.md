@@ -16,7 +16,7 @@ _Parameters:_
 | Name | Type | Default | Required | Description
 |--|--|--|--|--|
 | `page` | `string` | `''` | ✓ | Page to register settings.
-| `fields` | `array` | `[]` | ✓ | See [class Field](#). Includes section and tab options.
+| `fields` | `array` | `[]` | ✓ | See [class Field](https://github.com/galaniz/wp-theme-formation/tree/master/src/common/#user-content-class-field). Includes section and tab options.
 | `sections` | `array` | `[]` |  | Add section to page. Provide id `str` and title `str` as associative array.
 | `tabs` | `boolean` | `false` |  | Organize as tabs.
 
@@ -54,7 +54,7 @@ $settings = new Settings( [
 ```
 ## `class Reading`
 
-Adds the following fields to WordPress' default reading settings page using base class variable [`$cpt`](https://github.com/galaniz/wp-theme-formation#user-content-public-static-cpt). Note: if `no_reading` is set, these fields are not added for that custom post type. Additional fields can be pushed to `Reading::$additional_fields` before instantiating class.
+Adds the following fields to WordPress' default reading settings page using formation class variable [`$cpt`](https://github.com/galaniz/wp-theme-formation#user-content-public-static-cpt). Note: if `no_reading` is set, these fields are not added for that custom post type. Additional fields can be pushed to `Reading::$additional_fields` before instantiating class.
 
 #### `{$cpt}_page`
 
