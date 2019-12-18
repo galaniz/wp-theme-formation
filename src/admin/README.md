@@ -7,6 +7,7 @@ Admin settings generation and pages.
 Uses [WordPress' Settings API](https://developer.wordpress.org/plugins/settings/using-settings-api/) to build out settings pages.
 
 _Parameters:_
+
 * `$args`  
 _Type:_ `associative array`  
 _Default:_ `[]`  
@@ -15,7 +16,7 @@ _Parameters:_
 | Name | Type | Default | Required | Description
 |--|--|--|--|--|
 | `page` | `string` | `''` | ✓ | Page to register settings.
-| `fields` | `array` | `[]` | ✓ | See [field class](#). Includes section and tab options.
+| `fields` | `array` | `[]` | ✓ | See [class Field](#). Includes section and tab options.
 | `sections` | `array` | `[]` |  | Add section to page. Provide id `str` and title `str` as associative array.
 | `tabs` | `boolean` | `false` |  | Organize as tabs.
 
@@ -80,6 +81,7 @@ How many posts to load with ajax. This field is added if `ajax_posts_per_page` i
 Adds a new settings page with fields for commonly used theme items. It includes default fields for uploading svg and png logos as well as a textbox for footer text.
 
 _Parameters:_
+
 * `$args`  
 _Type:_ `associative array`  
 _Default:_ `[]`  

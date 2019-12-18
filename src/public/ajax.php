@@ -7,7 +7,7 @@
 
 namespace Formation\Pub;
 
-use \Formation\Formation as FRM; 
+use \Formation\Formation as FRM;
 use function \Formation\write_log;
 
 trait Ajax {
@@ -53,15 +53,15 @@ trait Ajax {
 
     public static function create_nonce() {
     	try {
-    		if( !isset( $_POST['nonce_name'] ) ) 
-    			throw new \Exception( 'No nonce name' ); 
+    		if( !isset( $_POST['nonce_name'] ) )
+    			throw new \Exception( 'No nonce name' );
 
     		echo json_encode( [
     			'nonce' => wp_create_nonce( $_POST['nonce_name'] )
     		] );
 
 			exit;
-    	} catch( \Exception $e ) { 
+    	} catch( \Exception $e ) {
     		echo $e->getMessage();
     		header( http_response_code( 500 ) );
 			exit;
@@ -78,24 +78,24 @@ trait Ajax {
      * @pass string $recaptcha Required.
      */
 
-    public static function send_form( $priv_type ) {
+    public static function send_form( $priv_type = 'nopriv' ) {
     	try {
-    		if( !isset( $_POST['nonce'] ) ) 
-    			throw new \Exception( 'Forbidden' ); 
+    		if( !isset( $_POST['nonce'] ) )
+    			throw new \Exception( 'Forbidden' );
 
     		if( !wp_verify_nonce( $_POST['nonce'], $_POST['nonce_name'] ) )
 				throw new \Exception( 'Forbidden' );
 
     		// check recaptcha token exists
-    		if( !isset( $_POST['recaptcha'] ) ) 
-    			throw new \Exception( 'Forbidden' ); 
+    		if( !isset( $_POST['recaptcha'] ) )
+    			throw new \Exception( 'Forbidden' );
 
     		$recaptcha = $_POST['recaptcha'];
 			$recaptcha_secret_key = get_option( static::$namespace . '_recaptcha_secret_key', '' );
 
     		// check recaptcha api keys exist
     		if( !$recaptcha_secret_key )
-    			throw new \Exception( 'Forbidden' ); 
+    			throw new \Exception( 'Forbidden' );
 
 			// verify recaptcha token
 			$recaptcha_url = "https://www.google.com/recaptcha/api/siteverify?secret=$recaptcha_secret_key&response=$recaptcha";
@@ -124,7 +124,7 @@ trait Ajax {
 			}
 
 			exit;
-    	} catch( \Exception $e ) { 
+    	} catch( \Exception $e ) {
     		echo $e->getMessage();
     		header( http_response_code( 500 ) );
 			exit;
@@ -134,16 +134,17 @@ trait Ajax {
     /*
      * Process mailchimp signup form.
      *
-     * @pass array $inputs
+     * @pass array $inputs Required.
+		 * @pass string $location Required.
      * @echo string if successfully sent
      */
-	
-    protected static function mailchimp_signup() {
-	    if( !isset( $_POST['location'] ) ) 
-	    	throw new \Exception( 'No location' ); 
 
-	    if( !isset( $_POST['inputs'] ) ) 
-	    	throw new \Exception( 'No inputs' ); 
+    protected static function mailchimp_signup() {
+	    if( !isset( $_POST['location'] ) )
+	    	throw new \Exception( 'No location' );
+
+	    if( !isset( $_POST['inputs'] ) )
+	    	throw new \Exception( 'No inputs' );
 
 	    /* Inputs */
 
@@ -167,7 +168,7 @@ trait Ajax {
 
 					if( function_exists( $sanitize_type ) )
 						$input_value = $sanitize_type( $input_value );
-				} 
+				}
 
 				if( $input_type === 'textarea' )
 					$input_value = nl2br( $input_value );
@@ -186,7 +187,7 @@ trait Ajax {
 		}
 
 		if( !$email )
-			throw new \Exception( 'No email' ); 
+			throw new \Exception( 'No email' );
 
 		$error = false;
 
@@ -209,7 +210,7 @@ trait Ajax {
 		$url = "https://$data_center.api.mailchimp.com/3.0/lists/$list_id/members/";
 
 		/* Body */
-		
+
 		$body = [
 			'email_address' => $email,
 			'status' => 'subscribed',
@@ -241,7 +242,7 @@ trait Ajax {
 		}
 
 		if( $error ) {
-			throw new \Exception( 'Error Mailchimp API' ); 
+			throw new \Exception( 'Error Mailchimp API' );
 		} else {
 			echo json_encode( ['success' => 'Successfully subscribed.'] );
 		}
@@ -254,27 +255,28 @@ trait Ajax {
      * @pass array $inputs
      * @echo string if successfully sent
      */
-	
+
 	protected static function send_contact_form() {
-    	// id with array of information ( email, subject... )
-    	$id = $_POST['id'];
+    	$id = $_POST['id'] ?? false; // id to get array of information ( email, subject... )
+			$inputs = $_POST['inputs'] ?? false;
 
     	if( !$id )
     		throw new \Exception( 'No id' );
 
+    	if( !$inputs )
+    		throw new \Exception( 'No inputs' );
+
     	$meta = get_option( static::$namespace . '_form_' . $id, '' );
 
-    	if( !$meta ) 
+    	if( !$meta )
     		throw new \Exception( 'No meta' );
 
     	$to_email = $meta['email'];
-		
+
 		if( !$to_email )
 			throw new \Exception( 'No to email' );
 
 		$subject = $meta['subject'];
-		$inputs = $_POST['inputs'];
-
 		$site_url = home_url();
 		$site_name = get_bloginfo( 'name' );
 		$output = '';
@@ -297,13 +299,13 @@ trait Ajax {
 
 					if( function_exists( $sanitize_type ) )
 						$input_value = $sanitize_type( $input_value );
-				} 
+				}
 
 				if( $input_type === 'textarea' )
 					$input_value = nl2br( $input_value );
 			}
 
-			if( is_array( $input_value ) ) 
+			if( is_array( $input_value ) )
 				$input_value = implode( '<br>', $input_value );
 
 			if( $input_label == 'subject' && $input_value ) {
@@ -364,7 +366,7 @@ trait Ajax {
 		$result = wp_mail( $to_email, $subject, "<p style='margin:0;font-family:sans-serif;'>$output</p>" );
 
 		if( !$result ) {
-			throw new \Exception( 'Error sending form' ); 
+			throw new \Exception( 'Error sending form' );
 		} else {
 			echo json_encode( ['success' => 'Form successully sent.'] );
 		}
@@ -378,7 +380,8 @@ trait Ajax {
      *
      * @pass int $offset
      * @pass string $type
-     * @pass int $posts_per_page Required. 
+     * @pass int $posts_per_page Required.
+		 * @pass array $query_args_static
      * @pass array $query_args
      * @pass array $filters
      * @echo string json containing output
@@ -386,12 +389,12 @@ trait Ajax {
 
     public static function get_posts() {
     	try {
-	    	$offset = (int) $_POST['offset'];
-	    	$type = $_POST['type'];
-	    	$posts_per_page = (int) $_POST['ppp'];
+	    	$offset = (int) $_POST['offset'] ?? 0;
+	    	$type = $_POST['type'] ?? 'post';
+	    	$posts_per_page = (int) $_POST['ppp'] ?? 0;
 
-	    	if( !$posts_per_page ) 
-	    		throw new \Exception( 'No limit' ); 
+	    	if( !$posts_per_page )
+	    		throw new \Exception( 'No limit' );
 
 	    	$args = [
 	    		'offset' => $offset,
@@ -438,7 +441,7 @@ trait Ajax {
 
 						if( $add_to_query_args )
 							$processed_args = array_replace_recursive( $query_args[$id], $processed_args );
-	    			}		
+	    			}
 	    		}
 
 				$args = array_merge_recursive( $processed_args, $args );
@@ -446,7 +449,7 @@ trait Ajax {
 
 	    	$output = static::render_ajax_posts( $args );
 
-	    	if( is_string( $output ) ) 
+	    	if( is_string( $output ) )
 	    		echo $output;
 
 	    	if( is_array( $output ) )

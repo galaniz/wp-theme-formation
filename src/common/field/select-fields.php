@@ -12,8 +12,8 @@ namespace Formation\Common\Field;
  * -------
  */
 
-use Formation\Formation as FRM;  
-use Formation\Common\Field\Field; 
+use Formation\Formation as FRM;
+use Formation\Common\Field\Field;
 use function Formation\write_log;
 
 class Select_Fields {
@@ -21,11 +21,14 @@ class Select_Fields {
    /*
     * Get fields.
     *
-    * @param string $name 
+    * @param string $name
     * @return array
     */
 
-	public static function get( $name ) {
+	public static function get( $name = '' ) {
+		if( !$name )
+			return [];
+
 		return [
             [
                 'name' => $name . '[%i][name]',
@@ -79,7 +82,7 @@ class Select_Fields {
    /*
     * Output fields.
     *
-    * @param array $fields 
+    * @param array $fields
     * @return string of markup
     */
 
@@ -149,7 +152,7 @@ class Select_Fields {
    /*
     * Filter value by required fields.
     *
-    * @param array $value 
+    * @param array $value
     * @return array
     */
 
@@ -167,7 +170,7 @@ class Select_Fields {
         $handle = FRM::$namespace . '-select-fields-script';
 
         wp_enqueue_script(
-            $handle, 
+            $handle,
             get_template_directory_uri() . $path . 'js/select-fields.js',
             [],
             NULL,

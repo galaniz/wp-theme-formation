@@ -12,7 +12,7 @@ namespace Formation\Common\Blocks;
  * -------
  */
 
-use Formation\Formation as FRM; 
+use Formation\Formation as FRM;
 use function Formation\additional_script_data;
 use function Formation\write_log;
 
@@ -24,7 +24,7 @@ class Blocks {
     *
     * Folder url to register scripts with.
     *
-    * @var string $folder_url 
+    * @var string $folder_url
     */
 
     public static $folder_url = '';
@@ -32,7 +32,7 @@ class Blocks {
    /*
     * Optional extend media block.
     *
-    * @var boolean $extend_media 
+    * @var boolean $extend_media
     */
 
     public static $extend_media = false;
@@ -42,7 +42,7 @@ class Blocks {
     *
     * @var array $blocks Accepts array {
     *       @type string $name Accepts array {
-    *           @type string $attr Accepts array.             
+    *           @type string $attr Accepts array.
     *           @type string $default Accepts array.
     *           @type string $parent Accepts array.
     *           @type string $render Accepts function.
@@ -76,10 +76,6 @@ class Blocks {
         // modify media output if extend media
         if( $extend_media )
             add_filter( 'render_block', [$this, 'extend_media_filter'], 10, 2 );
-
-        // ajax callbacks for previewing blocks in editor
-        add_action( 'wp_ajax_nopriv_preview_blocks', [__CLASS__, 'preview_blocks'] );
-        add_action( 'wp_ajax_preview_blocks', [__CLASS__, 'preview_blocks'] );
 
         // theme block category
         add_filter( 'block_categories', [$this, 'block_theme_category'], 10, 2 );
@@ -115,14 +111,14 @@ class Blocks {
                 $data['blocks'][$n] = $b;
 
             if( is_admin() ) {
-                $folder_url = isset( $b['frm'] ) ? FRM::$src_url . 'common/assets/public/js/blocks/' : self::$folder_url; 
+                $folder_url = isset( $b['frm'] ) ? FRM::$src_url . 'common/assets/public/js/blocks/' : self::$folder_url;
 
                 wp_register_script(
                     $handle,
-                    $folder_url . $b['script'], 
+                    $folder_url . $b['script'],
                     ['wp-blocks', 'wp-element', 'wp-editor', 'wp-blocks'],
-                    NULL, 
-                    true 
+                    NULL,
+                    true
                 );
 
                 // wp_localize_script( $handle, FRM::$namespace, $data );
@@ -133,7 +129,7 @@ class Blocks {
             if( isset( $b['render'] ) )
                 $register_args['render_callback'] = $b['render'];
 
-            if( isset( $b['attr'] ) ) 
+            if( isset( $b['attr'] ) )
                 $register_args['attributes'] = $b['attr'];
 
             $r = register_block_type( $n, $register_args );
@@ -143,7 +139,7 @@ class Blocks {
                     $utils_script_handle = FRM::$namespace . '-block-utils-script';
 
                     wp_enqueue_script(
-                        $utils_script_handle, 
+                        $utils_script_handle,
                         FRM::$src_url . 'common/assets/public/js/blocks/utils.js',
                         [],
                         NULL,
@@ -151,7 +147,7 @@ class Blocks {
                     );
 
                     wp_enqueue_script(
-                        FRM::$namespace . '-insert-block-script', 
+                        FRM::$namespace . '-insert-block-script',
                         FRM::$src_url . 'common/assets/public/js/blocks/insert-block.js',
                         [$utils_script_handle],
                         NULL,
@@ -166,8 +162,8 @@ class Blocks {
                                 FRM::$namespace . '-extend-media-' . $s . '-script',
                                 FRM::$src_url . "common/assets/public/js/blocks/extend-media/$s.js",
                                 ['wp-element', 'wp-blocks', 'wp-editor', 'wp-hooks'],
-                                NULL, 
-                                true 
+                                NULL,
+                                true
                             );
                         }
                     }
@@ -178,7 +174,7 @@ class Blocks {
         }
 
         additional_script_data( FRM::$namespace, $data, true, true );
-    } 
+    }
 
    /*
     * Render block callback to extend media.
@@ -186,7 +182,7 @@ class Blocks {
     * @param string $block_content
     * @pass array $block
     * @return string $block_content.
-    */ 
+    */
 
     public static function extend_media_filter( $block_content, $block ) {
         $name = $block['blockName'];
@@ -198,8 +194,8 @@ class Blocks {
 
             $embed_names = [
                 'core/image',
-                'core/video', 
-                'core-embed/youtube', 
+                'core/video',
+                'core-embed/youtube',
                 'core-embed/vimeo'
             ];
 
@@ -211,7 +207,7 @@ class Blocks {
 
             $b_attr = $block['attrs'];
 
-            $caption = strpos( $block_content, 'figcaption' ) !== false ? true : false; 
+            $caption = strpos( $block_content, 'figcaption' ) !== false ? true : false;
             $caption_modifier = '--no-caption';
             $width = '100';
             $breakout = false;
@@ -231,11 +227,11 @@ class Blocks {
 
             $classes = "l-$width $caption_modifier";
 
-            if( $breakout ) { 
+            if( $breakout ) {
                 $classes .= ' --breakout';
 
-                $block_content = 
-                    '<div class="l-breakout">' . 
+                $block_content =
+                    '<div class="l-breakout">' .
                         $block_content .
                     '</div>';
             }
@@ -247,39 +243,12 @@ class Blocks {
     }
 
    /*
-    * Ajax callback to preview block in editor.
-    *
-    * @pass string $name
-    * @pass array $attr
-    * @echo string of markup.
-    */ 
-
-    public static function preview_blocks() {
-        try {
-            $name = $_POST['name'];
-            $attr = stripslashes( $_POST['attr'] );
-            $attr = json_decode( $attr, true );
-
-            $callback = self::$blocks[$name]['render'];
-            call_user_func_array( $callback, $attr );
-
-            echo json_encode( $output );
-
-            exit;
-        } catch( \Exception $e ) {
-            header( http_response_code( 500 ) );
-            echo $e->getMessage();
-            exit;
-        }
-    }
-
-   /*
     * Add theme block category
     *
     * @param array $categories
     * @param object $post
-    * @return array 
-    */ 
+    * @return array
+    */
 
     public function block_theme_category( $categories, $post ) {
         return array_merge(

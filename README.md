@@ -180,6 +180,7 @@ _Parameters:_
 Write to debug log.  
 
 _Parameters:_
+
 * `$log`  
 Data to output in debug log.  
 _Type:_ `string|array|object`  
@@ -194,6 +195,7 @@ _Default:_ `''`
 Prefix string with [`$namespace`](#user-content-public-static-namespace) only if not already prefixed.  
 
 _Parameters:_
+
 * `$name`  
 _Type:_ `string`  
 _Default:_ `''`  
@@ -205,6 +207,7 @@ _Returns:_ `string`
 Get posts per page by post type.
 
 _Parameters:_
+
 * `$post_type`  
 _Type:_ `string`  
 _Default:_ `'post'`  
@@ -216,6 +219,7 @@ _Returns:_ `int`
 Get first category for post.  
 
 _Parameters:_
+
 * `$id`  
 _Type:_ `int`  
 _Default:_ `0`
@@ -249,6 +253,7 @@ _Returns:_ `int`
 Get excerpt from post, page, any string.  
 
 _Parameters:_
+
 * `$args`  
 _Type:_ `associative array`  
 _Default:_ `[]`  
@@ -278,9 +283,10 @@ _Returns:_ `string`
 
 #### `public static function get_link( $str )`
 
-Convert string to array of link data. See [`Field class`](#).
+Convert string to array of link data. See [`class Field`](#).
 
 _Parameters:_
+
 * `$str`  
 _Type:_ `string`  
 _Default:_ `''`
@@ -299,6 +305,7 @@ _Returns:_ `boolean|array`
 Get image from id.
 
 _Parameters:_
+
 * `$id`  
 _Type:_ `int`  
 _Default:_ `0`
@@ -325,6 +332,7 @@ _Returns:_ `boolean|array`
 Output for social media links/sharing.
 
 _Parameters:_
+
 * `$args`  
 _Type:_ `associative array`  
 _Default:_ `[]`  
@@ -345,6 +353,7 @@ _Returns:_ `string`
 Output for default loader.  
 
 _Parameters:_
+
 * `$loader_class`  
 _Type:_ `string`  
 _Default:_ `''`
@@ -364,6 +373,7 @@ _Returns:_ `string`
 Output for general forms (contact, sign ups).
 
 _Parameters:_
+
 * `$args`  
 _Type:_ `associative array`  
 _Default:_ `[]`  
@@ -375,7 +385,7 @@ _Parameters:_
 | `attr` | `array` | `[]` | Form attributes.
 | `id` | `boolean` | `uniqid()` | Form id.
 | `data_type` | `string` | `default` | Form data type.
-| `fields` | `string` | `''` | Field output. See [`Field class`](#).
+| `fields` | `string` | `''` | Field output. See [`class Field`](#).
 | `single_field` | `boolean` | `false` | If true, form contains one field.
 | `button_class` | `string` | [`$classes['button']`](#user-content-public-static-classes) | Classes to add to submit button.
 | `submit_label` | `string` | `'Submit'` | Submit button label.
@@ -387,6 +397,7 @@ _Returns:_ `string`
 Output for static page archives.
 
 _Parameters:_
+
 * `$args`  
 _Type:_ `associative array`  
 _Default:_ `[]`  
@@ -409,6 +420,7 @@ _Returns:_ `boolean`
 Get mailchimp list.
 
 _Parameters:_
+
 * `$list_name`  
 _Type:_ `string`  
 _Default:_ `''`  
@@ -428,6 +440,7 @@ _Returns:_ `boolean|array`
 Format table data into labels and rows.
 
 _Parameters:_
+
 * `$data`  
 _Type:_ `array`  
 _Default:_ `[]`  
@@ -463,6 +476,7 @@ _Returns:_ `array`
 Format table data into labels and rows.
 
 _Parameters:_
+
 * `$args`  
 _Type:_ `associative array`  
 _Default:_ `[]`  
@@ -484,6 +498,7 @@ _Returns:_ `string`
 Output for modals.
 
 _Parameters:_
+
 * `$args`  
 _Type:_ `associative array`  
 _Default:_ `[]`  
@@ -506,6 +521,7 @@ _Returns:_ `string`
 Output for search form.
 
 _Parameters:_
+
 * `$args`  
 _Type:_ `associative array`  
 _Default:_ `[]`  
@@ -525,6 +541,7 @@ _Returns:_ `string`
 Output for canvas workaround to scale svg in older browsers.
 
 _Parameters:_
+
 * `$svg_str`  
 _Type:_ `string`  
 _Default:_ `''`,  
