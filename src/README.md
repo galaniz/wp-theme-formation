@@ -1,8 +1,8 @@
 # Base
 
-## `class Formation`  
+### `class Formation`  
 
-### Variables
+#### Variables
 
 #### `public static $namespace`
 
@@ -257,7 +257,7 @@ _Returns:_ `string`
 
 #### `public static function get_link( $str )`
 
-Convert string to array of link data. See [`class Field`](https://github.com/galaniz/wp-theme-formation/tree/master/src/common/#user-content-class-field).
+Convert string to array of link data. See [`class Field`](/src/common/#user-content-class-field).
 
 _Parameters:_
 
@@ -361,7 +361,7 @@ _Parameters:_
 | `attr` | `array` | `[]` | Form attributes.
 | `id` | `boolean` | `uniqid()` | Form id.
 | `data_type` | `string` | `default` | Form data type.
-| `fields` | `string` | `''` | Field output. See [`class Field`](https://github.com/galaniz/wp-theme-formation/tree/master/src/common/#user-content-class-field).
+| `fields` | `string` | `''` | Field output. See [`class Field`](/src/common/#user-content-class-field).
 | `single_field` | `boolean` | `false` | If true, form contains one field.
 | `button_class` | `string` | [`$classes['button']`](#user-content-public-static-classes) | Classes to add to submit button.
 | `submit_label` | `string` | `'Submit'` | Submit button label.
@@ -389,7 +389,7 @@ _Parameters:_
 
 _Returns:_ `boolean`
 
-## `class Utils_Optional`
+### `class Utils_Optional`
 
 #### `public static function get_mailchimp_list( $list_name )`
 
@@ -525,7 +525,7 @@ _Required:_ true
 
 _Returns:_ `string`
 
-## Global Functions
+### Global Functions
 
 #### `additional_script_data( $name, $data, $admin, $head )`
 
