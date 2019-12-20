@@ -16,7 +16,7 @@ _Parameters:_
 | Name | Type | Default | Required | Description
 |--|--|--|--|--|
 | `page` | `string` | `''` | ✓ | Page to register settings.
-| `fields` | `array` | `[]` | ✓ | See [class Field](https://github.com/galaniz/wp-theme-formation/tree/master/src/common/#user-content-class-field). Includes section and tab options.
+| `fields` | `array` | `[]` | ✓ | See [class Field](/src/common/#user-content-class-field). Includes section and tab options.
 | `sections` | `array` | `[]` |  | Add section to page. Provide id `str` and title `str` as associative array.
 | `tabs` | `boolean` | `false` |  | Organize as tabs.
 
@@ -54,7 +54,7 @@ $settings = new Settings( [
 ```
 ## `class Reading`
 
-Adds the following fields to WordPress' default reading settings page using formation class variable [`$cpt`](https://github.com/galaniz/wp-theme-formation#user-content-public-static-cpt). Note: if `no_reading` is set, these fields are not added for that custom post type. Additional fields can be pushed to `Reading::$additional_fields` before instantiating class.
+Adds the following fields to WordPress' default reading settings page using formation class variable [`$cpt`](/src/#user-content-public-static-cpt). Note: if `no_reading` is set, these fields are not added for that custom post type. Additional fields can be pushed to `Reading::$additional_fields` before instantiating class.
 
 #### `{$cpt}_page`
 
@@ -73,7 +73,7 @@ More posts title.
 
 #### `{$cpt}_ajax_posts_per_page`
 
-How many posts to load with ajax. This field is added if `ajax_posts_per_page` is set in [`$cpt`](https://github.com/galaniz/wp-theme-formation#user-content-public-static-cpt).  
+How many posts to load with ajax. This field is added if `ajax_posts_per_page` is set in [`$cpt`](/src/#user-content-public-static-cpt).  
 *Type:* `int`
 
 ## `class Theme`

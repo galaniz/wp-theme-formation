@@ -440,7 +440,7 @@ trait Ajax {
 						);
 
 						if( $add_to_query_args )
-							$processed_args = array_replace_recursive( $query_args[$id], $processed_args );
+							$processed_args = array_merge_recursive( $query_args[$id], $processed_args );
 	    			}
 	    		}
 
