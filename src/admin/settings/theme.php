@@ -282,6 +282,7 @@ class Theme {
                 $this->fields[] = [
                     'name' => 'uploads_hidden',
                     'type' => 'hidden',
+                    'hidden_type_show' => true,
                     'value' => 1,
                     'section' => 'uploads',
                     'tab' => 'Uploads',

@@ -52,10 +52,12 @@ class Field {
             'class' => '',
             'placeholder' => '',
             'options' => [],
-            'hidden' => false,
+            'hidden' => false,  
             'before' => '',
             'after' => '',
             'value' => '',
+            /* hidden */
+            'hidden_type_show' => false,
             /* file */
             'file_type' => 'file', // or image
             'accept' => '',
@@ -428,7 +430,7 @@ class Field {
 
         $hidden = $hidden === '100' || ( $hidden && !$val ) ? ' style="display: none;"' : '';
 
-        if( $type == 'hidden' )
+        if( $type == 'hidden' && !$hidden_type_show )
             $field_class .= ( $field_class ? ' ' : '' ) . 'u-visually-hidden';
 
         $output .=
