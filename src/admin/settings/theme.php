@@ -12,9 +12,9 @@ namespace Formation\Admin\Settings;
  * -------
  */
 
-use Formation\Formation as FRM;  
-use Formation\Common\Field\Field; 
-use Formation\Common\Field\Select_Fields; 
+use Formation\Formation as FRM;
+use Formation\Common\Field\Field;
+use Formation\Common\Field\Select_Fields;
 use Formation\Admin\Settings\Settings;
 use function Formation\write_log;
 
@@ -51,7 +51,7 @@ class Theme {
     * Sections.
     *
     * @var array $sections {
-    *       @type string $id Accepts string. 
+    *       @type string $id Accepts string.
     *       @type string $title Accepts string.
     *       @type string $callback Accepts function/boolean.
     *       @type string $page Accepts string.
@@ -62,6 +62,10 @@ class Theme {
         [
             'id' => 'logo',
             'title' => 'Logo'
+        ],
+        [
+            'id' => 'blocks',
+            'title' => 'Blocks'
         ],
         [
             'id' => 'footer',
@@ -95,6 +99,15 @@ class Theme {
             'section' => 'logo',
             'wp' => true,
             'tab' => 'General'
+        ],
+        [
+            'name' => '_blocks',
+            'label' => 'Reusable Blocks',
+            'type' => 'hidden',
+            'hidden_type_show' => true,
+            'section' => 'blocks',
+            'tab' => 'General',
+            'after' => '<a class="button" href="/wp-admin/edit.php?post_type=wp_block">Manage All Reusable Blocks</a>'
         ],
         [
             'name' => 'footer_text',
@@ -133,7 +146,7 @@ class Theme {
         /* Default args */
 
         $args = array_replace_recursive( [
-            'recaptcha' => false, 
+            'recaptcha' => false,
             'mailchimp_list_locations' => [],
             'sections' => [],
             'fields' => [],
@@ -278,7 +291,7 @@ class Theme {
                     'id' => 'uploads',
                     'title' => 'Theme Uploads'
                 ];
-                
+
                 $this->fields[] = [
                     'name' => 'uploads_hidden',
                     'type' => 'hidden',
@@ -302,7 +315,7 @@ class Theme {
         add_action( 'admin_init', [$this, 'setup'] );
 
         // enqueue scripts
-        add_action( 'admin_enqueue_scripts', [$this, 'scripts'] ); 
+        add_action( 'admin_enqueue_scripts', [$this, 'scripts'] );
 
         // file actions
         Field::file_actions();
@@ -314,7 +327,7 @@ class Theme {
     */
 
     public function menu() {
-        $page_hook = add_options_page( 
+        $page_hook = add_options_page(
             'Theme Settings',
             'Theme',
             $this->user_cap,
@@ -410,13 +423,13 @@ class Theme {
                 $file_type = mime_content_type( FRM::$uploads_dir . $file_name );
                 $name = FRM::$namespace . '_theme_upload_' . $i;
 
-                $output .= 
+                $output .=
                     '<div class="o-asset-row">' .
                         Field::render_asset( [
                             'upload' => false,
                             'name' => $name,
                             'id' => $name,
-                            'type' => strpos( $file_type, 'image' ) !== false ? 'image' : 'file', 
+                            'type' => strpos( $file_type, 'image' ) !== false ? 'image' : 'file',
                             'value' => FRM::$uploads_url . $file_name,
                             'class' => 'o-asset--remove',
                             'input_value' => FRM::$uploads_dir . $file_name
