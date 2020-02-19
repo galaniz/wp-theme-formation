@@ -90,7 +90,7 @@ trait Utils_Render {
 			$theme_locations = get_nav_menu_locations();
 
 			if( isset( $theme_locations[$links] ) ) {
-				$social_links = wp_get_nav_menu_items( $links );
+				$social_links = wp_get_nav_menu_items( $theme_locations[$links] );
 
 				foreach( $social_links as $s ) {
 					if( !array_key_exists( $s->post_title, static::$sprites ) )
