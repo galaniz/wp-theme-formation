@@ -1,9 +1,9 @@
 <?php
 
-/* 
+/*
  * Formation core class
  * --------------------
- * 
+ *
  * Description: Base, utilities and added functionality for building themes.
  * Author: Graciela Alaniz
  * Author URI: gracielaalaniz.com
@@ -41,7 +41,7 @@ class Formation {
 	*		@type string $post_type Accepts array {
 	*     		@type string $slug Accepts string.
 	*     		@type string $label Accepts string.
-	*     		@type string $layout Accepts string.	
+	*     		@type string $layout Accepts string.
 	*     		@type string $no_reading Accepts boolean.
 	*     		@type string $no_slug Accepts boolean.
 	*     		@type string $ajax_posts_per_page Accepts boolean.
@@ -55,7 +55,7 @@ class Formation {
 	* Store layouts for post types.
 	*
 	* @var array $pt_layout {
-	*		@type string $post_type Accepts string 
+	*		@type string $post_type Accepts string
 	* }
 	*/
 
@@ -104,12 +104,12 @@ class Formation {
 	public $nav_menus = [];
 
    /*
-	* Stylesheet url for admin editor styles.
+	* Stylesheet path for admin editor styles relative to theme root.
 	*
-	* @var string $editor_style_url
+	* @var string $editor_style
 	*/
 
-	public $editor_style_url = '';
+	public $editor_style = '';
 
    /*
 	* Stylesheets to register.
@@ -301,11 +301,11 @@ class Formation {
 		remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 		remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
 		remove_action( 'wp_print_styles', 'print_emoji_styles' );
-		remove_action( 'admin_print_styles', 'print_emoji_styles' );	
+		remove_action( 'admin_print_styles', 'print_emoji_styles' );
 		remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
-		remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );	
+		remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
 		remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
-		
+
 		add_filter( 'tiny_mce_plugins', function( $plugins ) {
 			if( is_array( $plugins ) ) {
 				return array_diff( $plugins, ['wpemoji'] );
@@ -315,7 +315,7 @@ class Formation {
 		} );
 
 		/* Pass namespace to front end */
-		
+
 		additional_script_data( 'namespace', static::$namespace, true, true );
 		additional_script_data( 'namespace', static::$namespace, false, true );
 
@@ -384,7 +384,7 @@ class Formation {
 		add_theme_support( 'disable-custom-colors' );
 
 		// support HTML5 markup for search form, comment form, comments etc.
-		add_theme_support( 'html5', 
+		add_theme_support( 'html5',
 			[
 				'search-form',
 				'comment-form',
@@ -409,8 +409,8 @@ class Formation {
 	 	if( $this->nav_menus )
 		 	register_nav_menus( $this->nav_menus );
 
-		if( $this->editor_style_url && is_admin() )
-			add_editor_style( $this->editor_style_url );
+		if( $this->editor_style && is_admin() )
+			add_editor_style( $this->editor_style );
 	}
 
    /*
@@ -423,7 +423,7 @@ class Formation {
 				$ppp = static::get_posts_per_page();
 
 				if( $ppp )
-					$query->set( 'posts_per_page', $ppp );	
+					$query->set( 'posts_per_page', $ppp );
 			}
 
 			if( is_tax() || is_post_type_archive() ) {
@@ -444,7 +444,7 @@ class Formation {
 
    /*
 	* Register and enqueue scripts and styles.
-	*/ 
+	*/
 
 	public function scripts() {
 		$n = static::$namespace . '_';
@@ -453,7 +453,7 @@ class Formation {
 		$localize_data = [
 			'ajax_url' => admin_url( 'admin-ajax.php' )
 		];
-		
+
 		$localize_script_handle = '';
 
 		$enqueue_scripts = [];
@@ -527,7 +527,7 @@ class Formation {
 				} );
 			}
 
-			wp_register_script( 
+			wp_register_script(
 				$handle,
 				$sc['url'],
 				$dep,
@@ -544,11 +544,11 @@ class Formation {
 			wp_localize_script( $localize_script_handle, static::$namespace, $localize_data );
 
 		// enqueue scripts
-		foreach( $enqueue_scripts as $sc_handle ) 
+		foreach( $enqueue_scripts as $sc_handle )
 			wp_enqueue_script( $sc_handle );
 
 		// enqueue styles
-		foreach( $enqueue_styles as $st_handle ) 
+		foreach( $enqueue_styles as $st_handle )
 			wp_enqueue_style( $st_handle );
 
 		// remove Gutenberg CSS
@@ -564,7 +564,7 @@ class Formation {
 
    /*
 	* Remove unnecessary items from admin toolbar.
-	*/ 
+	*/
 
 	public function update_adminbar( $wp_adminbar ) {
 		$wp_adminbar->remove_node( 'wp-logo' );
@@ -574,7 +574,7 @@ class Formation {
 
    /*
 	* Remove wp news metabox.
-	*/ 
+	*/
 
 	public function remove_dashboard_widgets() {
 		remove_meta_box( 'dashboard_primary', 'dashboard', 'side' );
@@ -582,7 +582,7 @@ class Formation {
 
    /*
 	* Remove meta boxes and tag link.
-	*/ 
+	*/
 
     public function remove_meta_boxes() {
         remove_meta_box( 'commentstatusdiv', 'post', 'normal' );
@@ -593,7 +593,7 @@ class Formation {
 
    /*
 	* Add custom image sizes for users to select.
-	*/ 
+	*/
 
 	public function custom_image_sizes( $sizes ) {
 		if( !$this->image_sizes )
@@ -607,7 +607,7 @@ class Formation {
 
    /*
 	* Add to gutenberg block content
-	*/ 
+	*/
 
 	public function filter_block( $block_content, $block ) {
 		if( preg_match( '~^core/|core-embed/~', $block['blockName'] ) ) {
@@ -624,7 +624,7 @@ class Formation {
 
    /*
 	* Ajax callbacks
-	*/ 
+	*/
 
 	use Pub\Ajax;
 
@@ -654,8 +654,8 @@ class Formation {
 	* ----------------
 	*
 	* Separator for title tag.
-	*/ 
-	
+	*/
+
 	public function title_separator( $sep ) {
 		$sep = '|';
 		return $sep;
@@ -663,7 +663,7 @@ class Formation {
 
    /*
 	* Remove current from blog when on custom post type.
-	*/ 
+	*/
 
 	public function cpt_nav_classes( $classes, $item ) {
 		foreach( static::$cpt as $c => $meta ) {
@@ -684,7 +684,7 @@ class Formation {
 
 	        	// check if slug matches cpt or tax
 	        	if( $nav_object_slug == $meta['slug'] )
-	        		$classes[] = 'current_page_parent'; 
+	        		$classes[] = 'current_page_parent';
 	        }
 		}
 
@@ -693,7 +693,7 @@ class Formation {
 
    /*
 	* Add defer / async attributes to $this->defer_script_handles.
-	*/ 
+	*/
 
 	public function add_defer_async_attributes( $tag, $handle ) {
 		foreach( $this->defer_script_handles as $script ) {
@@ -706,7 +706,7 @@ class Formation {
 
    /*
 	* Remove h1 from heading options in admin.
-	*/ 
+	*/
 
 	public function tiny_mce_remove_h1( $init ) {
 		$init['block_formats'] = 'Paragraph=p;Heading 2=h2;Heading 3=h3;Heading 4=h4;';

@@ -49,10 +49,12 @@ class Field {
             'label_above' => true,
             'attr' => [],
             'field_class' => '',
+            'opt_button_class' => '',
+            'opt_buttons_class' => '',
             'class' => '',
             'placeholder' => '',
             'options' => [],
-            'hidden' => false,  
+            'hidden' => false,
             'before' => '',
             'after' => '',
             'value' => '',
@@ -499,6 +501,9 @@ class Field {
                 $output .= self::render_opt_button( [
                     'options' => $options,
                     'id' => $name,
+                    'class' => $class,
+                    'opt_button_class' => $opt_button_class,
+                    'opt_buttons_class' => $opt_buttons_class,
                     'type' => $type == 'checkbox_group' ? 'checkbox' : 'radio',
                     'value' => $val,
                     'attr' => $attr
@@ -637,12 +642,18 @@ class Field {
         $type = $args['type'] ?? 'radio';
         $value = $args['value'] ?? '';
         $class = $args['class'] ?? '';
+        $opt_button_class = $args['opt_button_class'] ?? '';
+        $opt_buttons_class = $args['opt_buttons_class'] ?? '';
         $attr = $args['attr'] ?? '';
 
         $class = 'o-radio__input u-hide-input js-input' . ( $class ? " $class" : '' );
+        $opt_button_class = 'o-radio__field' . ( $opt_button_class ? " $opt_button_class" : '' );
 
         if( $attr )
             $attr = " $attr";
+
+        if( $opt_buttons_class )
+            $opt_buttons_class = " $opt_buttons_class";
 
         $output = '';
 
@@ -659,15 +670,15 @@ class Field {
             $output .=
                 '<div class="o-radio__item">' .
                     '<label>' .
-                        "<input class='$class' type='$type' id='$o_id' name='$o_id' value='$o_value'$checked$operator$attr>" .
-                        '<div class="o-radio__field o-field__input --sm">' .
+                        "<input class='$class' type='$type' id='" . FRM::$namespace . '_' . uniqid() . "' name='$o_id' value='$o_value'$checked$operator$attr>" .
+                        "<div class='$opt_button_class'>" .
                             "<div class='o-radio__label'>$o_label</div>" .
                         '</div>' .
                     '</label>' .
                 '</div>';
         }
 
-        return "<div class='o-radio l-flex --wrap --align-center'>$output</div>";
+        return "<div class='o-radio$opt_buttons_class'>$output</div>";
     }
 
    /*
