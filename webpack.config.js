@@ -10,7 +10,7 @@ const path = require( 'path' );
 
 let resolve = {
     alias: {
-        Formation: path.resolve( '../formation/src/' )
+        Formation: path.resolve( __dirname, '../../formation/src' )
     }
 };
 
@@ -20,7 +20,32 @@ let rules = [
     {
         test: /\.js$/,
         exclude: /node_modules/,
-        loaders: 'babel-loader'
+        loaders: 'babel-loader',
+        options: {
+            rootMode: 'upward',
+            presets: [
+                [
+                    '@babel/preset-env',
+                    {
+                        modules: false,
+                        targets: {
+                            browsers: [
+                                'last 3 versions',
+                                'ie >= 10'
+                            ]
+                        }
+                    }
+                ]
+            ],
+            plugins: [
+                [
+                    'transform-react-jsx',
+                    {
+                        pragma: 'wp.element.createElement'
+                    }
+                ]
+            ]
+        }
     },
     {
         test: /\.(css|sass|scss)$/,
@@ -30,9 +55,17 @@ let rules = [
             },
             {
                 loader: 'css-loader',
-                options: { 
+                options: {
                     url: false,
                     importLoaders: 1
+                }
+            },
+            {
+                loader: 'string-replace-loader',
+                options: {
+                    search: '--',
+                    replace: '\\--',
+                    flags: 'g'
                 }
             },
             {
@@ -42,8 +75,7 @@ let rules = [
                     plugins: [
                         require( 'autoprefixer' )( {} ),
                         require( 'cssnano' )( { preset: 'default' } ),
-                        require( 'css-mqpacker' ),
-                        require( 'postcss-combine-duplicated-selectors' ) 
+                        require( 'postcss-combine-duplicated-selectors' )
                     ],
                     minimize: true
                 }
@@ -51,8 +83,7 @@ let rules = [
             {
                 loader: 'sass-loader',
                 options: {
-                    implementation: require( 'sass' ),
-                    fiber: Fiber
+                    implementation: require( 'sass' )
                 }
             }
         ]
