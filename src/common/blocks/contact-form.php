@@ -118,7 +118,8 @@ class Contact_Form {
                 '/preview-contact-form',
                 [
                     'methods' => 'GET',
-                    'callback' => [$this, 'preview_contact_form']
+                    'callback' => [$this, 'preview_contact_form'],
+                    'permission_callback' => '__return_true'
                 ]
             );
         } );
