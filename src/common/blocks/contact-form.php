@@ -234,7 +234,7 @@ class Contact_Form {
     }
 
     public static function render_contact_form_group_bottom( $attributes, $content ) {
-        return "<div class='o-field-group__bottom l-flex --wrap'>$content</div>";
+        return "<div class='o-field-group__bottom l-flex' data-wrap=''>$content</div>";
     }
 
     public static function render_contact_form_field( $attributes ) {
@@ -245,12 +245,13 @@ class Contact_Form {
         $prefix = FRM::$namespace . '_';
 
         $field_class = "l-$width";
+        $field_attr = [];
 
         if( $label_after )
-            $field_class .= ' --l-after';
+            $field_attr['data-label-after'] = '';
 
         if( $padding_small )
-            $field_class .= ' --p-sm';
+            $field_attr['data-p-sm'] = '';
 
         $field = [
             'name' => FRM::$namespace . '_' . $name,
@@ -258,6 +259,7 @@ class Contact_Form {
             'type' => $type,
             'placeholder' => $placeholder,
             'field_class' => $field_class,
+            'field_attr' => $field_attr,
             'value' => $value
         ];
 

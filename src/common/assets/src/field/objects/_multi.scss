@@ -7,7 +7,7 @@
 $border: 1px solid rgba( map-get( $g-colors, 'foreground-dark' ), 0.10 );
 
 .o-multi__fields {
-    .--col & {
+    .o-field-section[data-col] & {
         width: 100%;
         flex-direction: column;
     }
@@ -17,7 +17,7 @@ $border: 1px solid rgba( map-get( $g-colors, 'foreground-dark' ), 0.10 );
 }
 
 .o-multi {
-    .--col & {
+    .o-field-section[data-col] & {
         @extend %u-display-flex;
         flex-wrap: wrap;
         margin: -10px;
@@ -29,7 +29,7 @@ $border: 1px solid rgba( map-get( $g-colors, 'foreground-dark' ), 0.10 );
 	border: $border;
     padding: 8px 10px;
     margin-bottom: 20px;
-    .--col & {
+    .o-field-section[data-col] & {
         flex-grow: 1;
         margin: 10px;
     }

@@ -14,11 +14,11 @@
 		padding: 10px;
 		flex-grow: 1;
 	}
-	.--col & {
+	.o-field-section[data-col] & {
 		margin: 0;
 		flex-grow: 0;
 	}
-	&.--richtext {
+	&[data-type="richtext"] {
 		max-width: 750px;
 	}
 }

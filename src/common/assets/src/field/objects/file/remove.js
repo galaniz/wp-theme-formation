@@ -27,9 +27,8 @@ const fileRemove = ( args ) => {
 		disableButtonLoader( 
 			f.button, // button 
 			f.loader, // loader
-			'--show', // class
-			disable, // add class
-			disable // disable
+			!disable, // hide loader
+			disable // disable button
 		);
 	};
 

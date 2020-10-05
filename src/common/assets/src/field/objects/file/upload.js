@@ -28,9 +28,8 @@ const fileUpload = ( args ) => {
 		disableButtonLoader( 
 			f.selectButton, // button 
 			f.loader, // loader
-			'--show', // class
-			disable, // add class
-			disable // disable
+			!disable, // hide loader
+			disable // disable button
 		);
 	};
 

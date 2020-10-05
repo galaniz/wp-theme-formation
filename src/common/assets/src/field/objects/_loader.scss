@@ -14,7 +14,7 @@
 	@extend %u-margin-auto;
     @extend %u-text-align-center;
     background: inherit;
-    &.--show {
+    &:not( [data-hide] ) {
     	@extend %u-display-block;
     }
 }

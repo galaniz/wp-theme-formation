@@ -13,6 +13,7 @@ namespace Formation\Common\Field;
  */
 
 use \Formation\Formation as FRM;
+use \Formation\Utils;
 use Formation\Common\Field\File_Upload;
 
 use function Formation\additional_script_data;
@@ -49,6 +50,7 @@ class Field {
             'label_above' => true,
             'attr' => [],
             'field_class' => '',
+            'field_attr' => [],
             'opt_button_class' => '',
             'opt_buttons_class' => '',
             'class' => '',
@@ -81,12 +83,12 @@ class Field {
 
     public static $multi_buttons = [
         'add' =>
-            '<button type="button" class="o-multi__button --add" data-type="add" onclick="multi( this )">' .
+            '<button type="button" class="o-multi__button" data-type="add" onclick="multi( this )">' .
                 '<span class="u-visually-hidden">Add Input</span>' .
                 '<span class="dashicons dashicons-plus o-multi__icon"></span>' .
             '</button>',
         'remove' =>
-            '<button type="button" class="o-multi__button --remove" data-type="remove" onclick="multi( this )">' .
+            '<button type="button" class="o-multi__button" data-type="remove" onclick="multi( this )">' .
                 '<span class="u-visually-hidden">Remove Input</span>' .
                 '<span class="dashicons dashicons-minus o-multi__icon"></span>' .
             '</button>'
@@ -271,12 +273,12 @@ class Field {
         if( is_admin() ) {
             if( $top_level_name ) {
                 $hide = $hidden ? " style='display: none;'" : '';
-                $col = $multi_col ? ' --col' : '';
-                $output .= "<div class='o-field-section o-field-section--$top_level_name$col'$hide>";
+                $col = $multi_col ? ' data-col=""' : '';
+                $output .= "<div class='o-field-section' data-name='$top_level_name'$hide$col>";
             }
         } else {
             if( !$no_group )
-                $output .= '<div class="o-field-group l-100 l-flex --align-center --wrap">';
+                $output .= '<div class="o-field-group l-100 l-flex" data-wrap="" data-align="center">';
         }
 
         if( isset( $args['label'] ) && !isset( $args['label_hidden'] ) && !$no_group  )
@@ -291,7 +293,7 @@ class Field {
             if( $multi ) {
                 $mi_start =
                     '<div class="o-multi__item" data-name="' . $top_level_name . '">' .
-                        '<div class="o-multi__fields l-flex --wrap">';
+                        '<div class="o-multi__fields l-flex" data-wrap="">';
 
                 if( $i === 0 )
                     $copy_output .= $mi_start;
@@ -414,37 +416,28 @@ class Field {
         }
 
         $val = !$value ? $data_value : $value;
-
-        if( $attr ) {
-            $attr_formatted = [];
-
-            foreach( $attr as $a => $v ) {
-                $attr_formatted[] = $a . '="' . $v . '"';
-
-                if( $a == 'aria-required' && $v == 'true' )
-                   $req = ' --req';
-            }
-
-            $attr = implode( ' ', $attr_formatted );
-        } else {
-            $attr = '';
-        }
+        $attr = Utils::get_attr_as_str( $attr, function( $a, $v ) use ( &$req ) {
+            if( $a == 'aria-required' && $v == 'true' )
+                $req = ' data-req=""';
+        } );
 
         $hidden = $hidden === '100' || ( $hidden && !$val ) ? ' style="display: none;"' : '';
 
         if( $type == 'hidden' && !$hidden_type_show )
             $field_class .= ( $field_class ? ' ' : '' ) . 'u-visually-hidden';
 
+        $field_attr = Utils::get_attr_as_str( $field_attr );
+
         $output .=
-            "<div class='o-field" . ( $field_class ? " $field_class" : '' ) . " --$type'$hidden>";
+            "<div class='o-field" . ( $field_class ? " $field_class" : '' ) . "' data-type='$type'$hidden$field_attr>";
 
         if( $label && !$label_hidden ) {
-            $label_class = "o-field__label" . ( $label_class ? "$label_class" : '' ) . $req;
+            $label_class = "o-field__label" . ( $label_class ? "$label_class" : '' );
 
-            if( $type != 'checkbox_group' && $type != 'radio_group' )
+            if( $type != 'checkbox-group' && $type != 'radio-group' )
                 $output .= '<label>';
 
-            $label = "<div class='$label_class'>$label</div>";
+            $label = "<div class='$label_class'$req>$label</div>";
 
             if( $label_above )
                 $output .= $label;
@@ -496,15 +489,15 @@ class Field {
                     $output .= '<span class="o-field__control"></span>';
 
                 break;
-            case 'checkbox_group':
-            case 'radio_group':
+            case 'checkbox-group':
+            case 'radio-group':
                 $output .= self::render_opt_button( [
                     'options' => $options,
                     'id' => $name,
                     'class' => $class,
                     'opt_button_class' => $opt_button_class,
                     'opt_buttons_class' => $opt_buttons_class,
-                    'type' => $type == 'checkbox_group' ? 'checkbox' : 'radio',
+                    'type' => $type == 'checkbox-group' ? 'checkbox' : 'radio',
                     'value' => $val,
                     'attr' => $attr
                 ] );
@@ -622,7 +615,7 @@ class Field {
             if( !$label_above )
                 $output .= $label;
 
-            if( $type != 'checkbox_group' && $type != 'radio_group' )
+            if( $type != 'checkbox-group' && $type != 'radio-group' )
                 $output .= '</label>';
         }
 
@@ -772,7 +765,7 @@ class Field {
         return
             "<div class='$class'" . ( $wp && $upload ? " data-wp='true'" : '' ) . ">" .
                 "<div class='o-asset__exists' style='display: " . ( $exists ? "block" : "none" ) . "'>" .
-                    "<div class='l-flex --align-center'>" .
+                    "<div class='l-flex' data-align='center'>" .
                         "<img class='o-asset__image' src='$url' alt='Asset preview'>" .
                         "<div class='o-asset__icon'>$icon_text</div>" .
                         (
@@ -890,7 +883,7 @@ class Field {
 
         return
             '<div class="o-listbox">' .
-                "<button class='o-listbox__btn l-flex --align-center --justify' type='button' aria-haspopup='listbox' aria-labelledby='$id' id='$id'><div class='o-listbox__text u-flex-shrink-0'>$selected_index_label</div>$caret</button>" .
+                "<button class='o-listbox__btn l-flex' data-align='center' data-justify='def' type='button' aria-haspopup='listbox' aria-labelledby='$id' id='$id'><div class='o-listbox__text u-flex-shrink-0'>$selected_index_label</div>$caret</button>" .
                 '<div class="o-listbox__container">' .
                     "<ul class='$list_classes' id='$list_id' tabindex='-1' role='listbox' aria-labelledby='$id' aria-activedescendant='$selected_index_id'>" .
                         $options_output .

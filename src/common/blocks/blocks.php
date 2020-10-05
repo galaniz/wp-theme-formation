@@ -208,7 +208,6 @@ class Blocks {
             $b_attr = $block['attrs'];
 
             $caption = strpos( $block_content, 'figcaption' ) !== false ? true : false;
-            $caption_modifier = '--no-caption';
             $width = '100';
             $breakout = false;
 
@@ -222,21 +221,16 @@ class Blocks {
                 }
             }
 
-            if( $caption )
-                $caption_modifier = '--caption';
-
-            $classes = "l-$width $caption_modifier";
+            $classes = "l-$width";
 
             if( $breakout ) {
-                $classes .= ' --breakout';
-
                 $block_content =
                     '<div class="l-breakout">' .
                         $block_content .
                     '</div>';
             }
 
-            $block_content = sprintf( "<div class='$classes'>%s</div>", $block_content );
+            $block_content = sprintf( "<div class='$classes' data-caption='$caption' data-breakout="$breakout">%s</div>", $block_content );
         }
 
         return $block_content;

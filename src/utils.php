@@ -301,4 +301,29 @@ trait Utils {
         return false;
     }
 
+    /*
+     * Get array of attributes as a string.
+     *
+     * @return string
+     */
+
+    public static function get_attr_as_str( $attr = [], $callback ) {
+        if( $attr ) {
+            $attr_formatted = [];
+
+            foreach( $attr as $a => $v ) {
+                $attr_formatted[] = $a . '="' . $v . '"';
+
+                if( is_callable( $callback ) )
+                    call_user_func_array( $callback, [$a, $v] );
+            }
+
+            $attr = implode( ' ', $attr_formatted );
+        } else {
+            $attr = '';
+        }
+
+        return $attr;
+    }
+
 } // end Utils

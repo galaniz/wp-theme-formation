@@ -15,7 +15,7 @@ $gray: rgba( map-get( $g-colors, 'foreground-dark' ), 0.05 );
 
 .o-asset {
     max-width: 30em;
-    &.--full {
+    &[data-full] {
         max-width: none;
     }
 }

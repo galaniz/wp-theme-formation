@@ -97,7 +97,7 @@ registerBlockType( name, {
             ];
         }
 
-        if( type == 'select' || type == 'radio' || type == 'checkbox' || type == 'radio_group' || type == 'checkbox_group' ) {
+        if( type == 'select' || type == 'radio' || type == 'checkbox' || type == 'radio-group' || type == 'checkbox-group' ) {
             optionsInput = [
                 <TextControl
                     label="Value"
@@ -153,9 +153,9 @@ registerBlockType( name, {
                                 { label: 'Text', value: 'text' },
                                 { label: 'Email', value: 'email' },
                                 { label: 'Checkbox', value: 'checkbox' },
-                                { label: 'Checkbox Group', value: 'checkbox_group' },
+                                { label: 'Checkbox Group', value: 'checkbox-group' },
                                 { label: 'Radio', value: 'radio' },
-                                { label: 'Radio Group', value: 'radio_group' },
+                                { label: 'Radio Group', value: 'radio-group' },
                                 { label: 'Number', value: 'number' },
                                 { label: 'Textarea', value: 'textarea' },
                                 { label: 'Select', value: 'select' }

@@ -7,6 +7,8 @@
 
 namespace Formation;
 
+use Formation\Utils;
+
 trait Utils_Render {
 
     /*
@@ -30,6 +32,7 @@ trait Utils_Render {
 		$div = $args['div'] ?? false;
         $class = $args['class'] ?? '';
         $list_class = $args['list_class'] ?? '';
+        $list_attr = $args['list_attr'] ?? [];
 
 		if( !$links && !$share )
 			return '';
@@ -42,10 +45,10 @@ trait Utils_Render {
         if( $class )
             $item_class .= " $class";
 
-		$list_classes = "o-social l-flex --wrap --align-center";
+		$list_classes = "o-social l-flex";
         $list_classes .= $list_class ? ' ' . $list_class : '';
 
-		$output = "<$tag class='$list_classes'>";
+		$output = "<$tag class='$list_classes' data-wrap='' data-align='center'>";
 		$data = [];
 
 		if( $share ) {
@@ -133,15 +136,28 @@ trait Utils_Render {
     /*
      * Output for loader animation.
      *
-     * @param string $loader_class
-     * @param string $icon_class
-     * @param string $id
-     * @return string / array of html output
+     * @param array $args
+     * @return string of html output
      */
 
-    public static function render_loader( $loader_class = '', $icon_class = '', $id = '' ) {
+    public static function render_loader( $args = [] ) {
+        $args = array_merge(
+            [
+                'loader_class' => '',
+                'loader_attr' => [],
+                'icon_class' => '',
+                'id' => '',
+                'hide' => false
+            ],
+            $args
+        );
+
+        extract( $args );
+
         if( $loader_class )
             $loader_class = " $loader_class";
+
+        $loader_attr = Utils::get_attr_as_str( $loader_attr );
 
         if( $icon_class )
             $icon_class = " $icon_class";
@@ -149,9 +165,11 @@ trait Utils_Render {
         if( $id )
             $id = " id='$id'";
 
+        $hide = $hide ? " data-hide=''" : '';
+
         return
-            "<div class='o-loader$loader_class'$id>" .
-                "<div class='o-loader__icon u-position-center l-flex --align-center --justify-center$icon_class'>" .
+            "<div class='o-loader$loader_class'$id$hide$loader_attr>" .
+                "<div class='o-loader__icon u-position-center l-flex$icon_class' data-justify='center' data-align='center'>" .
                     static::$loader_icon .
                 '</div>' .
             '</div>';
@@ -191,10 +209,7 @@ trait Utils_Render {
 
         $class = $class ? ' ' . $class : '';
         $button_class = ( static::$classes['button'] ? ' ' . static::$classes['button'] : '' ) . ( $button_class ? ' ' . $button_class : '' );
-        $button_field = 'o-field --submit';
-
-        if( $single_field )
-            $button_field .= ' --single';
+        $button_field = 'o-field';
 
         if( $attr ) {
             $attr_formatted = [];
@@ -209,22 +224,25 @@ trait Utils_Render {
 
         return sprintf(
             '<form class="js-form%1$s" id="%2$s" data-type="%3$s" novalidate%11$s>' .
-                '<div class="o-field-container u-position-relative l-flex --wrap">' .
+                '<div class="o-field-container u-position-relative l-flex" data-wrap="">' .
                     '%4$s' .
-                    "<div class='$button_field'>" .
+                    "<div class='$button_field' data-type='submit'" . ( $single_field ? ' data-single=""' : '' ) . ">" .
                         '<button class="o-button js-submit%5$s" type="submit">' .
-                            static::render_loader( '--hide', static::$classes['icon'] ) .
+                            static::render_loader( [
+                                'icon_class' => static::$classes['icon'],
+                                'hide' => true
+                            ] ) .
                             '<div class="o-button__text">%6$s</div>' .
                         '</button>' .
                     '</div>' .
                 '</div>' .
                 '<div class="o-result">' .
-                    '<div class="o-result__message l-flex --align-center" aria-live="polite">' .
+                    '<div class="o-result__message l-flex" data-align="center" aria-live="polite">' .
                         '<div class="o-result__icon u-position-relative u-flex-shrink-0">' .
-                            '<svg width="%7$s" height="%8$s" viewBox="0 0 %7$s %8$s" class="o-result__svg u-position-center --error">' .
+                            '<svg width="%7$s" height="%8$s" viewBox="0 0 %7$s %8$s" class="o-result__svg u-position-center" data-type="error">' .
                                 '<use xlink:href="#sprite-error" />' .
                             '</svg>' .
-                            '<svg width="%9$s" height="%10$s" viewBox="0 0 %9$s %10$s" class="o-result__svg u-position-center --success">' .
+                            '<svg width="%9$s" height="%10$s" viewBox="0 0 %9$s %10$s" class="o-result__svg u-position-center" data-type="success">' .
                                 '<use xlink:href="#sprite-success" />' .
                             '</svg>' .
                         '</div>' .

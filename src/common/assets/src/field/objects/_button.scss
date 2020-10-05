@@ -7,7 +7,7 @@
 .o-button {
     @extend %u-display-flex;
     align-items: center;
-    &.--lg {
+    &[data-lg] {
         @include fontRem( 16px, true );
         padding: 0 15px 1px;
         height: 45px;
