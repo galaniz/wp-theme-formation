@@ -234,7 +234,7 @@ class Contact_Form {
     }
 
     public static function render_contact_form_group_bottom( $attributes, $content ) {
-        return "<div class='o-field-group__bottom l-flex' data-wrap=''>$content</div>";
+        return "<div class='o-field-group__bottom l-flex' data-wrap>$content</div>";
     }
 
     public static function render_contact_form_field( $attributes ) {

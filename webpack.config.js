@@ -3,15 +3,23 @@
 
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const OptimizeCssAssetsPlugin = require( 'optimize-css-assets-webpack-plugin' );
-const Fiber = require( 'fibers' );
 const path = require( 'path' );
 
 /* Resolve to root */
 
 let resolve = {
     alias: {
-        Formation: path.resolve( __dirname, '../../formation/src' )
-    }
+        // Formation: path.resolve( __dirname, '../../../formation/src' )
+        Formation: '@alanizcreative/formation/src'
+    },
+    extensions: [
+      '.sass',
+      '.scss',
+      '.css',
+      '.js',
+      '.json',
+      '.jsx'
+    ]
 };
 
 /* Rules */
@@ -71,13 +79,18 @@ let rules = [
             {
                 loader: 'postcss-loader',
                 options: {
-                    ident: 'postcss',
-                    plugins: [
-                        require( 'autoprefixer' )( {} ),
-                        require( 'cssnano' )( { preset: 'default' } ),
-                        require( 'postcss-combine-duplicated-selectors' )
-                    ],
-                    minimize: true
+                    postcssOptions: {
+                        plugins: {
+                            'postcss-preset-env': {
+                                browsers: [
+                                    'last 3 versions',
+                                    'ie >= 10'
+                                ]
+                            },
+                            'cssnano': {},
+                            'postcss-combine-duplicated-selectors': {}
+                        },
+                    },
                 }
             },
             {

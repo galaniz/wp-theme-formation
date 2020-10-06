@@ -307,7 +307,7 @@ trait Utils {
      * @return string
      */
 
-    public static function get_attr_as_str( $attr = [], $callback ) {
+    public static function get_attr_as_str( $attr = [], $callback = false ) {
         if( $attr ) {
             $attr_formatted = [];
 

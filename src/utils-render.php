@@ -47,8 +47,9 @@ trait Utils_Render {
 
 		$list_classes = "o-social l-flex";
         $list_classes .= $list_class ? ' ' . $list_class : '';
+        $list_attr = Utils::get_attr_as_str( $list_attr );
 
-		$output = "<$tag class='$list_classes' data-wrap='' data-align='center'>";
+		$output = "<$tag class='$list_classes' data-wrap data-align='center'$list_attr>";
 		$data = [];
 
 		if( $share ) {
@@ -165,7 +166,7 @@ trait Utils_Render {
         if( $id )
             $id = " id='$id'";
 
-        $hide = $hide ? " data-hide=''" : '';
+        $hide = $hide ? " data-hide" : '';
 
         return
             "<div class='o-loader$loader_class'$id$hide$loader_attr>" .

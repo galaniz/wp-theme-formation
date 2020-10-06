@@ -230,7 +230,7 @@ class Blocks {
                     '</div>';
             }
 
-            $block_content = sprintf( "<div class='$classes' data-caption='$caption' data-breakout="$breakout">%s</div>", $block_content );
+            $block_content = sprintf( "<div class='$classes' data-caption='$caption' data-breakout='$breakout'>%s</div>", $block_content );
         }
 
         return $block_content;

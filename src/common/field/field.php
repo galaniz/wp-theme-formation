@@ -273,12 +273,12 @@ class Field {
         if( is_admin() ) {
             if( $top_level_name ) {
                 $hide = $hidden ? " style='display: none;'" : '';
-                $col = $multi_col ? ' data-col=""' : '';
+                $col = $multi_col ? ' data-col' : '';
                 $output .= "<div class='o-field-section' data-name='$top_level_name'$hide$col>";
             }
         } else {
             if( !$no_group )
-                $output .= '<div class="o-field-group l-100 l-flex" data-wrap="" data-align="center">';
+                $output .= '<div class="o-field-group l-100 l-flex" data-wrap data-align="center">';
         }
 
         if( isset( $args['label'] ) && !isset( $args['label_hidden'] ) && !$no_group  )
@@ -293,7 +293,7 @@ class Field {
             if( $multi ) {
                 $mi_start =
                     '<div class="o-multi__item" data-name="' . $top_level_name . '">' .
-                        '<div class="o-multi__fields l-flex" data-wrap="">';
+                        '<div class="o-multi__fields l-flex" data-wrap>';
 
                 if( $i === 0 )
                     $copy_output .= $mi_start;
@@ -418,7 +418,7 @@ class Field {
         $val = !$value ? $data_value : $value;
         $attr = Utils::get_attr_as_str( $attr, function( $a, $v ) use ( &$req ) {
             if( $a == 'aria-required' && $v == 'true' )
-                $req = ' data-req=""';
+                $req = ' data-req';
         } );
 
         $hidden = $hidden === '100' || ( $hidden && !$val ) ? ' style="display: none;"' : '';
@@ -790,7 +790,7 @@ class Field {
                             "<button type='button' class='o-asset__remove u-position-relative'>" .
                                 "<span class='dashicons dashicons-no-alt'></span>" .
                                 "<span class='u-visually-hidden'>Remove $type_cap</span>" .
-                                "<span class='o-asset__loader o-loader js-loader-remove'><span class='spinner is-active'></span></span>" .
+                                "<span class='o-asset__loader o-loader js-loader-remove' data-hide><span class='spinner is-active'></span></span>" .
                             "</button>" .
                         "</div>" .
                     "</div>" .
@@ -803,7 +803,7 @@ class Field {
                             "<label class='o-asset__select u-position-relative" . ( is_admin() ? ' button add-media' : '' ) . "'>" .
                                 "<input type='" . ( $upload && !$wp ? 'file' : 'button' ) . "' aria-label='Select $type_cap' class='u-hide-input' accept='$accept'>" .
                                 "<span>Select $type_cap</span>" .
-                                "<span class='o-asset__loader o-loader js-loader-select'><span class='spinner is-active'></span></span>" .
+                                "<span class='o-asset__loader o-loader js-loader-select' data-hide><span class='spinner is-active'></span></span>" .
                             "</label>" .
                         "</p>" .
                     "</div>"

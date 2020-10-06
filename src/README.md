@@ -324,23 +324,24 @@ _Parameters:_
 
 _Returns:_ `string`
 
-#### `public static function render_loader( $loader_class, $icon_class, $id )`
+#### `public static function render_loader( $args )`
 
 Output for default loader.  
 
 _Parameters:_
 
-* `$loader_class`  
-_Type:_ `string`  
-_Default:_ `''`
+* `$args`  
+_Type:_ `associative array`  
+_Default:_ `[]`  
+_Parameters:_
 
-* `$icon_class`  
-_Type:_ `string`  
-_Default:_ `''`
-
-* `$id`  
-_Type:_ `string`  
-_Default:_ `''`
+| Name | Type | Default | Description
+|--|--|--|--|
+| `loader_class` | `string` | `''` | Loader class.
+| `loader_attr` | `array` | `[]` | Loader attributes.
+| `icon_class` | `string` | `''` | Icon class.
+| `id` | `string` | `''` | Optional loader ID.
+| `hide` | `boolean` | `false` | Hide loader (set with `[data-hide]`).
 
 _Returns:_ `string`
 
