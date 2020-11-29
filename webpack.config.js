@@ -110,7 +110,7 @@ let blocks = [
 let blocksEntry = {};
 
 blocks.forEach( ( b ) => {
-  blocksEntry[b] = __dirname + '/src/common/assets/src/blocks/' + b + '.js';
+  blocksEntry[b] = __dirname + '/Formation/Common/assets/src/blocks/' + b + '.js';
 } );
 
 /* Exports */
@@ -123,12 +123,12 @@ module.exports = [
     mode: 'production',
     entry: {
       'settings': [
-        __dirname + '/src/admin/assets/src/settings/index.js', 
-        __dirname + '/src/admin/assets/src/settings/index.scss'
+        __dirname + '/Formation/Admin/assets/src/settings/index.js', 
+        __dirname + '/Formation/Admin/assets/src/settings/index.scss'
       ] 
     },
     output: {
-      path: __dirname + '/src/admin/assets/public/',
+      path: __dirname + '/Formation/Admin/assets/public/',
       publicPath: '/',
       filename: 'js/[name].js'
     },
@@ -149,11 +149,11 @@ module.exports = [
     mode: 'production',
     entry: {
       'tab-nav': [
-        __dirname + '/src/admin/assets/src/settings/tab-nav/sections.js'
+        __dirname + '/Formation/Admin/assets/src/settings/tab-nav/sections.js'
       ] 
     },
     output: {
-      path: __dirname + '/src/admin/assets/public/',
+      path: __dirname + '/Formation/Admin/assets/public/',
       publicPath: '/',
       filename: 'js/[name].js'
     },
@@ -169,11 +169,11 @@ module.exports = [
     mode: 'production',
     entry: {
       'tab-nav': [
-        __dirname + '/src/admin/assets/src/settings/business/admin.js'
+        __dirname + '/Formation/Admin/assets/src/settings/business/admin.js'
       ] 
     },
     output: {
-      path: __dirname + '/src/admin/assets/public/',
+      path: __dirname + '/Formation/Admin/assets/public/',
       publicPath: '/',
       filename: 'js/[name].js'
     },
@@ -188,14 +188,14 @@ module.exports = [
   {
     mode: 'production',
     entry: {
-      'blocks': __dirname + '/src/common/assets/src/blocks/index.scss',
+      'blocks': __dirname + '/Formation/Common/assets/src/blocks/index.scss',
       'field': [
-        __dirname + '/src/common/assets/src/field/index.js', 
-        __dirname + '/src/common/assets/src/field/index.scss'
+        __dirname + '/Formation/Common/assets/src/field/index.js', 
+        __dirname + '/Formation/Common/assets/src/field/index.scss'
       ]
     },
     output: {
-      path: __dirname + '/src/common/assets/public/',
+      path: __dirname + '/Formation/Common/assets/public/',
       publicPath: '/',
       filename: 'js/[name].js'
     },
@@ -216,11 +216,11 @@ module.exports = [
     mode: 'production',
     entry: {
       'select-fields': [
-        __dirname + '/src/common/assets/src/field/objects/select-fields.js', 
+        __dirname + '/Formation/Common/assets/src/field/objects/select-fields.js', 
       ] 
     },
     output: {
-      path: __dirname + '/src/common/assets/public/',
+      path: __dirname + '/Formation/Common/assets/public/',
       publicPath: '/',
       filename: 'js/[name].js'
     },
@@ -236,7 +236,7 @@ module.exports = [
     mode: 'production',
     entry: blocksEntry,
     output: {
-      path: __dirname + '/src/common/assets/public/',
+      path: __dirname + '/Formation/Common/assets/public/',
       publicPath: '/',
       filename: 'js/blocks/[name].js'
     },
@@ -251,11 +251,11 @@ module.exports = [
   {
     mode: 'production',
     entry: {
-      'utils': __dirname + '/src/common/assets/src/blocks/utils.js'
+      'utils': __dirname + '/Formation/Common/assets/src/blocks/utils.js'
     },
     output: {
       library: 'blockUtils',
-      path: __dirname + '/src/common/assets/public/',
+      path: __dirname + '/Formation/Common/assets/public/',
       publicPath: '/',
       filename: 'js/blocks/[name].js'
     },
