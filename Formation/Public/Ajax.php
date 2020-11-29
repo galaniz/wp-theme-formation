@@ -5,7 +5,7 @@
  * ---------------------------------------
  */
 
-namespace Formation\Pub;
+namespace Formation\Public;
 
 use \Formation\Formation as FRM;
 use function \Formation\write_log;

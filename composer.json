@@ -14,10 +14,10 @@
   },
   "autoload": {
     "files": [
-      "src/globals.php"
+      "Formation/globals.php"
     ],
     "psr-4": {
-      "Formation\\": "src/"
+      "Formation\\": "Formation"
     }
   },
   "config": {

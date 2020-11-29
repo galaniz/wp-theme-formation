@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    '532c6d2a428ecf5438f246ada896eddc' => $baseDir . '/src/globals.php',
+    'b6b05f092f9d878cef7d58849f01cd20' => $baseDir . '/Formation/globals.php',
 );
