@@ -51,11 +51,11 @@ const wpMedia = ( args ) => {
 			show( f.fileContainer );
 		} );
 	};
-    
-    /* Merge args with defaults */
+  
+  /* Merge args with defaults */
 
-    mergeObjects( {
-    	selectButton: null,
+  mergeObjects( {
+  	selectButton: null,
 		removeButton: null,
 		fileContainer: null,
 		noFileContainer: null,
@@ -66,26 +66,26 @@ const wpMedia = ( args ) => {
 		fileType: 'file',
 		mediaVars: {},
 		reset: false
-    }, args );
+  }, args );
 
-    let error = false;
+  let error = false;
 
-    // check for empty elements
-    for( let prop in args ) {
-    	if( !args[prop] ) {
-    		error = true;
-    		break;
-    	}
-    }
+  // check for empty elements
+  for( let prop in args ) {
+  	if( !args[prop] ) {
+  		error = true;
+  		break;
+  	}
+  }
 
-    if( error )
-    	return false;
+  if( error )
+  	return false;
 
-    let f = args,
-    	wp = window.wp,
-    	mediaModal = {};
+  let f = args,
+  	wp = window.wp,
+  	mediaModal = {};
 
-    /* Media args */
+  /* Media args */
 
 	let mediaArgs = {
 		frame: 'select',

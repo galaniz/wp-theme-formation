@@ -235,14 +235,14 @@ _Accepts:_ `associative array`
 ```php
 Blocks::$blocks['custom-block'] = [
   'attr' => [
-    'id' => ['type' => 'int'],
-    'title' => ['type' => 'string'],
-    'text' => ['type' => 'string']
+  'id' => ['type' => 'int'],
+  'title' => ['type' => 'string'],
+  'text' => ['type' => 'string']
   ],
   'default' => [
-    'id' => 0,
-    'title' => '',
-    'text' => ''
+  'id' => 0,
+  'title' => '',
+  'text' => ''
   ],
   'render' => [__CLASS__, 'render_custom_block'],
   'handle' => 'custom_block',
@@ -261,7 +261,7 @@ use Formation\Common\Blocks\Contact_Form;
 
 class Custom_Blocks {
   public function __construct() {
-    $contact_form_blocks = new Contact_Form();
+  $contact_form_blocks = new Contact_Form();
   }
 }
 ```

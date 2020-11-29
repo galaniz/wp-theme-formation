@@ -7,7 +7,7 @@
  * Description: Base, utilities and added functionality for building themes.
  * Author: Graciela Alaniz
  * Author URI: gracielaalaniz.com
- * Version: 1.1.0
+ * Version: 1.2.0
  */
 
 namespace Formation;
@@ -39,12 +39,12 @@ class Formation {
 	*
 	* @var array $cpt {
 	*		@type string $post_type Accepts array {
-	*     		@type string $slug Accepts string.
-	*     		@type string $label Accepts string.
-	*     		@type string $layout Accepts string.
-	*     		@type string $no_reading Accepts boolean.
-	*     		@type string $no_slug Accepts boolean.
-	*     		@type string $ajax_posts_per_page Accepts boolean.
+	*			@type string $slug Accepts string.
+	*			@type string $label Accepts string.
+	*			@type string $layout Accepts string.
+	*			@type string $no_reading Accepts boolean.
+	*			@type string $no_slug Accepts boolean.
+	*			@type string $ajax_posts_per_page Accepts boolean.
 	*		}
 	* }
 	*/
@@ -65,7 +65,7 @@ class Formation {
 	* Number of posts to display by type / post type
 	*
 	* @var array $posts_per_page {
-	*     	@type string $type / $post_type Accepts int.
+	*		@type string $type / $post_type Accepts int.
 	* }
 	*/
 
@@ -75,9 +75,9 @@ class Formation {
 	* Editor color palette theme support args.
 	*
 	* @var array $editor_color_palette {
-	*     	@type string $name Accepts string.
-	*     	@type string $slug Accepts string.
-	*     	@type string $color Accepts string with hex code.
+	*		@type string $name Accepts string.
+	*		@type string $slug Accepts string.
+	*		@type string $color Accepts string with hex code.
 	* }
 	*/
 
@@ -87,7 +87,7 @@ class Formation {
 	* Custom image sizes to register.
 	*
 	* @var array $image_sizes {
-	*     	@type string $name Accepts int for size.
+	*		@type string $name Accepts int for size.
 	* }
 	*/
 
@@ -97,7 +97,7 @@ class Formation {
 	* Nav menus to register.
 	*
 	* @var array $nav_menus {
-	*     	@type string $slug Accepts string for label.
+	*		@type string $slug Accepts string for label.
 	* }
 	*/
 
@@ -115,7 +115,7 @@ class Formation {
 	* Stylesheets to register.
 	*
 	* @var array $styles {
-	*     	@type string $handle Accepts string.
+	*		@type string $handle Accepts string.
 	*		@type string $url Accepts string.
 	*		@type string $dep Accepts array.
 	*		@type string $ver Accepts string/boolean.
@@ -128,7 +128,7 @@ class Formation {
 	* Scripts to register.
 	*
 	* @var array $styles {
-	*     	@type string $handle Accepts string.
+	*		@type string $handle Accepts string.
 	*		@type string $url Accepts string.
 	*		@type string $dep Accepts array.
 	*		@type string $ver Accepts string/boolean.
@@ -144,33 +144,33 @@ class Formation {
 	* Handles of scripts that should be deferred. Set in scripts callback.
 	*
 	* @var array $defer_script_handles {
-	*     	@type string $handle
+	*		@type string $handle
 	* }
 	*/
 
 	public $defer_script_handles = [];
 
-   /*
-    * Markup for default loader icon.
-    *
-    * @var string $loader_icon
-    */
+ /*
+	* Markup for default loader icon.
+	*
+	* @var string $loader_icon
+	*/
 
 	public static $loader_icon = '';
 
  /*
-  * Optional classes to add to fields, labels, buttons...
-  *
-  * @var array $classes
-  */
+	* Optional classes to add to fields, labels, buttons...
+	*
+	* @var array $classes
+	*/
 
-  public static $classes = [
-    'field' => '',
-    'button' => '',
-    'label' => '',
-    'input' => '',
-    'icon' => ''
-  ];
+	public static $classes = [
+		'field' => '',
+		'button' => '',
+		'label' => '',
+		'input' => '',
+		'icon' => ''
+	];
 
  /*
 	* Stores svg sprite meta.
@@ -275,7 +275,7 @@ class Formation {
 	public function __construct() {
 		$this->setup_actions();
 		$this->setup_filters();
-    }
+	}
 
  /*
 	* Setup default hooks and actions.
@@ -400,15 +400,15 @@ class Formation {
 			add_theme_support( 'editor-color-palette', $this->editor_color_palette );
 
 		// add custom image sizes
-	 	if( $this->image_sizes ) {
-	 		foreach( $this->image_sizes as $key => $size ) {
-	 			add_image_size( $key, $size );
-	 		}
-	 	}
+		if( $this->image_sizes ) {
+			foreach( $this->image_sizes as $key => $size ) {
+				add_image_size( $key, $size );
+			}
+		}
 
-	 	// register navigation menus
-	 	if( $this->nav_menus )
-		 	register_nav_menus( $this->nav_menus );
+		// register navigation menus
+		if( $this->nav_menus )
+			register_nav_menus( $this->nav_menus );
 
 		if( $this->editor_style && is_admin() )
 			add_editor_style( $this->editor_style );
@@ -455,8 +455,8 @@ class Formation {
 			<!-- Google Analytics -->
 			<script>
 				window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-				ga( 'create', '<?php echo $ga; ?>', 'auto' );
-				ga( 'send', 'pageview' );
+				ga('create', '<?php echo $ga; ?>', 'auto');
+				ga('send', 'pageview');
 			</script>
 			<script async src='https://www.google-analytics.com/analytics.js'></script>
 			<!-- End Google Analytics -->
@@ -605,12 +605,12 @@ class Formation {
 	* Remove meta boxes and tag link.
 	*/
 
-  public function remove_meta_boxes() {
-    remove_meta_box( 'commentstatusdiv', 'post', 'normal' );
-    remove_meta_box( 'tagsdiv-post_tag', 'post', 'normal' );
-    remove_meta_box( 'tagsdiv-post_tag', 'post', 'advanced' );
-    remove_submenu_page( 'edit.php', 'edit-tags.php?taxonomy=post_tag' );
-  }
+	public function remove_meta_boxes() {
+	remove_meta_box( 'commentstatusdiv', 'post', 'normal' );
+	remove_meta_box( 'tagsdiv-post_tag', 'post', 'normal' );
+	remove_meta_box( 'tagsdiv-post_tag', 'post', 'advanced' );
+	remove_submenu_page( 'edit.php', 'edit-tags.php?taxonomy=post_tag' );
+	}
 
  /*
 	* Add custom image sizes for users to select.
@@ -657,18 +657,18 @@ class Formation {
 	use Utils;
 	use Utils_Render;
 
-  /*
-   * Output posts requested through ajax.
-   *
-   * Note: meant to be overwritten by user.
-   *
-   * @param array $args
-   * @return string / array of html output
-   */
+ /*
+	* Output posts requested through ajax.
+	*
+	* Note: meant to be overwritten by user.
+	*
+	* @param array $args
+	* @return string / array of html output
+	*/
 
-  public static function render_ajax_posts( $args = [] ) {
-  	return '';
-  }
+	public static function render_ajax_posts( $args = [] ) {
+		return '';
+	}
 
  /*
 	* Filter callbacks
@@ -696,20 +696,20 @@ class Formation {
 			$c_single = is_singular( $c );
 
 			if( $c_archive || $c_tax || $c_single ) {
-      	// if on blog page remove current page parent class
-      	if( get_post_meta( $item->ID, '_menu_item_object_id', true ) == get_option( 'page_for_posts' ) )
-      		$classes = array_diff( $classes, ['current_page_parent'] );
+				// if on blog page remove current page parent class
+				if( get_post_meta( $item->ID, '_menu_item_object_id', true ) == get_option( 'page_for_posts' ) )
+					$classes = array_diff( $classes, ['current_page_parent'] );
 
-      	// get slug of nav item
-      	$nav_object_slug = get_post_field( 'post_name', (int) $item->object_id );
+				// get slug of nav item
+				$nav_object_slug = get_post_field( 'post_name', (int) $item->object_id );
 
-      	// check if slug matches cpt or tax
-      	if( $nav_object_slug == $meta['slug'] )
-      		$classes[] = 'current_page_parent';
-      }
+				// check if slug matches cpt or tax
+				if( $nav_object_slug == $meta['slug'] )
+					$classes[] = 'current_page_parent';
+			}
 		}
 
-        return $classes;
+		return $classes;
 	}
 
  /*

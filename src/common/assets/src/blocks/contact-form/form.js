@@ -7,19 +7,19 @@
 /* Dependencies */
 
 const { 
-    getNamespace,
-    getNamespaceObj
+  getNamespace,
+  getNamespaceObj
 } = blockUtils;
 
 const { 
-    Panel,
-    PanelBody,
-    TextControl
+  Panel,
+  PanelBody,
+  TextControl
 } = wp.components;
 
 const { 
-    InspectorControls,
-    InnerBlocks 
+  InspectorControls,
+  InnerBlocks 
 } = wp.blockEditor;
 
 const { Fragment } = wp.element;
@@ -39,53 +39,53 @@ const def = nO.blocks[name]['default'];
 /* Block */
 
 registerBlockType( name, {
-    title: 'Contact Form',
-    category: 'theme-blocks',
-    attributes: attr,
-    edit( props ) {
-        const { attributes, setAttributes, clientId } = props;
+  title: 'Contact Form',
+  category: 'theme-blocks',
+  attributes: attr,
+  edit( props ) {
+    const { attributes, setAttributes, clientId } = props;
 
-        let { 
-            id = clientId,
-            email = def.email,
-            subject = def.subject,
-            submit_text = def.submit_text
-        } = attributes;
+    let { 
+      id = clientId,
+      email = def.email,
+      subject = def.subject,
+      submit_text = def.submit_text
+    } = attributes;
 
-        setAttributes( { id: id } );
+    setAttributes( { id: id } );
 
-        return [
-            <Fragment>
-                <InspectorControls>
-                    <PanelBody title={ 'Form Options' }>
-                        <TextControl
-                            label="To Email"
-                            value={ email }
-                            onChange={ email => setAttributes( { email } ) }
-                        />
-                        <TextControl
-                            label="Subject"
-                            value={ subject }
-                            onChange={ subject => setAttributes( { subject } ) }
-                        />
-                        <TextControl
-                            label="Submit Text"
-                            value={ submit_text }
-                            onChange={ submit_text => setAttributes( { submit_text } ) }
-                        />
-                    </PanelBody>
-                </InspectorControls>
-            </Fragment>,
-            <Panel header="Fields">
-                <PanelBody>
-                    <InnerBlocks 
-                        allowedBlocks={ [n + 'contact-form-field', n + 'contact-form-group'] } 
-                    />  
-                </PanelBody>
-            </Panel>   
-        ];
-    },
-    save() {
-        return <InnerBlocks.Content />; // this block is rendered in php
-    }
+    return [
+      <Fragment>
+        <InspectorControls>
+          <PanelBody title={ 'Form Options' }>
+            <TextControl
+              label="To Email"
+              value={ email }
+              onChange={ email => setAttributes( { email } ) }
+            />
+            <TextControl
+              label="Subject"
+              value={ subject }
+              onChange={ subject => setAttributes( { subject } ) }
+            />
+            <TextControl
+              label="Submit Text"
+              value={ submit_text }
+              onChange={ submit_text => setAttributes( { submit_text } ) }
+            />
+          </PanelBody>
+        </InspectorControls>
+      </Fragment>,
+      <Panel header="Fields">
+        <PanelBody>
+          <InnerBlocks 
+            allowedBlocks={ [n + 'contact-form-field', n + 'contact-form-group'] } 
+          />  
+        </PanelBody>
+      </Panel>   
+    ];
+  },
+  save() {
+    return <InnerBlocks.Content />; // this block is rendered in php
+  }
 } );

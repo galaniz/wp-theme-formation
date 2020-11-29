@@ -17,19 +17,19 @@ const n = getNamespace( true );
 /* Attributes filter */
 
 addFilter(
-    'blocks.registerBlockType',
-    n + 'extend-media-attr',
-    function( settings, name ) {
-        if( allowedBlocks.indexOf( name ) == -1 )
-            return settings;
+  'blocks.registerBlockType',
+  n + 'extend-media-attr',
+  function( settings, name ) {
+    if( allowedBlocks.indexOf( name ) == -1 )
+      return settings;
 
-        settings.attributes = assign( settings.attributes, {
-            containerWidth: {
-                type: 'string',
-                default: widthOptions[0].value
-            }
-        } );
+    settings.attributes = assign( settings.attributes, {
+      containerWidth: {
+        type: 'string',
+        default: widthOptions[0].value
+      }
+    } );
 
-        return settings;
-    }
+    return settings;
+  }
 );

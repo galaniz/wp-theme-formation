@@ -9,26 +9,26 @@ namespace Formation;
 
 trait Utils {
 
-   /*
-    * Prefix string with namespace only if not already prefixed.
-    *
-    * @param string $name
-    * @return string prefixed name
-    */
+ /*
+  * Prefix string with namespace only if not already prefixed.
+  *
+  * @param string $name
+  * @return string prefixed name
+  */
 
-    public static function get_namespaced_str( $name = '' ) {
-        if( substr( $name, 0, strlen( static::$namespace ) ) !== static::$namespace  )
-            return static::$namespace . '_' . $name;
+  public static function get_namespaced_str( $name = '' ) {
+    if( substr( $name, 0, strlen( static::$namespace ) ) !== static::$namespace  )
+      return static::$namespace . '_' . $name;
 
-        return $name;
-    }
+    return $name;
+  }
 
-    /*
-     * Get posts per page by post type.
-     *
-     * @param string $post_type
-     * @return int posts per page
-     */
+ /*
+  * Get posts per page by post type.
+  *
+  * @param string $post_type
+  * @return int posts per page
+  */
 
 	public static function get_posts_per_page( $post_type = 'post' ) {
 		if( !$post_type )
@@ -37,164 +37,164 @@ trait Utils {
 		$ppp = $post_type == 'post' ? (int) get_option( 'posts_per_page' ) : (int) get_option( $post_type . '_posts_per_page' );
 
 		if( !$ppp && static::$posts_per_page ) {
-            if( isset( static::$posts_per_page[$post_type] ) )
-                $ppp = static::$posts_per_page[$post_type];
-        }
+      if( isset( static::$posts_per_page[$post_type] ) )
+        $ppp = static::$posts_per_page[$post_type];
+    }
 
 		return $ppp;
 	}
 
-    /*
-     * Get first category for post.
-     *
-     * @param int $id
-     * @param string $taxonomy
-     * @return array {
-     *      @type string category name
-     *      @type string category url
-     * }
-     */
+ /*
+  * Get first category for post.
+  *
+  * @param int $id
+  * @param string $taxonomy
+  * @return array {
+  *    @type string category name
+  *    @type string category url
+  * }
+  */
 
 	public static function get_first_cat( $id = 0, $taxonomy = '' ) {
-        $category = !$taxonomy ? get_the_category() : get_the_terms( $id, $taxonomy );
+    $category = !$taxonomy ? get_the_category() : get_the_terms( $id, $taxonomy );
 
-        if( !$category )
-        	return false;
+    if( !$category )
+    	return false;
 
-        $first_cat = [];
+    $first_cat = [];
 
-        foreach( $category as $cat ) {
-            // exclude uncatgorized
-            if( $cat->cat_ID === 1 )
-                continue;
+    foreach( $category as $cat ) {
+      // exclude uncatgorized
+      if( $cat->cat_ID === 1 )
+        continue;
 
-            $name = $cat->name;
+      $name = $cat->name;
 
-            if( $taxonomy ) {
-                $url = get_term_link( $cat->term_id, $taxonomy );
-            } else {
-                $url = get_category_link( $cat->term_id );
-            }
+      if( $taxonomy ) {
+        $url = get_term_link( $cat->term_id, $taxonomy );
+      } else {
+        $url = get_category_link( $cat->term_id );
+      }
 
-            $first_cat = [$name, $url];
+      $first_cat = [$name, $url];
 
-            break;
-        }
+      break;
+    }
 
-        return $first_cat;
+    return $first_cat;
 	}
 
-    /*
-     * Get id early in admin.
-     *
-     * @return int post id
-     */
+ /*
+  * Get id early in admin.
+  *
+  * @return int post id
+  */
 
 	public static function get_id_early_admin() {
 		$id = 0;
 
-        if( is_admin() && isset( $_GET['post'] ) )
-            $id = $_GET['post'];
+    if( is_admin() && isset( $_GET['post'] ) )
+      $id = $_GET['post'];
 
-        return (int) $id;
+    return (int) $id;
 	}
 
-    /*
-     * Get current post id outside loop.
-     *
-     * @return int post id
-     */
+ /*
+  * Get current post id outside loop.
+  *
+  * @return int post id
+  */
 
-    public static function get_id_outside_loop() {
-        global $post;
+  public static function get_id_outside_loop() {
+    global $post;
 
-        if( is_object( $post ) && property_exists( $post, 'ID' ) )
-            return $post->ID;
+    if( is_object( $post ) && property_exists( $post, 'ID' ) )
+      return $post->ID;
 
-        return 0;
+    return 0;
+  }
+
+ /*
+  * Get excerpt from post, page, any string...
+  *
+  * @param array $args {
+  *   @type string $content Accepts string.
+  *   @type string $words trim by words. Accepts boolean.
+  *   @type string $length in words or characters. Accepts int.
+  *   @type string $post_id Accepts int.
+  *   @type string $post Accepts string.
+  * }
+  * @return string trimmed to specified length
+  */
+
+  public static function get_excerpt( $args = [] ) {
+    $content = $args['content'] ?? '';
+    $words = $args['words'] ?? false;
+    $max = $args['length'] ?? 55;
+
+    if( !$content ) {
+      $post_id = $args['post_id'] ?? get_the_ID();
+      $post = $args['post'] ?? get_post( $post_id );
+
+      if( $post->post_excerpt ) {
+        $content = $post->post_excerpt;
+        $max = 0;
+      } else {
+        $content = $post->post_content;
+      }
     }
 
-    /*
-     * Get excerpt from post, page, any string...
-     *
-     * @param array $args {
-     *      @type string $content Accepts string.
-     *      @type string $words trim by words. Accepts boolean.
-     *      @type string $length in words or characters. Accepts int.
-     *      @type string $post_id Accepts int.
-     *      @type string $post Accepts string.
-     * }
-     * @return string trimmed to specified length
-     */
+    if( $content ) {
+      $content = wp_strip_all_tags( $content, true );
+      $content = strip_shortcodes( $content );
 
-    public static function get_excerpt( $args = [] ) {
-        $content = $args['content'] ?? '';
-        $words = $args['words'] ?? false;
-        $max = $args['length'] ?? 55;
-
-        if( !$content ) {
-            $post_id = $args['post_id'] ?? get_the_ID();
-            $post = $args['post'] ?? get_post( $post_id );
-
-            if( $post->post_excerpt ) {
-                $content = $post->post_excerpt;
-                $max = 0;
-            } else {
-                $content = $post->post_content;
-            }
+      if( $max ) {
+        if( $words ) { // trim words
+          $content = wp_trim_words( $content, $max );
+        } else { // trim characters
+          $content = mb_strimwidth( $content, 0, $max );
         }
-
-        if( $content ) {
-            $content = wp_strip_all_tags( $content, true );
-            $content = strip_shortcodes( $content );
-
-            if( $max ) {
-                if( $words ) { // trim words
-                    $content = wp_trim_words( $content, $max );
-                } else { // trim characters
-                    $content = mb_strimwidth( $content, 0, $max );
-                }
-            }
-        } else {
-            $content = '';
-        }
-
-        return $content;
+      }
+    } else {
+      $content = '';
     }
 
-    /*
-     * Ajax load more posts fallback.
-     *
-     * @return boolean|string url of next posts page
-     */
+    return $content;
+  }
 
-    public static function get_next_posts_link() {
-        global $wp_query;
-        global $paged;
+ /*
+  * Ajax load more posts fallback.
+  *
+  * @return boolean|string url of next posts page
+  */
 
-        if( empty( $paged ) )
-            $paged = 1;
+  public static function get_next_posts_link() {
+    global $wp_query;
+    global $paged;
 
-        if( $paged === 0 )
-            $paged = 1;
+    if( empty( $paged ) )
+      $paged = 1;
 
-        $paged++;
+    if( $paged === 0 )
+      $paged = 1;
 
-        $total_pages = $wp_query->max_num_pages;
+    $paged++;
 
-        if( $paged > $total_pages )
-            return false;
+    $total_pages = $wp_query->max_num_pages;
 
-        return get_pagenum_link( $paged );
-    }
+    if( $paged > $total_pages )
+      return false;
 
-    /*
-     * Ajax load more comments fallback.
-     *
-     * @return string url of next comments page
-     */
+    return get_pagenum_link( $paged );
+  }
 
-    public static function get_next_comments_link() {
+ /*
+  * Ajax load more comments fallback.
+  *
+  * @return string url of next comments page
+  */
+
+  public static function get_next_comments_link() {
 		if( !is_singular() )
 			return '';
 
@@ -222,144 +222,150 @@ trait Utils {
 
 			$nextpage = intval( $page ) - 1;
 
-			/* url redirected on /comment-page-1/ so doesn't reflect oldest page correctly... https://wordpress.stackexchange.com/questions/9129/stop-wordpress-redirecting-comment-page-1-to-the-post-page */
+			/* url redirected on /comment-page-1/ so doesn't reflect oldest page correctly...https://wordpress.stackexchange.com/questions/9129/stop-wordpress-redirecting-comment-page-1-to-the-post-page */
 		}
 
 		return esc_url( get_comments_pagenum_link( $nextpage, $max_page ) );
+  }
+
+ /*
+  * Convert string to array of link data
+  *
+  * @see Field class
+  * @return boolean|array
+  */
+
+  public static function get_link( $str = '' ) {
+    if( !$str )
+      return false;
+
+    $v = explode( '|', $str );
+
+    if( $v ) {
+      $target = $v[2] ?? '';
+
+      if( $target === 'null' )
+        $target = '';
+
+      return [
+        'text' => $v[0] ?? '',
+        'url' => $v[1] ?? '',
+        'target' => $target
+      ];
+    } else {
+      return false;
+    }
+  }
+
+ /*
+  * Get image from id.
+  *
+  * @return boolean|array
+  */
+
+  public static function get_image( $id = 0, $size = 'thumbnail' ) {
+    if( !$id )
+      return false;
+
+    $single = false;
+
+    if( is_string( $size ) ) {
+      $single = true;
+      $size = [$size];
     }
 
-    /*
-     * Convert string to array of link data
-     *
-     * @see Field class
-     * @return boolean|array
-     */
+    $urls = [];
+    $srcsets = [];
+    $sizes = [];
 
-    public static function get_link( $str = '' ) {
-        if( !$str )
-            return false;
+    foreach( $size as $s ) {
+      $image = wp_get_attachment_image_src( $id, $s );
 
-        $v = explode( '|', $str );
-
-        if( $v ) {
-            $target = $v[2] ?? '';
-
-            if( $target === 'null' )
-                $target = '';
-
-            return [
-                'text' => $v[0] ?? '',
-                'url' => $v[1] ?? '',
-                'target' => $target
-            ];
-        } else {
-            return false;
-        }
+      if( $image ) {
+        $urls[] = $image[0];
+        $srcsets[] = wp_get_attachment_image_srcset( $id, $s );
+        $sizes[] = wp_get_attachment_image_sizes( $id, $s );
+      }
     }
 
-    /*
-     * Get image from id.
-     *
-     * @return boolean|array
-     */
+    if( $urls ) {
+      return [
+        'url' => $single ? $urls[0] : $urls,
+        'title' => get_the_title( $id ),
+        'alt' => get_post_meta( $id, '_wp_attachment_image_alt', true ),
+        'srcset' => $single ? $srcsets[0] : $srcsets,
+        'sizes' => $single ? $sizes[0] : $sizes
+      ];
+    }
 
-    public static function get_image( $id = 0, $size = 'thumbnail' ) {
-        if( !$id )
-            return false;
+    return false;
+  }
 
-        $single = false;
+ /*
+  * Get array of attributes as a string.
+  *
+  * @return string
+  */
 
-        if( is_string( $size ) ) {
-            $single = true;
-            $size = [$size];
-        }
+  public static function get_attr_as_str( $attr = [], $callback = false ) {
+    if( $attr ) {
+      $attr_formatted = [];
 
-        $urls = [];
-        $srcsets = [];
-        $sizes = [];
+      foreach( $attr as $a => $v ) {
+        $attr_formatted[] = $a . '="' . $v . '"';
 
-        foreach( $size as $s ) {
-            $image = wp_get_attachment_image_src( $id, $s );
+        if( is_callable( $callback ) )
+          call_user_func_array( $callback, [$a, $v] );
+      }
 
-            if( $image ) {
-                $urls[] = $image[0];
-                $srcsets[] = wp_get_attachment_image_srcset( $id, $s );
-                $sizes[] = wp_get_attachment_image_sizes( $id, $s );
-            }
-        }
+      $attr = implode( ' ', $attr_formatted );
+    } else {
+      $attr = '';
+    }
 
-        if( $urls ) {
-            return [
-                'url' => $single ? $urls[0] : $urls,
-                'title' => get_the_title( $id ),
-                'alt' => get_post_meta( $id, '_wp_attachment_image_alt', true ),
-                'srcset' => $single ? $srcsets[0] : $srcsets,
-                'sizes' => $single ? $sizes[0] : $sizes
-            ];
-        }
+    return $attr;
+  }
 
+ /*
+  * Get lat and lng coordinates from address.
+  *
+  * @return array/boolean
+  */
+
+  public static function get_lat_lng( $address = '' ) {
+    if( !$address )
+      return false;
+
+    $key = get_option( static::$namespace . '_geocode_key' );
+
+    if( !$key )
+      return false;
+
+    // Google API url
+    $address = urlencode( $address );
+    $url = "https://maps.googleapis.com/maps/api/geocode/json?address={$address}&key=$key";
+
+    // get the JSON response
+    $resp_json = file_get_contents( $url );
+
+    // decode the JSON
+    $resp = json_decode( $resp_json, true );
+
+    // response status will be 'OK', if able to geocode given address
+    if( $resp['status']=='OK' ) {
+      // get the important data
+      $lat = isset($resp['results'][0]['geometry']['location']['lat']) ? $resp['results'][0]['geometry']['location']['lat'] : '';
+      $lng = isset($resp['results'][0]['geometry']['location']['lng']) ? $resp['results'][0]['geometry']['location']['lng'] : '';
+
+      // verify if data is complete
+      if( $lat && $lng ) {
+        return [$lat, $lng];
+      } else {
         return false;
+      }
+    } else {
+      return false;
     }
-
-    /*
-     * Get array of attributes as a string.
-     *
-     * @return string
-     */
-
-    public static function get_attr_as_str( $attr = [], $callback = false ) {
-        if( $attr ) {
-            $attr_formatted = [];
-
-            foreach( $attr as $a => $v ) {
-                $attr_formatted[] = $a . '="' . $v . '"';
-
-                if( is_callable( $callback ) )
-                    call_user_func_array( $callback, [$a, $v] );
-            }
-
-            $attr = implode( ' ', $attr_formatted );
-        } else {
-            $attr = '';
-        }
-
-        return $attr;
-    }
-
-
-        // get lat and lng coordinates of address
-    private function get_lat_lng( $address ) {
-        $key  = 
-
-        // url encode the address
-        $address = urlencode( $address );
-
-        $key = AIzaSyCNE1qrAjjp4tCVOW5LYO88HfVY4c5Zi9E
-
-        // google map geocode api url
-        $url = "https://maps.googleapis.com/maps/api/geocode/json?address={$address}&key=$key";
-
-        // get the json response
-        $resp_json = file_get_contents( $url );
-
-        // decode the json
-        $resp = json_decode( $resp_json, true );
-
-        // response status will be 'OK', if able to geocode given address
-        if( $resp['status']=='OK' ) {
-            // get the important data
-            $lat = isset($resp['results'][0]['geometry']['location']['lat']) ? $resp['results'][0]['geometry']['location']['lat'] : "";
-            $lng = isset($resp['results'][0]['geometry']['location']['lng']) ? $resp['results'][0]['geometry']['location']['lng'] : "";
-
-            // verify if data is complete
-            if( $lat && $lng ) {
-                return array( $lat, $lng );
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
+  }
 
 } // end Utils

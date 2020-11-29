@@ -30,21 +30,21 @@ function additional_script_data( $name = false, $data = [], $admin = false, $hea
 
 			<script type="text/javascript">
 				(function () {
-		            var <?php echo $var; ?> = <?php echo json_encode( $data ); ?>;
-		        	
-		            if( window.hasOwnProperty( '<?php echo $name; ?>' ) ) {
-		        		// merge existing object with new data
-		                for( var key in <?php echo $var; ?> ) {
-		                    window['<?php echo $name; ?>'][key] = <?php echo $var; ?>[key];
-		                }
-		        	} else {
-		        		window['<?php echo $name; ?>'] = <?php echo $var; ?>;
-		        	}
-		        })();
-	        </script>
+		      var <?php echo $var; ?> = <?php echo json_encode( $data ); ?>;
+		    	
+		      if( window.hasOwnProperty( '<?php echo $name; ?>' ) ) {
+		    		// merge existing object with new data
+		        for( var key in <?php echo $var; ?> ) {
+		          window['<?php echo $name; ?>'][key] = <?php echo $var; ?>[key];
+		        }
+		    	} else {
+		    		window['<?php echo $name; ?>'] = <?php echo $var; ?>;
+		    	}
+		    })();
+	    </script>
 
 		<?php }
-    );
+  );
 }
 
 /*
@@ -54,9 +54,9 @@ function additional_script_data( $name = false, $data = [], $admin = false, $hea
  */
 
 function write_log( $log = '' )  {
-    if( is_array( $log ) || is_object( $log ) ) {
-        error_log( print_r( $log, true ) );
-    } else {
-        error_log( $log );
-    }
+  if( is_array( $log ) || is_object( $log ) ) {
+    error_log( print_r( $log, true ) );
+  } else {
+    error_log( $log );
+  }
 }

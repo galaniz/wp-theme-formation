@@ -164,70 +164,70 @@ class Settings {
 
 		/* Add sections */
 
-        foreach( $sections as $section ) {
-        	$section_id = $section['id'];
-        	$callback = $section['callback'] ?? false;
+	  foreach( $sections as $section ) {
+	  	$section_id = $section['id'];
+	  	$callback = $section['callback'] ?? false;
 
-        	if( $this->tabs ) {
-        		$callback = function() use ( $section_id, $section_ids ) {
-        			$hide = '';
+	  	if( $this->tabs ) {
+	  		$callback = function() use ( $section_id, $section_ids ) {
+	  			$hide = '';
 
-        			if( !in_array( $section_id, $section_ids ) ) 
-        				$hide = ' style="display: none;"';
+	  			if( !in_array( $section_id, $section_ids ) ) 
+	  				$hide = ' style="display: none;"';
 
-        			echo "</div><div class='js-section'$hide>";
-        		};
-        	}
+	  			echo "</div><div class='js-section'$hide>";
+	  		};
+	  	}
 
-            add_settings_section( 
-                $section_id,
-                $section['title'], 
-                $callback,
-                $section['page'] ?? $this->page
-            );
-        }
+		  add_settings_section( 
+			  $section_id,
+			  $section['title'], 
+			  $callback,
+			  $section['page'] ?? $this->page
+		  );
+	  }
 
-        /* Add fields */
+	  /* Add fields */
 
-	    foreach( $fields as $field ) {
-	    	$name = FRM::get_namespaced_str( $field['name'] );
-	    	$top_level_name = Field::get_top_level_name( $name );
-	    	$register_args = [];
+	  foreach( $fields as $field ) {
+	  	$name = FRM::get_namespaced_str( $field['name'] );
+	  	$top_level_name = Field::get_top_level_name( $name );
+	  	$register_args = [];
 
-	    	if( !isset( $field['fields'] ) )
-	    		$field['label_hidden'] = true;
+	  	if( !isset( $field['fields'] ) )
+	  		$field['label_hidden'] = true;
 
-	    	if( isset( $field['on_save'] ) ) {
-	    		if( is_callable( $field['on_save'] ) ) {
-	    			$register_args['sanitize_callback'] = $field['on_save'];
-	    		}
-	    	}
+	  	if( isset( $field['on_save'] ) ) {
+	  		if( is_callable( $field['on_save'] ) ) {
+	  			$register_args['sanitize_callback'] = $field['on_save'];
+	  		}
+	  	}
 
-	    	register_setting( 
-	    		$this->page, 
-	    		$top_level_name, 
-	    		$register_args 
-		    );
+	  	register_setting( 
+	  		$this->page, 
+	  		$top_level_name, 
+	  		$register_args 
+		  );
 
-	        add_settings_field( 
-	        	$name, 
-	        	$field['label'] ?? '', 
-	        	function( $args ) use ( $top_level_name ) { // $args = $field
-	        		$output = '';
+		  add_settings_field( 
+		  	$name, 
+		  	$field['label'] ?? '', 
+		  	function( $args ) use ( $top_level_name ) { // $args = $field
+		  		$output = '';
 
-	        		$args['data'] = [
-	        			$top_level_name => get_option( $top_level_name, '' )
-	        		];
-	        		
-	        		Field::render( $args, $output );
+		  		$args['data'] = [
+		  			$top_level_name => get_option( $top_level_name, '' )
+		  		];
+		  		
+		  		Field::render( $args, $output );
 
-	        		echo $output;
-	        	}, 
-	        	$this->page, 
-	        	$field['section'], 
-	        	$field 
-	        );
-	    }
+		  		echo $output;
+		  	}, 
+		  	$this->page, 
+		  	$field['section'], 
+		  	$field 
+		  );
+	  }
 	}
 
  /*

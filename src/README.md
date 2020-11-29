@@ -38,7 +38,7 @@ self::$cpt = [
 
 #### `public static $pt_layout`
 
-Store layouts by post type. Appends layouts from [`$cpt`](#user-content-public-static-cpt).     
+Store layouts by post type. Appends layouts from [`$cpt`](#user-content-public-static-cpt).   
 _Type:_ `associative array`  
 _Default:_ `[]`
 
@@ -82,7 +82,7 @@ _Default:_ `''`
 
 #### `public $styles`
 
-Stylesheets to register. See [wp_enqueue_style](https://developer.wordpress.org/reference/functions/wp_enqueue_style/).     
+Stylesheets to register. See [wp_enqueue_style](https://developer.wordpress.org/reference/functions/wp_enqueue_style/).   
 _Type:_ `array`  
 _Default:_ `[]`  
 _Example:_

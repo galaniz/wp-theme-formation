@@ -24,6 +24,7 @@ import link from './objects/link';
  */
 
 const initialize = () => {
+	
 	const namespace = window.namespace;
 
 	if( !window.hasOwnProperty( namespace ) )
@@ -31,15 +32,15 @@ const initialize = () => {
 
 	const n = window[namespace]; 
 
-	/*
-	 * File upload
-	 * -----------
-	 */
+ /*
+	* File upload
+	* -----------
+	*/
 
 	if( n.hasOwnProperty( 'files' ) ) {
 		if( n.files.length > 0 ) {
 			let fileItems = Array.from( document.querySelectorAll( '.o-asset--upload' ) ),
-				nonceName = namespace + '_upload_file_nonce';
+					nonceName = namespace + '_upload_file_nonce';
 
 			fileItems.forEach( ( item, i ) => {
 				let wp = item.hasAttribute( 'data-wp' ),
@@ -71,10 +72,10 @@ const initialize = () => {
 		}
 	}
 
-	/*
-	 * File remove
-	 * -----------
-	 */
+ /*
+	* File remove
+	* -----------
+	*/
 
 	let fileRemoveItems = Array.from( document.querySelectorAll( '.o-asset--remove' ) );
 
@@ -97,10 +98,10 @@ const initialize = () => {
 		} );
 	}
 
-	/*
-	 * Link select / edit
-	 * ------------------
-	 */
+ /*
+	* Link select / edit
+	* ------------------
+	*/
 
 	if( n.hasOwnProperty( 'links' ) ) {
 		if( n.links.length > 0 ) {
@@ -124,18 +125,18 @@ const initialize = () => {
 		}
 	}
 
-	/*
-	 * Multi fields
-	 * ------------
-	 */
+ /*
+	* Multi fields
+	* ------------
+	*/
 
 	if( !n.hasOwnProperty( 'multi' ) ) 
 		return;
 
-	window.multi = function( m ) {
+	window.multi = ( m ) => {
 		let multiItem = closest( m, 'o-multi__item' ),
-			multi = multiItem.parentElement,
-			multiItems = Array.from( multi.children );
+				multi = multiItem.parentElement,
+				multiItems = Array.from( multi.children );
 
 		let dataType = m.getAttribute( 'data-type' );
 
@@ -171,16 +172,16 @@ const initialize = () => {
 		} );
 	};
 
-	/*
-	 * Resize textarea to fit content
-	 * ------------------------------
-	 */
+ /*
+	* Resize textarea to fit content
+	* ------------------------------
+	*/
 
-	window.textareaFitContent = function( t ) {
+	window.textareaFitContent = ( t ) => {
 		let txt = t.value,
-			cols = t.cols,
-			arraytxt = txt.split( '\n' ),
-			rows = arraytxt.length; 
+				cols = t.cols,
+				arraytxt = txt.split( '\n' ),
+				rows = arraytxt.length; 
 
 		for( let i = 0; i < arraytxt.length; i++ ) 
 			rows += parseInt( arraytxt[i].length / cols );

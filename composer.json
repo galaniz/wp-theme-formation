@@ -1,26 +1,26 @@
 {
-    "name": "alanizcreative/wp-theme-formation",
-    "description": "Provide base, utilities and added functionality for building WordPress themes",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Graciela Alaniz",
-            "email": "alanizcreative@gmail.com"
-        }
-    ],
-    "require": {
-        "php": ">=7.1.0"
-    },
-    "autoload": {
-        "files": [
-            "src/globals.php"
-        ],
-        "psr-4": {
-            "Formation\\": "src/"
-        }
-    },
-    "config": {
-        "optimize-autoloader": true
+  "name": "alanizcreative/wp-theme-formation",
+  "description": "Provide base, utilities and added functionality for building WordPress themes",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Graciela Alaniz",
+      "email": "alanizcreative@gmail.com"
     }
+  ],
+  "require": {
+    "php": ">=7.1.0"
+  },
+  "autoload": {
+    "files": [
+      "src/globals.php"
+    ],
+    "psr-4": {
+      "Formation\\": "src/"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true
+  }
 }

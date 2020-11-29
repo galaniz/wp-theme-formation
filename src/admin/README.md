@@ -69,7 +69,7 @@ Page displays selected number of posts.
 #### `{$cpt}_more_label`
 
 More posts title.  
-*Type:* `string`    
+*Type:* `string`  
 
 #### `{$cpt}_ajax_posts_per_page`
 

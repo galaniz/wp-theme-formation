@@ -13,17 +13,17 @@ const getNamespace = ( slash = false ) => {
 
 const getNamespaceObj = ( namespace ) => {
 	if( !window.hasOwnProperty( namespace ) )
-	    return false;
+	  return false;
 
 	return window[namespace];
 };
 
 const editInnerBlocks = ( allowedBlocks ) => {
 	return [
-        <div>
-            <InnerBlocks allowedBlocks={ allowedBlocks } /> 
-        </div>  
-    ];
+    <div>
+      <InnerBlocks allowedBlocks={ allowedBlocks } /> 
+    </div>  
+  ];
 };
 
 const saveInnerBlocks = () => {

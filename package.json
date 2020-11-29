@@ -1,11 +1,11 @@
 {
   "name": "wp-theme-formation",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Provide base, utilities and added functionality for building WordPress themes",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --optimize-minimize -p",
-    "watch": "webpack --optimize-minimize -p --watch",
+    "build": "webpack",
+    "watch": "webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -29,14 +29,12 @@
     "cssnano": "^4.1.10",
     "fibers": "^5.0.0",
     "mini-css-extract-plugin": "^0.11.3",
-    "optimize-css-assets-webpack-plugin": "^5.0.4",
     "postcss": "^8.1.1",
     "postcss-combine-duplicated-selectors": "^10.0.2",
     "postcss-loader": "^4.0.3",
     "postcss-preset-env": "^6.7.0",
     "sass": "^1.26.12",
     "sass-loader": "^10.0.2",
-    "string-replace-loader": "^2.3.0",
     "style-loader": "^1.3.0",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"

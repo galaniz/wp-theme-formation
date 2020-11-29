@@ -16,9 +16,7 @@ window.showHiddenFields = function( event ) {
 		selectedOption = select.options[select.selectedIndex].value,
 		optionsTextarea = closest( select, 'o-field' ).nextElementSibling;
 
-	if( selectedOption == 'select' || 
-		selectedOption == 'checkbox' || 
-		selectedOption == 'radio' ) {
+	if( selectedOption == 'select' || selectedOption == 'checkbox' || selectedOption == 'radio' ) {
 		optionsTextarea.style.display = 'block';
 	} else {
 		optionsTextarea.style.display = 'none';

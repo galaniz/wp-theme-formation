@@ -25,7 +25,7 @@ Validate nonces and recaptcha for contact and comment forms. Recaptcha API keys 
 _Parameters:_
 
 * `$priv_type`  
-Differentiate between logged in and non-logged in users. Possible values `'priv'` or `'nopriv'`.     
+Differentiate between logged in and non-logged in users. Possible values `'priv'` or `'nopriv'`.   
 _Type:_ `string`  
 _Default:_ `'nopriv'`  
 

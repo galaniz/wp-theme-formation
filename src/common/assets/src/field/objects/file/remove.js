@@ -52,22 +52,22 @@ const fileRemove = ( args ) => {
 			headers: { 'Content-type': 'application/x-www-form-urlencoded' },
 			body: urlEncode( data )
 		} )
-	    .then( response => {
-	    	console.log( 'RESPONSE', response );
+	  .then( response => {
+	  	console.log( 'RESPONSE', response );
 
-	    	disable( false );
-	    	f.parent.removeChild( f.item );
-	    } )
-	    .catch( xhr => {
-	        console.log( 'ERROR', xhr, xhr.responseText );
-	        disable( false );
-	    } );
+	  	disable( false );
+	  	f.parent.removeChild( f.item );
+	  } )
+	  .catch( xhr => {
+	    console.log( 'ERROR', xhr, xhr.responseText );
+	    disable( false );
+	  } );
 	};
-    
-    /* Merge args with defaults */
+  
+  /* Merge args with defaults */
 
-    mergeObjects( {
-    	item: null,
+  mergeObjects( {
+  	item: null,
 		button: null,
 		loader: null,
 		filePath: '',
@@ -77,24 +77,24 @@ const fileRemove = ( args ) => {
 			nonce: '',
 			name: ''
 		}
-    }, args );
+  }, args );
 
-    let error = false;
+  let error = false;
 
-    // check for empty elements
-    for( let prop in args ) {
-    	if( !args[prop] ) {
-    		error = true;
-    		break;
-    	}
-    }
+  // check for empty elements
+  for( let prop in args ) {
+  	if( !args[prop] ) {
+  		error = true;
+  		break;
+  	}
+  }
 
-    if( error )
-    	return false;
+  if( error )
+  	return false;
 
-    let f = args;
+  let f = args;
 
-    f['parent'] = f.item.parentElement;
+  f['parent'] = f.item.parentElement;
 
 	/* Event listeners */
 

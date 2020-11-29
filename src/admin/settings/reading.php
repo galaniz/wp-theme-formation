@@ -17,17 +17,17 @@ use Formation\Admin\Settings\Settings;
 
 class Reading {
 
-   /*
-    * Variables
-    * ---------
-    */
+ /*
+	* Variables
+	* ---------
+	*/
 
-   	public static $additional_fields = [];
+	public static $additional_fields = [];
 
-   /*
-    * Constructor
-    * -----------
-    */
+ /*
+	* Constructor
+	* -----------
+	*/
 
 	public function __construct() {
 		if( count( FRM::$cpt ) == 0 )
@@ -49,10 +49,10 @@ class Reading {
 		}, 10, 2 ); 
 	}
 
-   /*
-    * Register and render fields
-    * --------------------------
-    */
+ /*
+	* Register and render fields
+	* --------------------------
+	*/
 
 	public function setup() {
 		$page_options = [0 => '— Select —'];
@@ -60,7 +60,7 @@ class Reading {
 		$get_pages = get_pages( 'hide_empty=0' );
 
 		foreach( $get_pages as $page )
-		    $page_options[$page->ID] = esc_attr( $page->post_title );
+			$page_options[$page->ID] = esc_attr( $page->post_title );
 
 		$fields = [
 			[
@@ -78,65 +78,65 @@ class Reading {
 			$name = $c . '_page';
 
 			$fields[] = [
-	            'name' => $name,
-	            'label' => $meta['label'] . ' post page',
-	            'section' => 'default',
-	            'type' => 'select',
-	            'value' => (int) get_option( $name, 0 ),
-	            'options' => $page_options,
-	            'label_hidden' => true,
-	            'on_save' => function( $value ) use ( $c, $meta ) {
-	            	if( isset( $meta['no_slug'] ) )
-	            		return $value; 
+				'name' => $name,
+				'label' => $meta['label'] . ' post page',
+				'section' => 'default',
+				'type' => 'select',
+				'value' => (int) get_option( $name, 0 ),
+				'options' => $page_options,
+				'label_hidden' => true,
+				'on_save' => function( $value ) use ( $c, $meta ) {
+					if( isset( $meta['no_slug'] ) )
+						return $value; 
 
-	            	$id = (int) $value;
+					$id = (int) $value;
 
-		            // get page slug of assigned page
+					// get page slug of assigned page
 					$slug = get_post_field( 'post_name', $id );
 
 					update_option( $c . '_slug', $slug );
 
 					flush_rewrite_rules();
 
-		            return $value;
-		        }
-	        ];
+					return $value;
+				}
+			];
 
-	        $fields[] = [
-	            'name' => $c . '_posts_per_page',
-	            'label' => $meta['label'] . ' page shows at most',
-	            'section' => 'default',
-	            'type' => 'number',
-	            'label_hidden' => true,
-	            'class' => 'c-cpt',
-	            'attr' => [
-	            	'step' => '1',
-	            	'min' => '1'
-	            ]
-	        ];
+			$fields[] = [
+				'name' => $c . '_posts_per_page',
+				'label' => $meta['label'] . ' page shows at most',
+				'section' => 'default',
+				'type' => 'number',
+				'label_hidden' => true,
+				'class' => 'c-cpt',
+				'attr' => [
+					'step' => '1',
+					'min' => '1'
+				]
+			];
 
-	        $fields[] = [
-	            'name' => $c . '_more_label',
-	            'label' => $meta['label'] . ' more posts label',
-	            'section' => 'default',
-	            'type' => 'text'
-	        ];
+			$fields[] = [
+				'name' => $c . '_more_label',
+				'label' => $meta['label'] . ' more posts label',
+				'section' => 'default',
+				'type' => 'text'
+			];
 
-	        if( isset( $meta['ajax_posts_per_page'] ) ) {
-		        $fields[] = [
-		            'name' => $c . '_ajax_posts_per_page',
-		            'label' => $meta['label'] . ' page loads at most (ajax)',
-		            'section' => 'default',
-		            'type' => 'number',
-		            'label_hidden' => true,
-		            'class' => 'c-cpt',
-		            'attr' => [
-		            	'step' => '1',
-		            	'min' => '1'
-		            ]
-		        ];
-	        }
-		}
+			if( isset( $meta['ajax_posts_per_page'] ) ) {
+				$fields[] = [
+					'name' => $c . '_ajax_posts_per_page',
+					'label' => $meta['label'] . ' page loads at most (ajax)',
+					'section' => 'default',
+					'type' => 'number',
+					'label_hidden' => true,
+					'class' => 'c-cpt',
+					'attr' => [
+						'step' => '1',
+						'min' => '1'
+					]
+				];
+			}
+		}	
 
 		if( self::$additional_fields ) 
 			$fields = array_merge( $fields, self::$additional_fields );

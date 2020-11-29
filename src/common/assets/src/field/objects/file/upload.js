@@ -51,18 +51,18 @@ const fileUpload = ( args ) => {
 
 			const reader = new FileReader();
 
-		    reader.onload = function( e ) {
-		        let text = reader.result,
-		            clean = DOMPurify.sanitize( text ),
-		            blob = new Blob( [clean], {type : type} );
+		  reader.onload = function( e ) {
+		    let text = reader.result,
+		      clean = DOMPurify.sanitize( text ),
+		      blob = new Blob( [clean], {type : type} );
 
-		    	upload( new File( [blob], file.name, { 
-		    		lastModified: file.lastModified,
-		    		type: type 
-		    	} ) );
-		    }
+		  	upload( new File( [blob], file.name, { 
+		  		lastModified: file.lastModified,
+		  		type: type 
+		  	} ) );
+		  }
 
-		    reader.readAsText( file );
+		  reader.readAsText( file );
 		} else {
 			upload( file );
 		}
@@ -95,14 +95,14 @@ const fileUpload = ( args ) => {
 			url: f.url,
 			body: formData
 		} )
-	    .then( response => {
-	    	let data = JSON.parse( response );
+	  .then( response => {
+	  	let data = JSON.parse( response );
 
-	    	console.log( 'DATA', data );
+	  	console.log( 'DATA', data );
 
-	    	disable( false );
+	  	disable( false );
 
-	    	if( data.length > 0 ) {
+	  	if( data.length > 0 ) {
 				let result = data[0];
 
 				f.fileInput.value = result.url;
@@ -114,16 +114,16 @@ const fileUpload = ( args ) => {
 				show( f.noFileContainer, false );
 				show( f.fileContainer );
 			}
-	    } )
-	    .catch( xhr => {
-	        console.log( 'ERROR', xhr, xhr.responseText );
-	        disable( false );
-	    } );
+	  } )
+	  .catch( xhr => {
+	    console.log( 'ERROR', xhr, xhr.responseText );
+	    disable( false );
+	  } );
 	};
-    
-    /* Merge args with defaults */
+  
+  /* Merge args with defaults */
 
-    mergeObjects( {
+  mergeObjects( {
 		selectButton: null,
 		removeButton: null,
 		fileContainer: null,
@@ -140,22 +140,22 @@ const fileUpload = ( args ) => {
 			nonce: '',
 			name: ''
 		}
-    }, args );
+  }, args );
 
-    let error = false;
+  let error = false;
 
-    // check for empty elements
-    for( let prop in args ) {
-    	if( !args[prop] ) {
-    		error = true;
-    		break;
-    	}
-    }
+  // check for empty elements
+  for( let prop in args ) {
+  	if( !args[prop] ) {
+  		error = true;
+  		break;
+  	}
+  }
 
-    if( error )
-    	return false;
+  if( error )
+  	return false;
 
-    let f = args;
+  let f = args;
 
 	/* Event listeners */
 
