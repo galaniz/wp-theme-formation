@@ -147,6 +147,8 @@ class Theme {
 
         $args = array_replace_recursive( [
             'recaptcha' => false,
+            'analytics' => false,
+            'business' => false,
             'mailchimp_list_locations' => [],
             'sections' => [],
             'fields' => [],
@@ -174,6 +176,22 @@ class Theme {
                 'name' => 'recaptcha_secret_key',
                 'label' => 'Secret Key',
                 'section' => 'google-recaptcha',
+                'tab' => 'Google'
+            ];
+        }
+
+        /* Google Analytics */
+
+        if( $analytics ) {
+            $this->sections[] = [
+                'id' => 'google-analytics',
+                'title' => 'Analytics'
+            ];
+
+            $this->fields[] = [
+                'name' => 'analytics_id',
+                'label' => 'Analytics ID',
+                'section' => 'google-analytics',
                 'tab' => 'Google'
             ];
         }
@@ -269,6 +287,188 @@ class Theme {
                     'tab' => 'Mailchimp'
                 ];
             }
+        }
+
+        /* Business */
+
+        if( $business ) {
+          $address_fields = [
+            [
+              'name' => 'address[%i][admin1_name]',
+              'class' => 'js-admin1',
+              'label' => 'Country',
+              'attr' => ['onchange' => 'getAdmin1( event )']
+            ],
+            [
+              'type' => 'hidden',
+              'name' => 'address[%i][admin1]'
+            ],
+            [
+              'type' => 'hidden',
+              'name' => 'address[%i][admin1_id]'
+            ],
+            [
+              'label' => 'State/Province',
+              'type' => 'select',
+              'class' => 'js-admin3'
+              'name' => 'address[%i][admin3_options]',
+              'attr' => [
+                'disabled' => 'true',
+                'onchange' => 'setAdmin3Input( event )'
+              ],
+              'options' => [
+                [
+                  'label' => '— Select —',
+                  'value' => ''
+                ]
+              ]
+            ],
+            [
+              'type' => 'hidden',
+              'name' => 'address[%i][admin3]'
+            ],
+            [
+              'type' => 'hidden',
+              'name' => 'address[%i][admin3_name]'
+            ],
+            [
+              'name' => 'address[%i][city]',
+              'label' => 'City'
+            ],
+            [
+              'name' => 'address[%i][line1]',
+              'label' => 'Address Line 1'
+            ],
+            [
+              'name' => 'address[%i][line2]',
+              'label' => 'Address Line 2',
+              'optional' => true
+            ],
+            [
+              'name' => 'address[%i][postal_code]',
+              'label' => 'Postal Code'
+            ]
+          ];
+
+          $hours_options = [];
+
+          for( $h = 1; $h <= 24; $h++ ) {
+            $hours[] = [
+              'label' => $h < 10 ? "0$h" : $h,
+              'value' => $h
+            ];
+          } 
+
+          $min_options = [
+            '00' => '00',
+            '15' => '15',
+            '30' => '30',
+            '45' => '45'
+          ];
+
+          $hours_fields = [
+            [
+              'name' => 'hours[%i][day]',
+              'type' => 'select',
+              'options' => [
+                'Monday' => 'Monday',
+                'Tuesday' => 'Tuesday',
+                'Wednesday' => 'Wednesday',
+                'Thursday' => 'Thursday',
+                'Friday' => 'Friday',
+                'Saturday' => 'Saturday',
+                'Sunday' => 'Sunday'
+              ]
+            ],
+            [
+              'name' => 'hours[%i][open_hour]',
+              'type' => 'select',
+              'options' => $hours_options
+            ],
+            [
+              'name' => 'hours[%i][open_min]',
+              'type' => 'select',
+              'options' => $min_options
+            ],
+            [
+              'name' => 'hours[%i][close_hour]',
+              'type' => 'select',
+              'options' => $hours_options
+            ],
+            [
+              'name' => 'hours[%i][close_min]',
+              'type' => 'select',
+              'options' => $min_options
+            ],
+            [
+              'name' => 'hours[%i][closed]',
+              'type' => 'checkbox',
+              'value' => 1
+              'options' => $min_options,
+              'class' => 'js-hours-closed',
+              'attr' => ['onchange' => 'toggleTimes( event )']
+            ]
+          ];
+
+          $this->sections[] = [
+            'id' => 'business',
+            'title' => 'Business'
+          ];
+
+          $this->fields[] = [
+            'name' => 'address',
+            'label' => 'Address',
+            'fields' => $address_fields,
+            'multi' => true,
+            'on_save' => function( $value ) {
+              if( !is_array( $value ) )
+                return $value;
+
+              foreach( $value as $v ) {
+                if( !isset( $v['line1'] ) || !isset( $v['city'] ) || !isset( $v['postal_code'] ) )
+                  continue;
+
+                $address = 
+                  $v['line1'] .
+                  ( isset( $v['line2'] ) ? ' ' . $v['line2'] : '' ) . ' ' .
+                  $v['city'] . ', ' . $v['admin3'] . ', ' . $v['admin1_name'] .
+                  $v['postal_code'];
+
+                $lat_lng = FRM::get_lat_lng( $address );
+
+                if( $lat_lng )
+                  $v['lat_lng'] = $lat_lng;
+              } 
+
+              return $value;
+            },
+            'section' => 'business',
+            'tab' => 'General'
+          ];
+
+          $this->fields[] = [
+            'name' => 'hours',
+            'label' => 'Hours',
+            'fields' => $hours_fields,
+            'multi' => true,
+            'section' => 'business',
+            'tab' => 'General'
+          ];
+
+          $this->fields[] = [
+            'name' => 'phone',
+            'label' => 'Phone',
+            'section' => 'business',
+            'tab' => 'General'
+          ];
+
+          $this->fields[] = [
+            'name' => 'email',
+            'type' => 'email',
+            'label' => 'Email',
+            'section' => 'business',
+            'tab' => 'General'
+          ];
         }
 
         /* Additional fields */

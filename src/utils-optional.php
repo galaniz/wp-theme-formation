@@ -13,6 +13,7 @@ namespace Formation;
  */
 
 use Formation\Formation as FRM;
+use Formation\Utils;
 
 class Utils_Optional {
 
@@ -41,6 +42,58 @@ class Utils_Optional {
             'submit_label' => get_option( $list_name . '_submit_label' ),
             'fields' => get_option( $list_name . '_fields' )
         ];
+    }
+
+   /*
+    * Fetch logo.
+    *
+    * @return string
+    */
+
+    public static function get_logo( $class = '', $old_browser_compat = false ) {
+        $n = static::$namespace;
+
+        $svg_key = $n . '_svg_logo';
+        $key = $n . '_logo';
+
+        $svg_url = get_option( $svg_key, '' );
+
+        if( $svg_url ) {
+            $site_url = get_site_url() . '/';
+            $svg_path = str_replace( $site_url, ABSPATH, $svg_url );
+
+            if( $svg_path == $svg_url ) {
+                $site_url = get_site_url( '', 'http' ) . '/';
+                $svg_path = str_replace( $site_url, ABSPATH, $svg_url );
+            }
+
+            $s = file_get_contents( $svg_path );
+
+            if( $old_browser_compat )
+                $s = self::render_svg_scale_fix( $s );
+
+            return $s;
+        } else {
+            $id = get_option( $key, 0 );
+
+            if( !$id )
+                return '';
+
+            $image = Utils::get_image( $id, 'large' );
+
+            if( !$image )
+                return '';
+
+            $src = $image['url'];
+            $alt = $image['alt'];
+            $srcset = $image['srcset'];
+            $sizes = $image['sizes'];
+            $class = $class ? " class='$class'" : '';
+
+            return "<img$class src='$src' alt='$alt' srcset='$srcset' sizes='$sizes'>";
+        }
+
+        return '';
     }
 
     /*

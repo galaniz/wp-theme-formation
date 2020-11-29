@@ -18,56 +18,56 @@ use function \Formation\write_log;
 
 class Settings {
 
-   /*
-    * Variables
-    * ---------
-    *
-    * Store fields.
-    *
-    * @var array $fields
-    * @see \Formation\Common\Field for default properties.
-    * 
-    * Note: section and on_save additional properties.
-    */
+ /*
+  * Variables
+  * ---------
+  *
+  * Store fields.
+  *
+  * @var array $fields
+  * @see \Formation\Common\Field for default properties.
+  * 
+  * Note: section and on_save additional properties.
+  */
 
-   	private $fields = [];
+ 	private $fields = [];
 
-   /*
-    * Store sections.
-    *
-    * @var array $sections
-    */
+ /*
+  * Store sections.
+  *
+  * @var array $sections
+  */
 
-   	private $sections = [];
+ 	private $sections = [];
 
-   /*
-    * Page to register setting.
-    *
-    * @var string $page
-    */
+ /*
+  * Page to register setting.
+  *
+  * @var string $page
+  */
 
-  	private $page = '';
+	private $page = '';
 
-   /*
-    * Organize as tabs.
-    *
-    * @var boolean $tabs
-    */
+ /*
+  * Organize as tabs.
+  *
+  * @var boolean $tabs
+  */
 
-  	private $tabs = false;
+	private $tabs = false;
 
-   /*
-    * Tabs navigation html output.
-    *
-    * @var string $tab_nav
-    */
+ /*
+  * Tabs navigation html output.
+  *
+  * @var string $tab_nav
+  */
 
-  	private $tab_nav = '';
+	private $tab_nav = '';
 
-   /*
-    * Constructor
-    * -----------
-    */
+ /*
+  * Constructor
+  * -----------
+  */
 
 	public function __construct( $args = [] ) {
 		$args = array_merge( [
@@ -90,10 +90,10 @@ class Settings {
 		$this->setup();
 	}
 
-   /*
-    * Register and render fields
-    * --------------------------
-    */
+ /*
+  * Register and render fields
+  * --------------------------
+  */
 
 	public function setup() {
 		$fields = $this->fields;
@@ -230,15 +230,15 @@ class Settings {
 	    }
 	}
 
-   /*
-    * Get tabs navigation
-    * -------------------
-    *
-    * @return string of output
-    */
+ /*
+  * Get tabs navigation
+  * -------------------
+  *
+  * @return string of output
+  */
 
-   	public function get_tab_nav() {
-   		return $this->tab_nav;
-   	}
+ 	public function get_tab_nav() {
+ 		return $this->tab_nav;
+ 	}
 
 } // end Settings

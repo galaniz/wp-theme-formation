@@ -14,7 +14,7 @@ namespace Formation;
 
 class Formation {
 
-   /*
+ /*
 	* Variables
 	* ---------
 	*
@@ -25,7 +25,7 @@ class Formation {
 
 	public static $namespace = 'frm';
 
-   /*
+ /*
 	* Path from vendor to source.
 	*
 	* @var string $src_path
@@ -34,7 +34,7 @@ class Formation {
 	public static $src_path = '/vendor/alanizcreative/wp-theme-formation/src/';
 	public static $src_url = '';
 
-   /*
+ /*
 	* Store custom post type names and unlimited meta data.
 	*
 	* @var array $cpt {
@@ -51,7 +51,7 @@ class Formation {
 
 	public static $cpt = [];
 
-   /*
+ /*
 	* Store layouts for post types.
 	*
 	* @var array $pt_layout {
@@ -61,7 +61,7 @@ class Formation {
 
 	public static $pt_layout = [];
 
-   /*
+ /*
 	* Number of posts to display by type / post type
 	*
 	* @var array $posts_per_page {
@@ -71,7 +71,7 @@ class Formation {
 
 	public static $posts_per_page = [];
 
-   /*
+ /*
 	* Editor color palette theme support args.
 	*
 	* @var array $editor_color_palette {
@@ -83,7 +83,7 @@ class Formation {
 
 	public $editor_color_palette = [];
 
-   /*
+ /*
 	* Custom image sizes to register.
 	*
 	* @var array $image_sizes {
@@ -93,7 +93,7 @@ class Formation {
 
 	public $image_sizes = [];
 
-   /*
+ /*
 	* Nav menus to register.
 	*
 	* @var array $nav_menus {
@@ -103,7 +103,7 @@ class Formation {
 
 	public $nav_menus = [];
 
-   /*
+ /*
 	* Stylesheet path for admin editor styles relative to theme root.
 	*
 	* @var string $editor_style
@@ -111,7 +111,7 @@ class Formation {
 
 	public $editor_style = '';
 
-   /*
+ /*
 	* Stylesheets to register.
 	*
 	* @var array $styles {
@@ -124,7 +124,7 @@ class Formation {
 
 	public $styles = [];
 
-   /*
+ /*
 	* Scripts to register.
 	*
 	* @var array $styles {
@@ -140,7 +140,7 @@ class Formation {
 
 	public $scripts = [];
 
-   /*
+ /*
 	* Handles of scripts that should be deferred. Set in scripts callback.
 	*
 	* @var array $defer_script_handles {
@@ -158,21 +158,21 @@ class Formation {
 
 	public static $loader_icon = '';
 
-   /*
-    * Optional classes to add to fields, labels, buttons...
-    *
-    * @var array $classes
-    */
+ /*
+  * Optional classes to add to fields, labels, buttons...
+  *
+  * @var array $classes
+  */
 
-    public static $classes = [
-        'field' => '',
-        'button' => '',
-        'label' => '',
-        'input' => '',
-        'icon' => ''
-    ];
+  public static $classes = [
+    'field' => '',
+    'button' => '',
+    'label' => '',
+    'input' => '',
+    'icon' => ''
+  ];
 
-   /*
+ /*
 	* Stores svg sprite meta.
 	*
 	* @var array $sprites
@@ -256,7 +256,7 @@ class Formation {
 		]
 	];
 
-   /*
+ /*
 	* Upload directory and url.
 	*
 	* @see Common\Field
@@ -267,7 +267,7 @@ class Formation {
 	public static $uploads_dir = '';
 	public static $uploads_url = '';
 
-   /*
+ /*
 	* Constructor
 	* -----------
 	*/
@@ -277,7 +277,7 @@ class Formation {
 		$this->setup_filters();
     }
 
-   /*
+ /*
 	* Setup default hooks and actions.
 	*
 	* @uses add_action() to add / remove various actions.
@@ -286,13 +286,14 @@ class Formation {
 	private function setup_actions() {
 		add_action( 'after_setup_theme', [$this, 'init'] );
 		add_action( 'pre_get_posts', [$this, 'query_vars'] );
+		add_action( 'wp_head', [$this, 'head'] );
 		add_action( 'wp_enqueue_scripts', [$this, 'scripts'] );
 
 		static::ajax_actions();
 
 		/* Admin customizations */
 
-        add_action( 'admin_menu', [$this, 'remove_meta_boxes'], 10, 2 );
+		add_action( 'admin_menu', [$this, 'remove_meta_boxes'], 10, 2 );
 		add_action( 'admin_bar_menu', [$this, 'update_adminbar'], 999 );
 		add_action( 'wp_dashboard_setup', [$this, 'remove_dashboard_widgets'] );
 
@@ -333,7 +334,7 @@ class Formation {
 		self::$src_url = get_template_directory_uri() . self::$src_path;
 	}
 
-   /*
+ /*
 	* Setup default filters
 	*
 	* @uses add_action() to add various filters
@@ -351,7 +352,7 @@ class Formation {
 		add_filter( 'tiny_mce_before_init', [$this, 'tiny_mce_remove_h1'] );
 	}
 
-   /*
+ /*
 	* Setup pt layout variable
 	*/
 
@@ -362,7 +363,7 @@ class Formation {
 		}
 	}
 
-   /*
+ /*
 	* Action callbacks
 	* ----------------
 	*
@@ -413,7 +414,7 @@ class Formation {
 			add_editor_style( $this->editor_style );
 	}
 
-   /*
+ /*
 	* Alter query vars for posts when not in admin.
 	*/
 
@@ -442,7 +443,27 @@ class Formation {
 		}
 	}
 
-   /*
+ /*
+	* Insert custom scripts in head.
+	*/
+
+	public function head() {
+		// google analytics
+		$ga = get_option( static::$namespace . '_analytics_id' );
+
+		if( $ga && !is_admin() ) { ?>
+			<!-- Google Analytics -->
+			<script>
+				window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+				ga( 'create', '<?php echo $ga; ?>', 'auto' );
+				ga( 'send', 'pageview' );
+			</script>
+			<script async src='https://www.google-analytics.com/analytics.js'></script>
+			<!-- End Google Analytics -->
+		<?php }
+	}
+
+ /*
 	* Register and enqueue scripts and styles.
 	*/
 
@@ -562,7 +583,7 @@ class Formation {
 			wp_enqueue_script( 'comment-reply' );
 	}
 
-   /*
+ /*
 	* Remove unnecessary items from admin toolbar.
 	*/
 
@@ -572,7 +593,7 @@ class Formation {
 		$wp_adminbar->remove_node( 'comments' );
 	}
 
-   /*
+ /*
 	* Remove wp news metabox.
 	*/
 
@@ -580,18 +601,18 @@ class Formation {
 		remove_meta_box( 'dashboard_primary', 'dashboard', 'side' );
 	}
 
-   /*
+ /*
 	* Remove meta boxes and tag link.
 	*/
 
-    public function remove_meta_boxes() {
-        remove_meta_box( 'commentstatusdiv', 'post', 'normal' );
-        remove_meta_box( 'tagsdiv-post_tag', 'post', 'normal' );
-        remove_meta_box( 'tagsdiv-post_tag', 'post', 'advanced' );
-        remove_submenu_page( 'edit.php', 'edit-tags.php?taxonomy=post_tag' );
-    }
+  public function remove_meta_boxes() {
+    remove_meta_box( 'commentstatusdiv', 'post', 'normal' );
+    remove_meta_box( 'tagsdiv-post_tag', 'post', 'normal' );
+    remove_meta_box( 'tagsdiv-post_tag', 'post', 'advanced' );
+    remove_submenu_page( 'edit.php', 'edit-tags.php?taxonomy=post_tag' );
+  }
 
-   /*
+ /*
 	* Add custom image sizes for users to select.
 	*/
 
@@ -605,7 +626,7 @@ class Formation {
 		return $sizes;
 	}
 
-   /*
+ /*
 	* Add to gutenberg block content
 	*/
 
@@ -622,13 +643,13 @@ class Formation {
 		return $block_content;
 	}
 
-   /*
+ /*
 	* Ajax callbacks
 	*/
 
 	use Pub\Ajax;
 
-   /*
+ /*
 	* Utility methods
 	* ---------------
 	*/
@@ -636,20 +657,20 @@ class Formation {
 	use Utils;
 	use Utils_Render;
 
-    /*
-     * Output posts requested through ajax.
-     *
-     * Note: meant to be overwritten by user.
-     *
-     * @param array $args
-     * @return string / array of html output
-     */
+  /*
+   * Output posts requested through ajax.
+   *
+   * Note: meant to be overwritten by user.
+   *
+   * @param array $args
+   * @return string / array of html output
+   */
 
-    public static function render_ajax_posts( $args = [] ) {
-    	return '';
-    }
+  public static function render_ajax_posts( $args = [] ) {
+  	return '';
+  }
 
-   /*
+ /*
 	* Filter callbacks
 	* ----------------
 	*
@@ -661,7 +682,7 @@ class Formation {
 		return $sep;
 	}
 
-   /*
+ /*
 	* Remove current from blog when on custom post type.
 	*/
 
@@ -675,23 +696,23 @@ class Formation {
 			$c_single = is_singular( $c );
 
 			if( $c_archive || $c_tax || $c_single ) {
-	        	// if on blog page remove current page parent class
-	        	if( get_post_meta( $item->ID, '_menu_item_object_id', true ) == get_option( 'page_for_posts' ) )
-	        		$classes = array_diff( $classes, ['current_page_parent'] );
+      	// if on blog page remove current page parent class
+      	if( get_post_meta( $item->ID, '_menu_item_object_id', true ) == get_option( 'page_for_posts' ) )
+      		$classes = array_diff( $classes, ['current_page_parent'] );
 
-	        	// get slug of nav item
-	        	$nav_object_slug = get_post_field( 'post_name', (int) $item->object_id );
+      	// get slug of nav item
+      	$nav_object_slug = get_post_field( 'post_name', (int) $item->object_id );
 
-	        	// check if slug matches cpt or tax
-	        	if( $nav_object_slug == $meta['slug'] )
-	        		$classes[] = 'current_page_parent';
-	        }
+      	// check if slug matches cpt or tax
+      	if( $nav_object_slug == $meta['slug'] )
+      		$classes[] = 'current_page_parent';
+      }
 		}
 
         return $classes;
 	}
 
-   /*
+ /*
 	* Add defer / async attributes to $this->defer_script_handles.
 	*/
 
@@ -704,7 +725,7 @@ class Formation {
 		return $tag;
 	}
 
-   /*
+ /*
 	* Remove h1 from heading options in admin.
 	*/
 

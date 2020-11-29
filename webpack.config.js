@@ -30,7 +30,6 @@ let rules = [
         exclude: /node_modules/,
         loaders: 'babel-loader',
         options: {
-            rootMode: 'upward',
             presets: [
                 [
                     '@babel/preset-env',
