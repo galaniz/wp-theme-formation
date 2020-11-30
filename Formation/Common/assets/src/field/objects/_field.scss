@@ -1,0 +1,47 @@
+
+/*
+ * Field
+ * -----
+ */
+
+.o-field-section {
+	@extend %u-display-inline-block;
+}
+
+.o-field {
+	margin-bottom: calcRem( 15px );
+
+	.o-multi & {
+		padding: calcRem( 10px );
+		flex-grow: 1;
+	}
+
+	.o-field-section[data-col] & {
+		margin: 0;
+		flex-grow: 0;
+	}
+
+	&[data-type="richtext"] {
+		max-width: calcRem( 750px );
+	}
+}
+
+.o-field__label {
+	font-size: calcRem( 13px );
+	margin-bottom: calcRem( 6px );
+	font-weight: 600;
+}
+
+.o-field__text,
+.o-field__textarea,
+.o-field__select {
+	.o-multi & {
+		@extend %u-width-100;
+	}
+}
+
+.o-field__checkbox {
+	@include breakpointMax( 782 ) {
+		margin: 0 calcRem( 4px ) 0 0 !important;
+	}
+}

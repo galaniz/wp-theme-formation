@@ -7,7 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticIniteb7cdd6420d025868a0145250003a4d1
 {
     public static $files = array (
-        '532c6d2a428ecf5438f246ada896eddc' => __DIR__ . '/../..' . '/src/globals.php',
+        'b6b05f092f9d878cef7d58849f01cd20' => __DIR__ . '/../..' . '/Formation/globals.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -20,25 +20,26 @@ class ComposerStaticIniteb7cdd6420d025868a0145250003a4d1
     public static $prefixDirsPsr4 = array (
         'Formation\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src',
+            0 => __DIR__ . '/../..' . '/Formation',
         ),
     );
 
     public static $classMap = array (
-        'Formation\\Admin\\Settings\\Reading' => __DIR__ . '/../..' . '/src/admin/settings/reading.php',
-        'Formation\\Admin\\Settings\\Settings' => __DIR__ . '/../..' . '/src/admin/settings/settings.php',
-        'Formation\\Admin\\Settings\\Theme' => __DIR__ . '/../..' . '/src/admin/settings/theme.php',
-        'Formation\\Common\\Blocks\\Blocks' => __DIR__ . '/../..' . '/src/common/blocks/blocks.php',
-        'Formation\\Common\\Blocks\\Contact_Form' => __DIR__ . '/../..' . '/src/common/blocks/contact-form.php',
-        'Formation\\Common\\Field\\Field' => __DIR__ . '/../..' . '/src/common/field/field.php',
-        'Formation\\Common\\Field\\File_Upload' => __DIR__ . '/../..' . '/src/common/field/file-upload.php',
-        'Formation\\Common\\Field\\Select_Fields' => __DIR__ . '/../..' . '/src/common/field/select-fields.php',
-        'Formation\\Formation' => __DIR__ . '/../..' . '/src/index.php',
-        'Formation\\Pub\\Ajax' => __DIR__ . '/../..' . '/src/public/ajax.php',
-        'Formation\\Pub\\Nav_Walker' => __DIR__ . '/../..' . '/src/public/nav-walker.php',
-        'Formation\\Utils' => __DIR__ . '/../..' . '/src/utils.php',
-        'Formation\\Utils_Optional' => __DIR__ . '/../..' . '/src/utils-optional.php',
-        'Formation\\Utils_Render' => __DIR__ . '/../..' . '/src/utils-render.php',
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'Formation\\Admin\\Settings\\Reading' => __DIR__ . '/../..' . '/Formation/Admin/Settings/Reading.php',
+        'Formation\\Admin\\Settings\\Settings' => __DIR__ . '/../..' . '/Formation/Admin/Settings/Settings.php',
+        'Formation\\Admin\\Settings\\Theme' => __DIR__ . '/../..' . '/Formation/Admin/Settings/Theme.php',
+        'Formation\\Common\\Blocks\\Blocks' => __DIR__ . '/../..' . '/Formation/Common/Blocks/Blocks.php',
+        'Formation\\Common\\Blocks\\Contact_Form' => __DIR__ . '/../..' . '/Formation/Common/Blocks/Contact_Form.php',
+        'Formation\\Common\\Field\\Field' => __DIR__ . '/../..' . '/Formation/Common/Field/Field.php',
+        'Formation\\Common\\Field\\File_Upload' => __DIR__ . '/../..' . '/Formation/Common/Field/File_Upload.php',
+        'Formation\\Common\\Field\\Select_Fields' => __DIR__ . '/../..' . '/Formation/Common/Field/Select_Fields.php',
+        'Formation\\Formation' => __DIR__ . '/../..' . '/Formation/Formation.php',
+        'Formation\\Public\\Ajax' => __DIR__ . '/../..' . '/Formation/Public/Ajax.php',
+        'Formation\\Public\\Nav_Walker' => __DIR__ . '/../..' . '/Formation/Public/Nav_Walker.php',
+        'Formation\\Utils' => __DIR__ . '/../..' . '/Formation/Utils.php',
+        'Formation\\Utils_Optional' => __DIR__ . '/../..' . '/Formation/Utils_Optional.php',
+        'Formation\\Utils_Render' => __DIR__ . '/../..' . '/Formation/Utils_Render.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

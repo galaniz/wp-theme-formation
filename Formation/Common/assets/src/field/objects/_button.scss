@@ -1,0 +1,23 @@
+
+/*
+ * Button
+ * ------
+ */
+
+.o-button {
+  @extend %u-display-flex;
+  align-items: center;
+
+  &[data-lg] {
+    font-size: calcRem( 16px ) !important;
+    padding: 0 calcRem( 15px ) calcRem( 1px );
+    height: calcRem( 45px );
+
+    & .dashicons {
+      font-size: calcRem( 22px ) !important;
+      width: calcRem( 22px );
+      height: calcRem( 22px );
+      padding-right: calcRem( 8px );
+    }
+  }
+}

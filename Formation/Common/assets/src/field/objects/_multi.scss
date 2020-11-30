@@ -1,0 +1,95 @@
+
+/*
+ * Multi field
+ * -----------
+ */
+
+$border: calcRem( 1px ) solid rgba( map-get( $g-colors, 'foreground-dark' ), 0.10 );
+
+.o-multi__fields {
+  .o-field-section[data-col] & {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  @include breakpointMin( 700 ) {
+    padding-right: calcRem( 18px );
+  }
+}
+
+.o-multi {
+  .o-field-section[data-col] & {
+    @extend %u-display-flex;
+    flex-wrap: wrap;
+    margin: calcRem( -10px );
+  }
+}
+
+.o-multi__item {
+	@extend %u-background-color-background-base;
+	border: $border;
+  padding: calcRem( 8px ) calcRem( 10px );
+  margin-bottom: calcRem( 20px );
+
+  .o-field-section[data-col] & {
+    flex-grow: 1;
+    margin: calcRem( 10px );
+  }
+
+  @include breakpointMin( 700 ) {
+  	display: flex;
+  	justify-content: space-between;
+  }
+}
+
+.o-multi__buttons {
+	margin: calcRem( -8px ) calcRem( -10px );
+
+	@include breakpointMax( 700 ) {
+		margin-top: calcRem( 15px );
+		border-top: $border;
+	}
+
+  @include breakpointMin( 700 ) {
+  	flex-direction: column;
+  	border-left: $border;
+  }
+}
+
+.o-multi__button {
+  @extend %u-background-color-background-light;
+  border: 0;
+  outline: none;
+  appearance: none !important;
+  box-shadow: none !important;
+  border-radius: 0;
+  padding: calcRem( 8px );
+
+  &:hover,
+  &:active,
+  &:focus {
+    box-shadow: none !important;
+    background-image: none;
+    outline: none;
+  }
+
+  & .o-multi__icon {
+  	color: rgba( map-get( $g-colors, 'foreground-dark' ), 0.30 );
+  }
+
+  @include breakpointMax( 700 ) {
+  	width: 100%;
+
+  	&:nth-child( 2 ) {
+  		border-left: $border;
+  	}
+  }
+
+  @include breakpointMin( 700 ) {
+  	height: 100%;
+
+  	&:nth-child( 2 ) {
+  		border-top: $border;
+  	}
+  }
+}

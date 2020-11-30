@@ -1,0 +1,15 @@
+
+/*
+ * Settings
+ * --------
+ */
+
+/* Objects */
+
+.o-toggle {
+  &[data-hide="true"] {
+    & .o-toggle__item {
+      display: none;
+    }
+  }
+}
