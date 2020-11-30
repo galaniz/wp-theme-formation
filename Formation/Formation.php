@@ -647,7 +647,7 @@ class Formation {
 	* Ajax callbacks
 	*/
 
-	use Pub\Ajax;
+	use Public\Ajax;
 
  /*
 	* Utility methods
