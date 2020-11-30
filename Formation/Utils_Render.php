@@ -121,8 +121,8 @@ trait Utils_Render {
 			$output .=
 				"<$child_tag class='$item_class'>".
 					'<a' . ( $share && $w ? $w : '' ) . ' class="o-social__link" href="' . $url . '">' .
-						'<span class="u-visually-hidden">' . ucwords( $id ) . '</span>' .
-						'<svg class="o-social__icon u-position-relative" width="' . $d['w'] . '" height="' . $d['h'] . '" viewBox="0 0 ' . $d['w'] . ' ' . $d['h'] . '">' .
+						'<span class="u-v-h">' . ucwords( $id ) . '</span>' .
+						'<svg class="o-social__icon u-p-r" width="' . $d['w'] . '" height="' . $d['h'] . '" viewBox="0 0 ' . $d['w'] . ' ' . $d['h'] . '">' .
 							'<use xlink:href="#sprite-' . $id . '" />' .
 						'</svg>' .
 					'</a>' .
@@ -170,7 +170,7 @@ trait Utils_Render {
 
 		return
 			"<div class='o-loader$loader_class'$id$hide$loader_attr>" .
-				"<div class='o-loader__icon u-position-center l-flex$icon_class' data-justify='center' data-align='center'>" .
+				"<div class='o-loader__icon u-p-c l-flex$icon_class' data-justify='center' data-align='center'>" .
 					static::$loader_icon .
 				'</div>' .
 			'</div>';
@@ -225,7 +225,7 @@ trait Utils_Render {
 
 		return sprintf(
 			'<form class="js-form%1$s" id="%2$s" data-type="%3$s" novalidate%11$s>' .
-				'<div class="o-field-container u-position-relative l-flex" data-wrap="">' .
+				'<div class="o-field-container u-p-r l-flex" data-wrap="">' .
 					'%4$s' .
 					"<div class='$button_field' data-type='submit'" . ( $single_field ? ' data-single=""' : '' ) . ">" .
 						'<button class="o-button js-submit%5$s" type="submit">' .
@@ -239,11 +239,11 @@ trait Utils_Render {
 				'</div>' .
 				'<div class="o-result">' .
 					'<div class="o-result__message l-flex" data-align="center" aria-live="polite">' .
-						'<div class="o-result__icon u-position-relative u-flex-shrink-0">' .
-							'<svg width="%7$s" height="%8$s" viewBox="0 0 %7$s %8$s" class="o-result__svg u-position-center" data-type="error">' .
+						'<div class="o-result__icon u-p-r u-flex-shrink-0">' .
+							'<svg width="%7$s" height="%8$s" viewBox="0 0 %7$s %8$s" class="o-result__svg u-p-c" data-type="error">' .
 								'<use xlink:href="#sprite-error" />' .
 							'</svg>' .
-							'<svg width="%9$s" height="%10$s" viewBox="0 0 %9$s %10$s" class="o-result__svg u-position-center" data-type="success">' .
+							'<svg width="%9$s" height="%10$s" viewBox="0 0 %9$s %10$s" class="o-result__svg u-p-c" data-type="success">' .
 								'<use xlink:href="#sprite-success" />' .
 							'</svg>' .
 						'</div>' .

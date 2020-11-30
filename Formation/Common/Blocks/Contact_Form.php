@@ -264,7 +264,7 @@ class Contact_Form {
 		];
 
 		if( $type == 'radio' || $type == 'checkbox' )
-			$field['class'] = 'u-hide-input';
+			$field['class'] = 'u-h-i';
 
 		$attr_array = self::get_assoc_array_from_str( $attr );
 
@@ -286,7 +286,7 @@ class Contact_Form {
 		$field['options'] = $options_array;
 
 		if( $type == 'radio' || $type == 'checkbox' ) {
-			$field['class'] = 'u-hide-input';
+			$field['class'] = 'u-h-i';
 
 			if( $options_array ) {
 				$f = $field;

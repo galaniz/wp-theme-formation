@@ -183,10 +183,10 @@ let args = {
         {
           video 
           ?
-          <div className="u-position-relative">
+          <div className="u-p-r">
             <Button className="o-remove-button" onClick={ removeMedia }>
               <div>
-                <span className="u-visually-hidden">Remove Video</span>
+                <span className="u-v-h">Remove Video</span>
                 <div className="o-remove-button__icon">&times;</div>
               </div>
             </Button>
@@ -220,14 +220,14 @@ let args = {
       );
 
     let imgOutput = (
-      <div className="u-position-relative">
+      <div className="u-p-r">
         {
           img 
           ?
           <div>
             <Button className="o-remove-button" onClick={ removeMedia }>
               <div>
-                <span className="u-visually-hidden">Remove Video</span>
+                <span className="u-v-h">Remove Video</span>
                 <div className="o-remove-button__icon">&times;</div>
               </div>
             </Button>

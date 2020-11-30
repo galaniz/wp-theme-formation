@@ -9,7 +9,7 @@
 .o-toggle {
   &[data-hide="true"] {
     & .o-toggle__item {
-      @extend %u-display-none;
+      display: none;
     }
   }
 }

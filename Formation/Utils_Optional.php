@@ -251,7 +251,7 @@ class Utils_Optional {
             ( $scale_transition ? '<div>' : '' ) .
               $content .
               '<button class="o-modal__close">' .
-                '<div class="u-visually-hidden">Close modal</div>' .
+                '<div class="u-v-h">Close modal</div>' .
                 "<div class='o-modal__x'>$x</div>" .
               '</button>' .
             ( $scale_transition ? '</div>' : '' ) .
@@ -292,11 +292,11 @@ class Utils_Optional {
     return
       '<form role="search" method="get" class="o-field-container" action="' . esc_url( home_url( '/' ) ) . '">' .
         "<div class='$field_class'>" .
-          '<div class="u-position-relative">' .
-            "<label class='u-visually-hidden' for='$unique_id'>Search for:</label>" .
+          '<div class="u-p-r">' .
+            "<label class='u-v-h' for='$unique_id'>Search for:</label>" .
             "<input type='search' id='$unique_id' class='$input_class' placeholder='Search' value='" . get_search_query() . "' name='s' />" .
             "<button type='submit' class='$button_class'>" .
-              '<span class="u-visually-hidden">Submit search query</span>' .
+              '<span class="u-v-h">Submit search query</span>' .
               "<svg class='" . $icon['class'] . "' width='" . $icon['w'] . "' height='" . $icon['h'] . "' viewBox='0 0 " . $icon['w'] . " " . $icon['h'] . "'>" .
                 "<use xlink:href='#" . $icon['id'] . "' />" .
               '</svg>' .
@@ -328,7 +328,7 @@ class Utils_Optional {
     $w = (int) $view_box[2];
     $h = (int) $view_box[3];
 
-    return "<canvas class='u-svg-scale-fix' width='$w' height='$h'></canvas>$svg_str";
+    return "<canvas class='u-svg-sc' width='$w' height='$h'></canvas>$svg_str";
   }
 
 } // end Utils_Optional

@@ -84,12 +84,12 @@ class Field {
 	public static $multi_buttons = [
 		'add' =>
 			'<button type="button" class="o-multi__button" data-type="add" onclick="multi( this )">' .
-				'<span class="u-visually-hidden">Add Input</span>' .
+				'<span class="u-v-h">Add Input</span>' .
 				'<span class="dashicons dashicons-plus o-multi__icon"></span>' .
 			'</button>',
 		'remove' =>
 			'<button type="button" class="o-multi__button" data-type="remove" onclick="multi( this )">' .
-				'<span class="u-visually-hidden">Remove Input</span>' .
+				'<span class="u-v-h">Remove Input</span>' .
 				'<span class="dashicons dashicons-minus o-multi__icon"></span>' .
 			'</button>'
 	];
@@ -424,7 +424,7 @@ class Field {
 		$hidden = $hidden === '100' || ( $hidden && !$val ) ? ' style="display: none;"' : '';
 
 		if( $type == 'hidden' && !$hidden_type_show )
-			$field_class .= ( $field_class ? ' ' : '' ) . 'u-visually-hidden';
+			$field_class .= ( $field_class ? ' ' : '' ) . 'u-v-h';
 
 		$field_attr = Utils::get_attr_as_str( $field_attr );
 
@@ -639,7 +639,7 @@ class Field {
 		$opt_buttons_class = $args['opt_buttons_class'] ?? '';
 		$attr = $args['attr'] ?? '';
 
-		$class = 'o-radio__input u-hide-input js-input' . ( $class ? " $class" : '' );
+		$class = 'o-radio__input u-h-i js-input' . ( $class ? " $class" : '' );
 		$opt_button_class = 'o-radio__field' . ( $opt_button_class ? " $opt_button_class" : '' );
 
 		if( $attr )
@@ -782,14 +782,14 @@ class Field {
 								?
 								"<button type='button' class='o-asset__edit'>" .
 									"<span class='dashicons dashicons-edit'></span>" .
-									"<span class='u-visually-hidden'>Edit</span>" .
+									"<span class='u-v-h'>Edit</span>" .
 								"</button>"
 								:
 								''
 							) .
-							"<button type='button' class='o-asset__remove u-position-relative'>" .
+							"<button type='button' class='o-asset__remove u-p-r'>" .
 								"<span class='dashicons dashicons-no-alt'></span>" .
-								"<span class='u-visually-hidden'>Remove $type_cap</span>" .
+								"<span class='u-v-h'>Remove $type_cap</span>" .
 								"<span class='o-asset__loader o-loader js-loader-remove' data-hide><span class='spinner is-active'></span></span>" .
 							"</button>" .
 						"</div>" .
@@ -800,8 +800,8 @@ class Field {
 					?
 					"<div class='o-asset__no' style='display: " . ( $exists ? "none" : "block" ) . "'>" .
 						"<p style='margin: 0'>" .
-							"<label class='o-asset__select u-position-relative" . ( is_admin() ? ' button add-media' : '' ) . "'>" .
-								"<input type='" . ( $upload && !$wp ? 'file' : 'button' ) . "' aria-label='Select $type_cap' class='u-hide-input' accept='$accept'>" .
+							"<label class='o-asset__select u-p-r" . ( is_admin() ? ' button add-media' : '' ) . "'>" .
+								"<input type='" . ( $upload && !$wp ? 'file' : 'button' ) . "' aria-label='Select $type_cap' class='u-h-i' accept='$accept'>" .
 								"<span>Select $type_cap</span>" .
 								"<span class='o-asset__loader o-loader js-loader-select' data-hide><span class='spinner is-active'></span></span>" .
 							"</label>" .

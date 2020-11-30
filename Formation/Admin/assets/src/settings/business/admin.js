@@ -141,8 +141,9 @@ const initialize = () => {
     if( !country )
       return;
 
-    let country = encodeURIComponent( country ),
-        inputs = getAdmin1Inputs( input ),
+    country = encodeURIComponent( country )
+
+    let inputs = getAdmin1Inputs( input ),
         codeInput = inputs.countryCode,
         idInput = inputs.countryId,
         stateSelect = inputs.stateSelect,
