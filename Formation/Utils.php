@@ -368,4 +368,108 @@ trait Utils {
     }
   }
 
+ /*
+  * Get terms as associative array of name, value and checked.
+  *
+  * @return array
+  */
+
+  public static function get_terms_as_options( $tax = 'category', $all_label = 'All' ) {
+    $arr = [];
+
+    $terms = get_terms( [
+      'taxonomy' => $tax,
+      'hide_empty' => true
+    ] );
+
+    if( $terms ) {
+      $any_checked = false;
+
+      $terms = array_map( function( $c ) use( &$any_checked, $tax ) {
+        $checked = is_tax( $tax, $c->term_id );
+
+        if( $checked )
+          $any_checked = true;
+
+        return [
+          'checked' => $checked,
+          'value' => $c->term_id,
+          'label' => $c->name
+        ];
+      }, $terms );
+
+      array_unshift( $terms, [
+        'checked' => !$any_checked ? true : false,
+        'value' => 'null',
+        'label' => $all_label
+      ] );
+
+      $arr = $terms;
+    }
+
+    return $arr;
+  }
+
+ /*
+  * Get archive as associative array months and years.
+  *
+  * @return array
+  */
+
+  public static function get_archive_as_options( $post_type = 'post' ) {
+    $arr = [];
+
+    $first_post = get_posts( [
+      'numberposts' => 1,
+      'order' => 'ASC',
+      'post_type' =>  $post_type
+    ] );
+
+    $last_post = get_posts( [
+      'numberposts' => 1,
+      'post_type' =>  $post_type
+    ] );
+
+    if( isset( $first_post[0] ) && isset( $last_post[0] ) ) {
+      $first_post = $first_post[0];
+      $last_post = $last_post[0];
+
+      $first_date = new \DateTime( $first_post->post_date );
+      $last_date = new \DateTime( $last_post->post_date );
+      $f = new \DateTime( $first_date->format( 'Y-m' ) );
+
+      $months = [
+        'null' => 'Month'
+      ];
+
+      $years = [
+        'null' => 'Year'
+      ];
+
+      $year = '';
+
+      while( $f <= $last_date ) { // check if the date is before last date
+        $m = $f->format( 'm' );
+        $y = $f->format( 'Y' );
+
+        if( !in_array( $m, $months ) )
+          $months[$m] = $f->format( 'm' );
+
+        if( !in_array( $y, $years ) ) {
+          $year = $y;
+          $years[$y] = $y;
+        }
+
+        $f->modify( '+1 month' ); // add month and repeat
+      }
+
+      $arr = [
+        'months' => $months,
+        'years' => $years
+      ];
+    }
+
+    return $arr;
+  }
+
 } // end Utils

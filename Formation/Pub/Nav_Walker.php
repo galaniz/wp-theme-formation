@@ -5,7 +5,7 @@
  * ----------------------------
  */
 
-namespace Formation\Public;
+namespace Formation\Pub;
 
 class Nav_Walker extends \Walker_Nav_Menu {
 

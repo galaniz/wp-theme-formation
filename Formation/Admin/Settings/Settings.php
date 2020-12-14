@@ -192,7 +192,11 @@ class Settings {
 	  foreach( $fields as $field ) {
 	  	$name = FRM::get_namespaced_str( $field['name'] );
 	  	$top_level_name = Field::get_top_level_name( $name );
+	  	$label = $field['label'] ?? '';
 	  	$register_args = [];
+
+	  	if( $label && isset( $field['helper'] ) )
+	  		$label .= '<div class="helper">' . $field['helper'] . '</div>';
 
 	  	if( !isset( $field['fields'] ) )
 	  		$field['label_hidden'] = true;
@@ -211,7 +215,7 @@ class Settings {
 
 		  add_settings_field( 
 		  	$name, 
-		  	$field['label'] ?? '', 
+		  	$label, 
 		  	function( $args ) use ( $top_level_name ) { // $args = $field
 		  		$output = '';
 

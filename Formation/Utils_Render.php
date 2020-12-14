@@ -84,8 +84,11 @@ trait Utils_Render {
 				if( !array_key_exists( $s, $share_meta ) )
 					continue;
 
-				$item = static::$sprites[$s];
-				$item['url'] = $share_meta[$s];
+				$item = [
+					'url' => $share_meta[$s],
+					'id' => $s
+				];
+
 				$data[] = $item;
 			}
 		}
@@ -100,8 +103,11 @@ trait Utils_Render {
 					if( !array_key_exists( $s->post_title, static::$sprites ) )
 						continue;
 
-					$item = static::$sprites[$s->post_title];
-					$item['url'] = $s->url;
+					$item = [
+						'url' => $s->url,
+						'id' => $s->post_title
+					];
+
 					$data[] = $item;
 				}
 			}
@@ -122,9 +128,7 @@ trait Utils_Render {
 				"<$child_tag class='$item_class'>".
 					'<a' . ( $share && $w ? $w : '' ) . ' class="o-social__link" href="' . $url . '">' .
 						'<span class="u-v-h">' . ucwords( $id ) . '</span>' .
-						'<svg class="o-social__icon u-p-r" width="' . $d['w'] . '" height="' . $d['h'] . '" viewBox="0 0 ' . $d['w'] . ' ' . $d['h'] . '">' .
-							'<use xlink:href="#sprite-' . $id . '" />' .
-						'</svg>' .
+						"<div class='o-social__icon' data-type='$id'></div>" .
 					'</a>' .
 				"</$child_tag>";
 		}
@@ -186,82 +190,73 @@ trait Utils_Render {
 	public static function render_form( $args = [] ) {
 		$args = array_merge(
 			[
-				'class' => '',
-				'attr' => [],
-				'id' => uniqid(),
-				'data_type' => 'default',
+				'form_class' => '',
+				'form_attr' => [],
+				'form_id' => uniqid(),
+				'form_data_type' => 'default',
 				'fields' => '',
-				'single_field' => false,
+				'fields_gap' => 'sm'
 				'button_class' => '',
-				'submit_label' => 'Submit'
+				'submit_label' => 'Submit',
+				'result_gap' => 'xs',
 			],
 			$args
 		);
 
 		extract( $args );
 
-		$icon_error = static::$sprites['Error'];
-		$icon_success = static::$sprites['Success'];
+		/* Form attributes */
 
-		$icon_error_width = $icon_error['w'];
-		$icon_error_height = $icon_error['h'];
-		$icon_success_width = $icon_success['w'];
-		$icon_success_height = $icon_success['h'];
+		if( $form_attr ) {
+			$form_attr_formatted = [];
 
-		$class = $class ? ' ' . $class : '';
-		$button_class = ( static::$classes['button'] ? ' ' . static::$classes['button'] : '' ) . ( $button_class ? ' ' . $button_class : '' );
-		$button_field = 'o-field';
+			foreach( $form_attr as $k => $v )
+				$form_attr_formatted[] = $k . '="' . $v . '"';
 
-		if( $attr ) {
-			$attr_formatted = [];
-
-			foreach( $attr as $a => $v )
-				$attr_formatted[] = $a . '="' . $v . '"';
-
-			$attr = ' ' . implode( ' ', $attr_formatted );
+			$form_attr = ' ' . implode( ' ', $form_attr_formatted );
 		} else {
-			$attr = '';
+			$form_attr = '';
 		}
 
+		if( $form_data_type )
+			$form_attr .= ( $form_attr ? ' ' : '' ) . "data-type='$form_data_type'";
+
+		/* Button */
+
+		$button_class = ( static::$classes['button'] ? ' ' . static::$classes['button'] : '' ) . ( $button_class ? ' ' . $button_class : '' );
+
 		return sprintf(
-			'<form class="js-form%1$s" id="%2$s" data-type="%3$s" novalidate%11$s>' .
-				'<div class="o-field-container u-p-r l-flex" data-wrap="">' .
-					'%4$s' .
-					"<div class='$button_field' data-type='submit'" . ( $single_field ? ' data-single=""' : '' ) . ">" .
-						'<button class="o-button js-submit%5$s" type="submit">' .
+			'<form class="o-form js-' . static::$namespace . '-form%1$s" id="%2$s"%3$s novalidate>' .
+				'<div class="u-p-r l-flex" data-gap="%4$s" data-wrap>' .
+					'%5$s' .
+					"<div class='o-field' data-type='submit'>" .
+						'<button class="o-button js-submit%6$s" type="submit">' .
 							static::render_loader( [
 								'icon_class' => static::$classes['icon'],
 								'hide' => true
 							] ) .
-							'<div class="o-button__text">%6$s</div>' .
+							'<div class="o-button__text">%7$s</div>' .
 						'</button>' .
 					'</div>' .
 				'</div>' .
 				'<div class="o-result">' .
-					'<div class="o-result__message l-flex" data-align="center" aria-live="polite">' .
-						'<div class="o-result__icon u-p-r u-flex-shrink-0">' .
-							'<svg width="%7$s" height="%8$s" viewBox="0 0 %7$s %8$s" class="o-result__svg u-p-c" data-type="error">' .
-								'<use xlink:href="#sprite-error" />' .
-							'</svg>' .
-							'<svg width="%9$s" height="%10$s" viewBox="0 0 %9$s %10$s" class="o-result__svg u-p-c" data-type="success">' .
-								'<use xlink:href="#sprite-success" />' .
-							'</svg>' .
+					'<div class="o-result__message l-flex" data-gap="%8$s" data-align="center" aria-live="polite">' .
+						'<div class="o-result__icon u-p-r">' .
+							'<div class="o-result__error u-p-c"></div>' .
+							'<div class="o-result__success u-p-c"></div>' .
 						'</div>' .
 						'<div class="o-result__text"></div>' .
 					'</div>' .
 				'</div>' .
 			'</form>',
-			$class,
-			$id,
-			$data_type,
+			$form_class,
+			$form_id,
+			$form_attr,
+			$fields_gap,
 			$fields,
 			$button_class,
 			$submit_label,
-			$icon_error_width,
-			$icon_error_height,
-			$icon_success_width,
-			$icon_success_height,
-			$attr
+			$result_gap
 		);
 	}
 

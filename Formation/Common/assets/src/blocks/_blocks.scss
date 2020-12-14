@@ -7,16 +7,7 @@
 /* Utilities */
 
 .u-disable {
-	@extend %u-position-relative;
-  
-	&:after {
-		content: '';
-		@extend %u-position-absolute;
-		@extend %u-top-0;
-		@extend %u-right-0;
-		@extend %u-bottom-0;
-		@extend %u-left-0;
-	}
+  pointer-events: none;
 }
 
 /* Components */

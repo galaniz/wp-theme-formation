@@ -194,7 +194,7 @@ registerBlockType( name, {
           </PanelBody>
         </InspectorControls>
       </Fragment>,
-      <div className="o-disable">
+      <div className="u-disable">
         { previewContent }
       </div>
     ];

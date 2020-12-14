@@ -52,13 +52,17 @@ class Field {
 			'field_class' => '',
 			'field_attr' => [],
 			'opt_button_class' => '',
+			'opt_button_attr' => [],
 			'opt_buttons_class' => '',
+			'opt_buttons_attr' => [],
 			'class' => '',
 			'placeholder' => '',
 			'options' => [],
 			'hidden' => false,
 			'before' => '',
 			'after' => '',
+			'before_field' => '',
+			'after_field' => '',
 			'value' => '',
 			/* hidden */
 			'hidden_type_show' => false,
@@ -428,6 +432,8 @@ class Field {
 
 		$field_attr = Utils::get_attr_as_str( $field_attr );
 
+		$output .= $before_field;
+
 		$output .=
 			"<div class='o-field" . ( $field_class ? " $field_class" : '' ) . "' data-type='$type'$hidden$field_attr>";
 
@@ -497,6 +503,8 @@ class Field {
 					'class' => $class,
 					'opt_button_class' => $opt_button_class,
 					'opt_buttons_class' => $opt_buttons_class,
+					'opt_button_attr' => Utils::get_attr_as_str( $opt_button_attr ),
+					'opt_buttons_attr' => Utils::get_attr_as_str( $opt_buttons_attr ),
 					'type' => $type == 'checkbox-group' ? 'checkbox' : 'radio',
 					'value' => $val,
 					'attr' => $attr
@@ -620,6 +628,8 @@ class Field {
 		}
 
 		$output .= '</div>';
+
+		$output .= $after_field;
 	}
 
  /*
@@ -636,7 +646,9 @@ class Field {
 		$value = $args['value'] ?? '';
 		$class = $args['class'] ?? '';
 		$opt_button_class = $args['opt_button_class'] ?? '';
+		$opt_button_attr = $args['opt_button_attr'] ?? '';
 		$opt_buttons_class = $args['opt_buttons_class'] ?? '';
+		$opt_buttons_attr = $args['opt_buttons_attr'] ?? '';
 		$attr = $args['attr'] ?? '';
 
 		$class = 'o-radio__input u-h-i js-input' . ( $class ? " $class" : '' );
@@ -664,14 +676,14 @@ class Field {
 				'<div class="o-radio__item">' .
 					'<label>' .
 						"<input class='$class' type='$type' id='" . FRM::$namespace . '_' . uniqid() . "' name='$o_id' value='$o_value'$checked$operator$attr>" .
-						"<div class='$opt_button_class'>" .
+						"<div class='$opt_button_class'$opt_button_attr>" .
 							"<div class='o-radio__label'>$o_label</div>" .
 						'</div>' .
 					'</label>' .
 				'</div>';
 		}
 
-		return "<div class='o-radio$opt_buttons_class'>$output</div>";
+		return "<div class='o-radio$opt_buttons_class'$opt_buttons_attr>$output</div>";
 	}
 
  /*
@@ -849,7 +861,6 @@ class Field {
 		$selected_index_id = '';
 		$selected_index = 0;
 		$options_output = '';
-		$caret = '';
 
 		foreach( $options as $index => $o ) {
 			$v = $o['value'];
@@ -869,20 +880,12 @@ class Field {
 			$options_output .= "<li class='o-listbox__item' id='$o_id' data-value='$v' role='option'$selected>$l</li>";
 		}
 
-		if( isset( FRM::$sprites['caret'] ) ) {
-			$caret_meta = FRM::$sprites['caret'];
-			$caret_w = $caret_meta['w'];
-			$caret_h = $caret_meta['h'];
-
-			$caret =
-				"<svg class='o-listbox__caret u-flex-shrink-0' width='$caret_w' height='$caret_h' viewBox='0 0 $caret_w $caret_h'>" .
-					"<use xlink:href='#sprite-caret' />" .
-				"</svg>";
-		}
-
 		return
 			'<div class="o-listbox">' .
-				"<button class='o-listbox__btn l-flex' data-align='center' data-justify='def' type='button' aria-haspopup='listbox' aria-labelledby='$id' id='$id'><div class='o-listbox__text u-flex-shrink-0'>$selected_index_label</div>$caret</button>" .
+				"<button class='o-listbox__btn l-flex' data-align='center' data-justify='def' type='button' aria-haspopup='listbox' aria-labelledby='$id' id='$id'>" .
+					"<div class='o-listbox__text'>$selected_index_label</div>" .
+					'<div class="o-listbox__caret"></div>' .
+				"</button>" .
 				'<div class="o-listbox__container">' .
 					"<ul class='$list_classes' id='$list_id' tabindex='-1' role='listbox' aria-labelledby='$id' aria-activedescendant='$selected_index_id'>" .
 						$options_output .

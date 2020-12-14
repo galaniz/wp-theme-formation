@@ -30,9 +30,26 @@ const saveInnerBlocks = () => {
 	return <InnerBlocks.Content />;
 };
 
+const getColorSlug = ( arr = [], color = '' ) => {
+	if( !arr.length || !color )
+		return '';
+
+  let cs = '';
+
+  arr.forEach( ( c ) => {
+    if( c['color'] == color ) {
+      cs = c['slug'];
+      return;
+    }
+  } );
+
+  return cs;
+};
+
 module.exports = {
 	getNamespace,
 	getNamespaceObj,
 	editInnerBlocks,
-	saveInnerBlocks
+	saveInnerBlocks,
+	getColorSlug
 };

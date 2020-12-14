@@ -44,7 +44,7 @@ class Utils_Optional {
     ];
   }
 
-   /*
+ /*
   * Fetch logo.
   *
   * @return string
@@ -271,35 +271,31 @@ class Utils_Optional {
     $s = FRM::$sprites['Search'];
 
     $args = array_replace_recursive( [
+      'form_class' => '',
       'field_class' => '',
       'input_class' => '',
       'button_class' => '',
-      'icon' => [
-        'class' => '',
-        'w' => $s['w'],
-        'h' => $s['h'],
-        'id' => 'sprite-' . $s['id']
-      ]
+      'icon_class' => ''
     ], $args );
 
     extract( $args );
 
-    $field_class = 'o-field' . ( $field_class ? " $field_class" : '' );
-    $input_class = 'o-field__input' . ( $input_class ? " $input_class" : '' );
-
     $unique_id = 'search-' . uniqid();
 
+    $field_class = $field_class ? " $field_class" : '';
+    $input_class = $input_class ? " $input_class" : '';
+    $form_class = $form_class ? " class='$form_class'" : ''; 
+    $button_class = $button_class ? " class='$button_class'" : ''; 
+
     return
-      '<form role="search" method="get" class="o-field-container" action="' . esc_url( home_url( '/' ) ) . '">' .
-        "<div class='$field_class'>" .
+      "<form$form_class role='search' method='get' action='" . esc_url( home_url( '/' ) ) . "'>" .
+        "<div class='o-field$field_class'>" .
           '<div class="u-p-r">' .
             "<label class='u-v-h' for='$unique_id'>Search for:</label>" .
-            "<input type='search' id='$unique_id' class='$input_class' placeholder='Search' value='" . get_search_query() . "' name='s' />" .
-            "<button type='submit' class='$button_class'>" .
+            "<input class='o-field__input$input_class' type='search' id='$unique_id' placeholder='Search' value='" . get_search_query() . "' name='s' />" .
+            "<button$button_class type='submit'>" .
               '<span class="u-v-h">Submit search query</span>' .
-              "<svg class='" . $icon['class'] . "' width='" . $icon['w'] . "' height='" . $icon['h'] . "' viewBox='0 0 " . $icon['w'] . " " . $icon['h'] . "'>" .
-                "<use xlink:href='#" . $icon['id'] . "' />" .
-              '</svg>' .
+              "<div$icon_class></div>"
             '</button>' .
           '</div>' .
         '</div>' .

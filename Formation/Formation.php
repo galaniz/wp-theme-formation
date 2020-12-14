@@ -173,12 +173,12 @@ class Formation {
 	];
 
  /*
-	* Stores svg sprite meta.
+	* Stores svg meta.
 	*
-	* @var array $sprites
+	* @var array $svg
 	*/
 
-	public static $sprites = [
+	public static $svg = [
 		'Facebook' => [
 			'id' => 'facebook',
 			'w' => 16,
@@ -647,7 +647,7 @@ class Formation {
 	* Ajax callbacks
 	*/
 
-	use Public\Ajax;
+	use Pub\Ajax;
 
  /*
 	* Utility methods

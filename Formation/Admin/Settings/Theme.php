@@ -86,6 +86,10 @@ class Theme {
 		[
 			'id' => 'footer',
 			'title' => 'Footer'
+		],
+		[
+			'id' => 'scripts',
+			'title' => 'Scripts'
 		]
 	];
 
@@ -174,6 +178,30 @@ class Theme {
 		], $args );
 
 		extract( $args );
+
+		/* Head and Footer Scripts */
+
+		$this->fields[] = [
+			'name' => 'scripts_head',
+			'label' => 'Scripts in head',
+			'type' => 'textarea',
+			'section' => 'scripts',
+			'tab' => 'General',
+			'on_save' => function( $value ) {
+				return $value;
+			}
+		];
+
+		$this->fields[] = [
+			'name' => 'scripts_head',
+			'label' => 'Scripts in footer',
+			'type' => 'textarea',
+			'section' => 'scripts',
+			'tab' => 'General',
+			'on_save' => function( $value ) {
+				return $value;
+			}
+		]
 
 		/* Google Recaptcha */
 
@@ -328,26 +356,26 @@ class Theme {
 		if( $business ) {
 			$this->business = true;
 
-			$address_fields = [
+			$location_fields = [
 				[
-					'name' => 'address[%i][admin1_name]',
+					'name' => 'location[%i][admin1_name]',
 					'class' => 'js-admin1',
 					'label' => 'Country',
 					'attr' => ['onchange' => 'getAdmin1( event )']
 				],
 				[
 					'type' => 'hidden',
-					'name' => 'address[%i][admin1]'
+					'name' => 'location[%i][admin1]'
 				],
 				[
 					'type' => 'hidden',
-					'name' => 'address[%i][admin1_id]'
+					'name' => 'location[%i][admin1_id]'
 				],
 				[
 					'label' => 'State/Province',
 					'type' => 'select',
 					'class' => 'js-admin3'
-					'name' => 'address[%i][admin3_options]',
+					'name' => 'location[%i][admin3_options]',
 					'attr' => [
 						'disabled' => 'true',
 						'onchange' => 'setAdmin3Input( event )'
@@ -361,28 +389,32 @@ class Theme {
 				],
 				[
 					'type' => 'hidden',
-					'name' => 'address[%i][admin3]'
+					'name' => 'location[%i][admin3]'
 				],
 				[
 					'type' => 'hidden',
-					'name' => 'address[%i][admin3_name]'
+					'name' => 'location[%i][admin3_name]'
 				],
 				[
-					'name' => 'address[%i][city]',
+					'name' => 'location[%i][city]',
 					'label' => 'City'
 				],
 				[
-					'name' => 'address[%i][line1]',
+					'name' => 'location[%i][line1]',
 					'label' => 'Address Line 1'
 				],
 				[
-					'name' => 'address[%i][line2]',
+					'name' => 'location[%i][line2]',
 					'label' => 'Address Line 2',
 					'optional' => true
 				],
 				[
-					'name' => 'address[%i][postal_code]',
+					'name' => 'location[%i][postal_code]',
 					'label' => 'Postal Code'
+				],
+				[
+					'name' => 'location[%i][phone]',
+					'label' => 'Phone Number'
 				]
 			];
 
@@ -469,9 +501,10 @@ class Theme {
 			];
 
 			$this->fields[] = [
-				'name' => 'address',
-				'label' => 'Address',
-				'fields' => $address_fields,
+				'name' => 'location',
+				'label' => 'Locations',
+				'helper' => 'The first location is used as the main location in this theme.',
+				'fields' => $location_fields,
 				'multi' => true,
 				'on_save' => function( $value ) {
 					if( !is_array( $value ) )
@@ -481,13 +514,13 @@ class Theme {
 						if( !isset( $v['line1'] ) || !isset( $v['city'] ) || !isset( $v['postal_code'] ) )
 							continue;
 
-						$address = 
+						$location = 
 							$v['line1'] .
 							( isset( $v['line2'] ) ? ' ' . $v['line2'] : '' ) . ' ' .
 							$v['city'] . ', ' . $v['admin3'] . ', ' . $v['admin1_name'] .
 							$v['postal_code'];
 
-						$lat_lng = FRM::get_lat_lng( $address );
+						$lat_lng = FRM::get_lat_lng( $location );
 
 						if( $lat_lng )
 							$v['lat_lng'] = $lat_lng;
@@ -502,16 +535,10 @@ class Theme {
 			$this->fields[] = [
 				'name' => 'hours',
 				'label' => 'Hours',
+				'helper' => 'Order corresponds with order of locations.',
 				'class' => 'o-toggle',
 				'fields' => $hours_fields,
 				'multi' => true,
-				'section' => 'business',
-				'tab' => 'Business'
-			];
-
-			$this->fields[] = [
-				'name' => 'phone',
-				'label' => 'Phone',
 				'section' => 'business',
 				'tab' => 'Business'
 			];
