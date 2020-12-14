@@ -235,7 +235,7 @@ trait Utils_Render {
 								'icon_class' => static::$classes['icon'],
 								'hide' => true
 							] ) .
-							'<div class="o-button__text">%7$s</div>' .
+							'<div>%7$s</div>' .
 						'</button>' .
 					'</div>' .
 				'</div>' .

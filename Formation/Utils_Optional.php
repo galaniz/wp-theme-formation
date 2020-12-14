@@ -243,7 +243,7 @@ class Utils_Optional {
     return
       "<div class='o-modal$class'$scale_transition$alt_trigger>" .
         "<button class='o-modal__trigger$trigger_class' type='button'>" .
-          '<span class="o-button__text">' . $button_text . '</span>' .
+          '<div>' . $button_text . '</div>' .
         '</button>' .
         '<div class="o-modal__overlay"></div>' .
         '<div class="o-modal__window">' .
@@ -286,6 +286,7 @@ class Utils_Optional {
     $input_class = $input_class ? " $input_class" : '';
     $form_class = $form_class ? " class='$form_class'" : ''; 
     $button_class = $button_class ? " class='$button_class'" : ''; 
+    $icon_class = $icon_class ? " class='$icon_class'" : ''; 
 
     return
       "<form$form_class role='search' method='get' action='" . esc_url( home_url( '/' ) ) . "'>" .
