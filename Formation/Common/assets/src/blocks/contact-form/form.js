@@ -19,7 +19,8 @@ const {
 
 const { 
   InspectorControls,
-  InnerBlocks 
+  InnerBlocks,
+  RichText
 } = wp.blockEditor;
 
 const { Fragment } = wp.element;
@@ -49,7 +50,8 @@ registerBlockType( name, {
       id = clientId,
       email = def.email,
       subject = def.subject,
-      submit_text = def.submit_text
+      submit_text = def.submit_text,
+      success_message = def.success_message
     } = attributes;
 
     setAttributes( { id: id } );
@@ -81,6 +83,18 @@ registerBlockType( name, {
           <InnerBlocks 
             allowedBlocks={ [n + 'contact-form-field', n + 'contact-form-group'] } 
           />  
+        </PanelBody>
+        <PanelBody>
+          <div>
+            <RichText
+              tagName="div"
+              multiline="p"
+              value={ success_message }
+              onChange={ ( success_message ) => setAttributes( { success_message } ) } 
+              formattingControls={ ['bold', 'italic', 'link'] }
+              placeholder={ 'Success message...' }
+            />
+          </div>
         </PanelBody>
       </Panel>   
     ];

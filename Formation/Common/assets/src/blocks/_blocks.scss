@@ -4,6 +4,8 @@
  * ------
  */
 
+$_bgButton: #1E1E1E;
+
 /* Utilities */
 
 .u-disable {
@@ -32,11 +34,11 @@
 /* Objects */
 
 .o-remove-button {
-  @extend %u-background-color-background-light;
-  @extend %u-text-align-center;
+  @extend %u-color-background-light;
   @extend %u-position-absolute;
   @extend %u-top-0;
   @extend %u-right-0;
+  background-color: $_bgButton;
   height: calcRem( 40px );
   width: calcRem( 40px );
   z-index: 10;
@@ -44,7 +46,7 @@
 }
 
 .o-remove-button__icon {
+  margin-top: calcRem( -3px );
   font-size: calcRem( 25px );
-  width: calcRem( 40px );
   line-height: 1;
 }

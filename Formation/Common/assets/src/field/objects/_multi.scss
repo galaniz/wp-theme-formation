@@ -4,7 +4,7 @@
  * -----------
  */
 
-$border: calcRem( 1px ) solid rgba( map-get( $g-colors, 'foreground-dark' ), 0.10 );
+$border: calcRem( 1px ) solid rgba( map-get( $g-colors, 'foreground-dark' ), 0.2 );
 
 .o-multi__fields {
   .o-field-section[data-col] & {
@@ -32,13 +32,44 @@ $border: calcRem( 1px ) solid rgba( map-get( $g-colors, 'foreground-dark' ), 0.1
   margin-bottom: calcRem( 20px );
 
   .o-field-section[data-col] & {
-    flex-grow: 1;
     margin: calcRem( 10px );
   }
 
   @include breakpointMin( 700 ) {
   	display: flex;
   	justify-content: space-between;
+  }
+}
+
+.o-multi__row {
+  @extend %u-position-relative;
+  padding-bottom: calcRem( 15px );
+  margin-bottom: calcRem( 10px );
+
+  &::after {
+    @extend %u-content-empty;
+    @extend %u-background-color-foreground-dark;
+    @extend %u-position-absolute;
+    @extend %u-bottom-0;
+    @extend %u-right-0;
+    @extend %u-left-0;
+    @extend %u-margin-auto;
+    width: calc( 100% - #{ calcRem( 20px ) } );
+    height: calcRem( 1px );
+    opacity: 0.2;
+  }
+
+  &:last-child {
+    padding-bottom: 0;
+    margin-bottom: 0;
+
+    &::after {
+      opacity: 0;
+    }
+  }
+
+  & .o-field {
+    margin-bottom: 0;
   }
 }
 

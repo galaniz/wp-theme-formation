@@ -36,10 +36,12 @@ class Field {
 			'fields' => [],
 			'data' => '',
 			'multi' => false,
+			'multi_col' => false,
+			'multi_item_class' => '',
 			'copy' => false,
 			'hidden' => false,
-			'multi_col' => false,
-			'no_group' => false
+			'no_group' => false,
+			'section_class' => ''
 		],
 		'field' => [
 			'name' => false,
@@ -278,7 +280,9 @@ class Field {
 			if( $top_level_name ) {
 				$hide = $hidden ? " style='display: none;'" : '';
 				$col = $multi_col ? ' data-col' : '';
-				$output .= "<div class='o-field-section' data-name='$top_level_name'$hide$col>";
+				$section_class = $section_class ? " $section_class" : '';
+
+				$output .= "<div class='o-field-section$section_class' data-name='$top_level_name'$hide$col>";
 			}
 		} else {
 			if( !$no_group )
@@ -295,8 +299,10 @@ class Field {
 
 		for( $i = 0; $i < $count; $i++ ) {
 			if( $multi ) {
+				$multi_item_class = $multi_item_class ? " $multi_item_class" : '';
+
 				$mi_start =
-					'<div class="o-multi__item" data-name="' . $top_level_name . '">' .
+					"<div class='o-multi__item$multi_item_class' data-name='$top_level_name'>" .
 						'<div class="o-multi__fields l-flex" data-wrap>';
 
 				if( $i === 0 )
@@ -899,7 +905,7 @@ class Field {
 	*/
 
 	public static function scripts( $child = false ) {
-		$path = FRM::$src_path . 'common/assets/public/';
+		$path = FRM::$src_path . 'Common/assets/public/';
 		$uri = $child ? get_stylesheet_directory_uri() : get_template_directory_uri();
 
 		wp_enqueue_style(

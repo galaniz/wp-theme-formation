@@ -1,0 +1,22 @@
+
+/*
+ * Config
+ * ------
+ */
+
+$g-breakpoints: (
+	782: 782px
+);
+
+$g-colors: (
+	foreground: (
+		base: #222222,
+		light: #CCCCCC,
+		dark: #1E1E1E
+	),
+	background: (
+		base: #F8F8F8,
+		light: #FFFFFF,
+		dark: #F5F5F5
+	)
+);

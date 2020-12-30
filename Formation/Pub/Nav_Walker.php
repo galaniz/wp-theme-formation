@@ -12,6 +12,7 @@ class Nav_Walker extends \Walker_Nav_Menu {
   /* Variables */
 
   public $ul_class;
+  public $ul_attr;
   public $li_class;
   public $li_attr;
   public $a_class;
@@ -26,6 +27,7 @@ class Nav_Walker extends \Walker_Nav_Menu {
   
   public function __construct( $args ) {
     $this->ul_class = $args['ul_class'] ?? '';
+    $this->ul_attr = $args['ul_attr'] ?? '';
     $this->li_class = $args['li_class'] ?? '';
     $this->li_attr = $args['li_attr'] ?? '';
     $this->a_class = $args['a_class'] ?? '';
@@ -48,7 +50,7 @@ class Nav_Walker extends \Walker_Nav_Menu {
     $class_names = join( ' ', apply_filters( 'nav_menu_submenu_css_class', $classes, $args, $depth ) );
     $class_names = $class_names ? ' class="' . esc_attr( $class_names ) . '"' : '';
 
-    $output .= "<ul$class_names data-depth='$depth'>";
+    $output .= "<ul$class_names " . $this->ul_attr . "data-depth='$depth'>";
   }
 
   /* Output li element */

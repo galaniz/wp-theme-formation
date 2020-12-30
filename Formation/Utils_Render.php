@@ -8,6 +8,7 @@
 namespace Formation;
 
 use Formation\Utils;
+use function Formation\additional_script_data;
 
 trait Utils_Render {
 
@@ -27,12 +28,23 @@ trait Utils_Render {
 	*/
 
 	public static function render_social( $args = [] ) {
-		$links = $args['links'] ?? '';
-		$share = $args['share'] ?? [];
-		$div = $args['div'] ?? false;
-		$class = $args['class'] ?? '';
-		$list_class = $args['list_class'] ?? '';
-		$list_attr = $args['list_attr'] ?? [];
+		$args = array_merge(
+			[
+				'links' => '',
+				'share' => [],
+				'div' => false,
+				'item_class' => '',
+				'list_class' => '',
+				'list_attr' => [],
+				'link_class' => '',
+				'link_attr' => [],
+				'icon_class' => '',
+				'icon_paths' => []
+			],
+			$args
+		);
+
+		extract( $args );
 
 		if( !$links && !$share )
 			return '';
@@ -40,16 +52,22 @@ trait Utils_Render {
 		$tag = $div ? 'div' : 'ul';
 		$child_tag = $div ? 'div' : 'li';
 
-		$item_class = 'o-social__item';
+		$list_class = 'o-social l-flex' . ( $list_class ? " $list_class" : '' );
+		$item_class = 'o-social__item' . ( $item_class ? " $item_class" : '' );
+		$link_class = 'o-social__link' . ( $link_class ? " $link_class" : '' );
+		$icon_class = 'o-social__icon' . ( $icon_class ? " $icon_class" : '' );
 
-		if( $class )
-			$item_class .= " $class";
-
-		$list_classes = "o-social l-flex";
-		$list_classes .= $list_class ? ' ' . $list_class : '';
 		$list_attr = Utils::get_attr_as_str( $list_attr );
+		$link_attr = Utils::get_attr_as_str( $link_attr );
 
-		$output = "<$tag class='$list_classes' data-wrap data-align='center'$list_attr>";
+		if( $list_attr )
+			$list_attr = " $list_attr";
+
+		if( $link_attr )
+			$link_attr = " $link_attr";
+
+		$output = "<$tag class='$list_class'$list_attr>";
+
 		$data = [];
 
 		if( $share ) {
@@ -100,9 +118,6 @@ trait Utils_Render {
 				$social_links = wp_get_nav_menu_items( $theme_locations[$links] );
 
 				foreach( $social_links as $s ) {
-					if( !array_key_exists( $s->post_title, static::$sprites ) )
-						continue;
-
 					$item = [
 						'url' => $s->url,
 						'id' => $s->post_title
@@ -116,6 +131,7 @@ trait Utils_Render {
 		foreach( $data as $d ) {
 			$url = $d['url'];
 			$id = $d['id'];
+			$icon_html = '';
 			$w = '';
 
 			if( $share && $id !== 'email' ) {
@@ -124,11 +140,14 @@ trait Utils_Render {
 				$w = " onclick=\"window.open( '$url', 'newwindow', 'width=$w_width, height=$w_height' ); return false;\"";
 			}
 
+			if( isset( $icon_paths[$id] ) )
+				$icon_html = file_get_contents( $icon_paths[$id] );
+
 			$output .=
 				"<$child_tag class='$item_class'>".
-					'<a' . ( $share && $w ? $w : '' ) . ' class="o-social__link" href="' . $url . '">' .
+					'<a' . ( $share && $w ? $w : '' ) . " class='$link_class' href='$url'$link_attr>" .
 						'<span class="u-v-h">' . ucwords( $id ) . '</span>' .
-						"<div class='o-social__icon' data-type='$id'></div>" .
+						"<div class='$icon_class' data-type='" . strtolower( $id ) . "'>$icon_html</div>" .
 					'</a>' .
 				"</$child_tag>";
 		}
@@ -151,31 +170,53 @@ trait Utils_Render {
 				'loader_class' => '',
 				'loader_attr' => [],
 				'icon_class' => '',
+				'icon_attr' => [],
 				'id' => '',
-				'hide' => false
+				'hide' => false,
+				'html' => ''
 			],
 			$args
 		);
 
 		extract( $args );
 
+		/* Loader */
+
 		if( $loader_class )
 			$loader_class = " $loader_class";
 
 		$loader_attr = Utils::get_attr_as_str( $loader_attr );
 
+		if( $loader_attr )
+			$loader_attr = " $loader_attr";
+
+		/* Icon */
+
 		if( $icon_class )
 			$icon_class = " $icon_class";
+
+		$icon_attr = Utils::get_attr_as_str( $icon_attr );
+
+		if( $icon_attr )
+			$icon_attr = " $icon_attr";
+
+		/* ID */
 
 		if( $id )
 			$id = " id='$id'";
 
+		/* Hide */
+
 		$hide = $hide ? " data-hide" : '';
+
+		/* Markup */
+
+		$html = $html ? $html : static::$loader_icon;
 
 		return
 			"<div class='o-loader$loader_class'$id$hide$loader_attr>" .
-				"<div class='o-loader__icon u-p-c l-flex$icon_class' data-justify='center' data-align='center'>" .
-					static::$loader_icon .
+				"<div class='o-loader__icon u-p-c l-flex$icon_class' data-justify='center' data-align='center'$icon_attr>" .
+					$html .
 				'</div>' .
 			'</div>';
 	}
@@ -195,10 +236,13 @@ trait Utils_Render {
 				'form_id' => uniqid(),
 				'form_data_type' => 'default',
 				'fields' => '',
-				'fields_gap' => 'sm'
+				'fields_gap' => 'sm',
+				'fields_attr' => [],
 				'button_class' => '',
+				'button_attr' => [],
 				'submit_label' => 'Submit',
 				'result_gap' => 'xs',
+				'success_message' => ''
 			],
 			$args
 		);
@@ -207,43 +251,51 @@ trait Utils_Render {
 
 		/* Form attributes */
 
-		if( $form_attr ) {
-			$form_attr_formatted = [];
+		$form_attr['data-type'] = $form_data_type;
+		$form_attr = Utils::get_attr_as_str( $form_attr );
 
-			foreach( $form_attr as $k => $v )
-				$form_attr_formatted[] = $k . '="' . $v . '"';
+		if( $form_attr )
+			$form_attr = " $form_attr";
 
-			$form_attr = ' ' . implode( ' ', $form_attr_formatted );
-		} else {
-			$form_attr = '';
-		}
+		/* Fields attributes */
 
-		if( $form_data_type )
-			$form_attr .= ( $form_attr ? ' ' : '' ) . "data-type='$form_data_type'";
+		$fields_attr = Utils::get_attr_as_str( $fields_attr );
+
+		if( $fields_attr )
+			$fields_attr = " $fields_attr";
 
 		/* Button */
 
 		$button_class = ( static::$classes['button'] ? ' ' . static::$classes['button'] : '' ) . ( $button_class ? ' ' . $button_class : '' );
+		$button_attr = Utils::get_attr_as_str( $button_attr );
+
+		if( $button_attr )
+			$button_attr = " $button_attr";
+
+		/* Success message */
+
+		if( $success_message ) 
+			additional_script_data( static::$namespace, ["form_$form_id" => ['success_message' => $success_message] ], false, false );
 
 		return sprintf(
 			'<form class="o-form js-' . static::$namespace . '-form%1$s" id="%2$s"%3$s novalidate>' .
-				'<div class="u-p-r l-flex" data-gap="%4$s" data-wrap>' .
-					'%5$s' .
+				'<div class="u-p-r l-flex" data-gap="%4$s" data-wrap%5$s>' .
+					'%6$s' .
 					"<div class='o-field' data-type='submit'>" .
-						'<button class="o-button js-submit%6$s" type="submit">' .
+						'<button class="o-button js-submit%7$s" type="submit"%8$s>' .
 							static::render_loader( [
 								'icon_class' => static::$classes['icon'],
 								'hide' => true
 							] ) .
-							'<div>%7$s</div>' .
+							'<div>%9$s</div>' .
 						'</button>' .
 					'</div>' .
 				'</div>' .
 				'<div class="o-result">' .
-					'<div class="o-result__message l-flex" data-gap="%8$s" data-align="center" aria-live="polite">' .
+					'<div class="o-result__message l-flex" data-gap="%10$s" data-align="center" aria-live="polite">' .
 						'<div class="o-result__icon u-p-r">' .
-							'<div class="o-result__error u-p-c"></div>' .
-							'<div class="o-result__success u-p-c"></div>' .
+							'<div class="o-result__error u-p-c">%11$s</div>' .
+							'<div class="o-result__success u-p-c">%12$s</div>' .
 						'</div>' .
 						'<div class="o-result__text"></div>' .
 					'</div>' .
@@ -253,10 +305,14 @@ trait Utils_Render {
 			$form_id,
 			$form_attr,
 			$fields_gap,
+			$fields_attr,
 			$fields,
 			$button_class,
+			$button_attr,
 			$submit_label,
-			$result_gap
+			$result_gap,
+			static::$form_svg['error'], 
+			static::$form_svg['success']
 		);
 	}
 

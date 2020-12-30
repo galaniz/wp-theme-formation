@@ -196,7 +196,7 @@ class Settings {
 	  	$register_args = [];
 
 	  	if( $label && isset( $field['helper'] ) )
-	  		$label .= '<div class="helper">' . $field['helper'] . '</div>';
+	  		$label .= '<p class="u-helper">' . $field['helper'] . '</p>';
 
 	  	if( !isset( $field['fields'] ) )
 	  		$field['label_hidden'] = true;

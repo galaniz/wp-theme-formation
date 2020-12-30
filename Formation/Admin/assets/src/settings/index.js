@@ -21,7 +21,8 @@ const initialize = () => {
 	const toggle = ( t ) => {
 		let toggle = closest( t, 'o-toggle' );
 
-		toggle.setAttribute( 'data-hide', t.checked );
+		if( toggle )
+			toggle.setAttribute( 'data-hide', t.checked );
 	};
 
 	window.toggleSiblings = ( event ) => {

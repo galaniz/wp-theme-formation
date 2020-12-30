@@ -97,7 +97,7 @@ class Blocks {
 				$data['blocks'][$n] = $b;
 
 			if( is_admin() ) {
-				$folder_url = isset( $b['frm'] ) ? FRM::$src_url . 'common/assets/public/js/blocks/' : self::$folder_url;
+				$folder_url = isset( $b['frm'] ) ? FRM::$src_url . 'Common/assets/public/js/blocks/' : self::$folder_url;
 
 				wp_register_script(
 					$handle,
@@ -126,7 +126,7 @@ class Blocks {
 
 					wp_enqueue_script(
 						$utils_script_handle,
-						FRM::$src_url . 'common/assets/public/js/blocks/utils.js',
+						FRM::$src_url . 'Common/assets/public/js/blocks/utils.js',
 						[],
 						NULL,
 						true
@@ -134,7 +134,7 @@ class Blocks {
 
 					wp_enqueue_script(
 						FRM::$namespace . '-insert-block-script',
-						FRM::$src_url . 'common/assets/public/js/blocks/insert-block.js',
+						FRM::$src_url . 'Common/assets/public/js/blocks/insert-block.js',
 						[$utils_script_handle],
 						NULL,
 						true

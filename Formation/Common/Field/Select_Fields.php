@@ -166,7 +166,7 @@ class Select_Fields {
 	*/
 
 	public static function scripts() {
-		$path = FRM::$src_path . 'common/assets/public/';
+		$path = FRM::$src_path . 'Common/assets/public/';
 		$handle = FRM::$namespace . '-select-fields-script';
 
 		wp_enqueue_script(

@@ -31,7 +31,7 @@ class Formation {
 	* @var string $src_path
 	*/
 
-	public static $src_path = '/vendor/alanizcreative/wp-theme-formation/src/';
+	public static $src_path = '/vendor/alanizcreative/wp-theme-formation/Formation/';
 	public static $src_url = '';
 
  /*
@@ -104,6 +104,14 @@ class Formation {
 	public $nav_menus = [];
 
  /*
+	* If child theme change styles path
+	*
+	* @var boolean $child
+	*/
+
+	public static $child = false;
+
+ /*
 	* Stylesheet path for admin editor styles relative to theme root.
 	*
 	* @var string $editor_style
@@ -173,87 +181,14 @@ class Formation {
 	];
 
  /*
-	* Stores svg meta.
+	* Svg output for error and success in forms.
 	*
-	* @var array $svg
+	* @var array $form_svg
 	*/
 
-	public static $svg = [
-		'Facebook' => [
-			'id' => 'facebook',
-			'w' => 16,
-			'h' => 28
-		],
-		'Twitter' => [
-			'id' => 'twitter',
-			'w' => 26,
-			'h' => 28
-		],
-		'Linkedin' => [
-			'id' => 'linkedin',
-			'w' => 24,
-			'h' => 28
-		],
-		'YouTube' => [
-			'id' => 'youtube',
-			'w' => 28,
-			'h' => 28
-		],
-		'Vimeo' => [
-			'id' => 'vimeo',
-			'w' => 28,
-			'h' => 28
-		],
-		'Pinterest' => [
-			'id' => 'pinterest',
-			'w' => 20,
-			'h' => 28
-		],
-		'Instagram' => [
-			'id' => 'instagram',
-			'w' => 24,
-			'h' => 28
-		],
-		'Email' => [
-			'id' => 'email',
-			'w' => 28,
-			'h' => 28
-		],
-		'Location' => [
-			'id' => 'location',
-			'w' => 32,
-			'h' => 32,
-		],
-		'Caret' => [
-			'id' => 'caret',
-			'w' => 24,
-			'h' => 24
-		],
-		'Carousel' => [
-			'id' => 'carousel',
-			'w' => 20,
-			'h' => 20
-		],
-		'Play' => [
-			'id' => 'play',
-			'w' => 20,
-			'h' => 23
-		],
-		'Error' => [
-			'id' => 'error',
-			'w' => 32,
-			'h' => 32
-		],
-		'Success' => [
-			'id' => 'success',
-			'w' => 20,
-			'h' => 20
-		],
-		'Search' => [
-			'id' => 'search',
-			'w' => 26,
-			'h' => 28
-		]
+	public static $form_svg = [
+		'error' => '',
+		'success' => ''
 	];
 
  /*
@@ -330,8 +265,8 @@ class Formation {
 		self::$uploads_url = get_site_option( 'siteurl' ) . '/wp-content/' . static::$namespace . '_uploads/';
 
 		/* Set source url */
-
-		self::$src_url = get_template_directory_uri() . self::$src_path;
+		
+		self::$src_url = ( self::$child ? get_stylesheet_directory_uri() : get_template_directory_uri() ) . self::$src_path;
 	}
 
  /*
@@ -606,10 +541,10 @@ class Formation {
 	*/
 
 	public function remove_meta_boxes() {
-	remove_meta_box( 'commentstatusdiv', 'post', 'normal' );
-	remove_meta_box( 'tagsdiv-post_tag', 'post', 'normal' );
-	remove_meta_box( 'tagsdiv-post_tag', 'post', 'advanced' );
-	remove_submenu_page( 'edit.php', 'edit-tags.php?taxonomy=post_tag' );
+		remove_meta_box( 'commentstatusdiv', 'post', 'normal' );
+		remove_meta_box( 'tagsdiv-post_tag', 'post', 'normal' );
+		remove_meta_box( 'tagsdiv-post_tag', 'post', 'advanced' );
+		remove_submenu_page( 'edit.php', 'edit-tags.php?taxonomy=post_tag' );
 	}
 
  /*

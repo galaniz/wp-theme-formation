@@ -29,7 +29,7 @@ const initialize = () => {
 
   const n = window[namespace]; 
 
-  if( !n.hasOwnProperty( geonames_un ) )
+  if( !n.hasOwnProperty( 'geonames_un' ) )
     return;
 
   if( !n.geonames_un )
@@ -55,7 +55,7 @@ const initialize = () => {
 
     if( set ) {
       if( !hasClass( next, 'o-error' ) )
-        input.insertAdjacentHTML( 'afterend', '<span class="o-error">Sorry, looks like the country you entered can\'t be found.</span>' );
+        input.insertAdjacentHTML( 'afterend', '<p class="o-error">Sorry, looks like the country you entered can\'t be found.</p>' );
     } else {
       if( next )
         next.parentNode.removeChild( next );
@@ -63,7 +63,7 @@ const initialize = () => {
   };
 
   const getAdmin1Inputs = ( countryInput ) => {
-    let field = closest( countryInput, '.o-form__field' );
+    let field = closest( countryInput, 'o-field' );
 
     return {
       countryCode: field.nextElementSibling.querySelector( 'input' ),
@@ -111,7 +111,7 @@ const initialize = () => {
     .then( data => {
       let error = true;
 
-      console.log( 'ADMIN2', data );
+      data = JSON.parse( data );
 
       if( data.hasOwnProperty( 'geonames' ) ) {
         if( data.geonames.length ) {
@@ -141,7 +141,7 @@ const initialize = () => {
     if( !country )
       return;
 
-    country = encodeURIComponent( country )
+    country = encodeURIComponent( country );
 
     let inputs = getAdmin1Inputs( input ),
         codeInput = inputs.countryCode,
@@ -164,6 +164,10 @@ const initialize = () => {
     .then( data => {
       let error = true;
 
+      data = JSON.parse( data );
+
+      console.log(data);
+
       if( data.hasOwnProperty( 'geonames' ) ) {
         if( data.geonames.length ) {
           error = false;
@@ -174,8 +178,6 @@ const initialize = () => {
 
           if( !name )
             input.value = data.geonames[0].countryName;
-
-          console.log( 'ADMIN1', url, id, data );
 
           getAdmin2( {
             countryId: id,
@@ -218,7 +220,7 @@ const initialize = () => {
   window.setAdmin3Input = ( event ) => {
     let input = event.currentTarget,
         option = input.options[input.selectedIndex],
-        field = closest( input, '.o-form__field' );
+        field = closest( input, 'o-field' );
 
     if( !option || !field )
       return;

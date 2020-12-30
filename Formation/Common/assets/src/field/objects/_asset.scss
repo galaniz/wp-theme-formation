@@ -4,7 +4,7 @@
  * -----
  */
 
-$gray: rgba( map-get( $g-colors, 'foreground-dark' ), 0.05 );
+$gray: rgba( map-get( $g-colors, 'foreground-dark' ), 0.2 );
 
 .o-asset-row {
   margin-bottom: calcRem( 20px );
@@ -28,7 +28,7 @@ $gray: rgba( map-get( $g-colors, 'foreground-dark' ), 0.05 );
 
 .o-asset__exists {
   @extend %u-background-color-background-base;
-  box-shadow: 0 calcRem( 1px ) calcRem( 1px ) $gray;
+  border: calcRem( 1px ) solid $gray;
 
   &,
   & > div {

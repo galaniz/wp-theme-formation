@@ -34,13 +34,15 @@ class Contact_Form {
 				'id' => ['type' => 'string'],
 				'email' => ['type' => 'string'],
 				'subject' => ['type' => 'string'],
-				'submit_label' => ['type' => 'string']
+				'submit_label' => ['type' => 'string'],
+				'success_message' => ['type' => 'string']
 			],
 			'default' => [
 				'id' => '',
 				'email' => '',
 				'subject' => '',
-				'submit_label' => 'Submit'
+				'submit_label' => 'Submit',
+				'success_message' => ''
 			],
 			'render' => [__CLASS__, 'render_contact_form'],
 			'handle' => 'contact_form',
@@ -214,14 +216,12 @@ class Contact_Form {
 			] );
 		} 
 
-		$s_error = FRM::$sprites['Error'];
-		$s_success = FRM::$sprites['Success'];
-
 		return FRM::render_form( [
 			'id' => $id,
 			'data_type' => 'contact',
 			'fields' => $content,
-			'submit_label' => $submit_label
+			'submit_label' => $submit_label,
+			'success_message' => $success_message
 		] );
 	}
 

@@ -13,10 +13,14 @@ namespace Formation\Admin\Settings;
  */
 
 use Formation\Formation as FRM;
+use Formation\Utils_Optional;
+
 use Formation\Common\Field\Field;
 use Formation\Common\Field\Select_Fields;
 use Formation\Admin\Settings\Settings;
+
 use function Formation\write_log;
+use function Formation\additional_script_data;
 
 class Theme {
 
@@ -54,14 +58,6 @@ class Theme {
 	*/
 
 	private $business = false;
-
- /*
-	* If child theme change styles path
-	*
-	* @var boolean $child
-	*/
-
-	private $child = false;
 
  /*
 	* Sections.
@@ -134,7 +130,7 @@ class Theme {
 			'label' => 'Text',
 			'type' => 'richtext',
 			'toolbar' => 'bold,italic,link',
-			'p_tags' => false,
+			'wpautop' => true,
 			'section' => 'footer',
 			'tab' => 'General'
 		]
@@ -173,8 +169,7 @@ class Theme {
 			'mailchimp_list_locations' => [],
 			'sections' => [],
 			'fields' => [],
-			'scripts' => null,
-			'child' => false
+			'scripts' => null
 		], $args );
 
 		extract( $args );
@@ -183,25 +178,33 @@ class Theme {
 
 		$this->fields[] = [
 			'name' => 'scripts_head',
-			'label' => 'Scripts in head',
+			'label' => 'Scripts in Head',
 			'type' => 'textarea',
 			'section' => 'scripts',
 			'tab' => 'General',
+			'attr' => [
+				'rows' => 10,
+				'data-full' => ''
+			],
 			'on_save' => function( $value ) {
 				return $value;
 			}
 		];
 
 		$this->fields[] = [
-			'name' => 'scripts_head',
-			'label' => 'Scripts in footer',
+			'name' => 'scripts_footer',
+			'label' => 'Scripts in Footer',
 			'type' => 'textarea',
 			'section' => 'scripts',
 			'tab' => 'General',
+			'attr' => [
+				'rows' => 10,
+				'data-full' => ''
+			],
 			'on_save' => function( $value ) {
 				return $value;
 			}
-		]
+		];
 
 		/* Google Recaptcha */
 
@@ -300,7 +303,7 @@ class Theme {
 				];
 
 				$this->fields[] = [
-					'name' => $name . '_id',
+					'name' => $name . '_list_id',
 					'label' => 'List ID',
 					'section' => $section_id,
 					'tab' => 'Mailchimp'
@@ -314,10 +317,34 @@ class Theme {
 				];
 
 				$this->fields[] = [
+					'name' => $name . '_text',
+					'label' => 'Text',
+					'type' => 'richtext',
+					'toolbar' => 'bold,italic,link',
+					'wpautop' => true,
+					'section' => $section_id,
+					'tab' => 'Mailchimp'
+				];
+
+				$this->fields[] = [
 					'name' => $name . '_submit_label',
 					'label' => 'Submit Label',
 					'section' => $section_id,
 					'tab' => 'Mailchimp'
+				];
+
+				$this->fields[] = [
+					'name' => $name . '_success_message',
+					'type' => 'richtext',
+					'toolbar' => 'bold,italic,link',
+					'wpautop' => true,
+					'label' => 'Success Message',
+					'section' => $section_id,
+					'tab' => 'Mailchimp',
+					'attr' => [
+						'rows' => 5,
+						'data-full' => ''
+					]
 				];
 
 				$this->fields[] = [
@@ -374,7 +401,7 @@ class Theme {
 				[
 					'label' => 'State/Province',
 					'type' => 'select',
-					'class' => 'js-admin3'
+					'class' => 'js-admin3',
 					'name' => 'location[%i][admin3_options]',
 					'attr' => [
 						'disabled' => 'true',
@@ -421,7 +448,7 @@ class Theme {
 			$hours_options = [];
 
 			for( $h = 1; $h <= 24; $h++ ) {
-				$hours[] = [
+				$hours_options[] = [
 					'label' => $h < 10 ? "0$h" : $h,
 					'value' => $h
 				];
@@ -434,53 +461,66 @@ class Theme {
 				'45' => '45'
 			];
 
-			$hours_fields = [
-				[
-					'name' => 'hours[%i][day]',
+			$hours_fields = [];
+			$weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+			foreach( $weekdays as $w ) {
+				$w3 = substr( strtolower( $w ), 0, 3 ); 
+
+				$hours_fields[] = [
+					'name' => "hours[%i][$w3]",
+					'label' => 'Day',
+					'value' => $w,
+					'attr' => ['readonly' => true],
+					'before_field' => '<div class="o-multi__row o-toggle l-flex" data-wrap>'
+				];
+
+				$hours_fields[] = [
+					'name' => "hours[%i][$w3" . "_open_hour]",
+					'label' => 'Open Time',
 					'type' => 'select',
-					'class' => 'o-toggle__item',
-					'options' => [
-						'Monday' => 'Monday',
-						'Tuesday' => 'Tuesday',
-						'Wednesday' => 'Wednesday',
-						'Thursday' => 'Thursday',
-						'Friday' => 'Friday',
-						'Saturday' => 'Saturday',
-						'Sunday' => 'Sunday'
-					]
-				],
-				[
-					'name' => 'hours[%i][open_hour]',
-					'type' => 'select',
+					'field_class' => 'o-toggle__item',
 					'options' => $hours_options,
-					'class' => 'o-toggle__item'
-				],
-				[
-					'name' => 'hours[%i][open_min]',
+					'before_field' => '<div class="l-flex">'
+				];
+
+				$hours_fields[] = [
+					'name' => "hours[%i][$w3" . "_open_min]",
+					'label' => 'Open Minute',
 					'type' => 'select',
+					'field_class' => 'o-toggle__item o-time',
 					'options' => $min_options,
-					'class' => 'o-toggle__item'
-				],
-				[
-					'name' => 'hours[%i][close_hour]',
+					'after_field' => '</div>'
+				];
+
+				$hours_fields[] = [
+					'name' => "hours[%i][$w3" . "_close_hour]",
+					'label' => 'Close Time',
 					'type' => 'select',
+					'field_class' => 'o-toggle__item',
 					'options' => $hours_options,
-					'class' => 'o-toggle__item'
-				],
-				[
-					'name' => 'hours[%i][close_min]',
+					'before_field' => '<div class="l-flex">'
+				];
+
+				$hours_fields[] = [
+					'name' => "hours[%i][$w3" . "_close_min]",
+					'label' => 'Close Minute',
 					'type' => 'select',
+					'field_class' => 'o-toggle__item o-time',
 					'options' => $min_options,
-					'class' => 'o-toggle__item'
-				],
-				[
-					'name' => 'hours[%i][closed]',
+					'after_field' => '</div>'
+				];
+
+				$hours_fields[] = [
+					'name' => "hours[%i][$w3" . "_closed]",
+					'label' => 'Closed',
 					'type' => 'checkbox',
-					'value' => 1
+					'value' => 1,
 					'class' => 'o-toggle__trigger',
-					'attr' => ['onchange' => 'toggleSiblings( event )']
-				]
-			];
+					'attr' => ['onchange' => 'toggleSiblings( event )'],
+					'after_field' => '</div>'
+				];
+			}
 
 			$this->sections[] = [
 				'id' => 'business',
@@ -497,12 +537,13 @@ class Theme {
 				'label' => 'Username',
 				'section' => 'geonames',
 				'tab' => 'GeoNames',
-				'after' => '<p>Used in Business tab to fetch countries and states</p>'
+				'after' => '<p class="u-helper">Used in Business tab to fetch countries and states</p>'
 			];
 
 			$this->fields[] = [
 				'name' => 'location',
 				'label' => 'Locations',
+				'label_hidden' => true,
 				'helper' => 'The first location is used as the main location in this theme.',
 				'fields' => $location_fields,
 				'multi' => true,
@@ -514,11 +555,7 @@ class Theme {
 						if( !isset( $v['line1'] ) || !isset( $v['city'] ) || !isset( $v['postal_code'] ) )
 							continue;
 
-						$location = 
-							$v['line1'] .
-							( isset( $v['line2'] ) ? ' ' . $v['line2'] : '' ) . ' ' .
-							$v['city'] . ', ' . $v['admin3'] . ', ' . $v['admin1_name'] .
-							$v['postal_code'];
+						$location = Utils_Optional::format_location( $v );
 
 						$lat_lng = FRM::get_lat_lng( $location );
 
@@ -535,10 +572,11 @@ class Theme {
 			$this->fields[] = [
 				'name' => 'hours',
 				'label' => 'Hours',
+				'label_hidden' => true,
 				'helper' => 'Order corresponds with order of locations.',
-				'class' => 'o-toggle',
 				'fields' => $hours_fields,
 				'multi' => true,
+				'multi_col' => true,
 				'section' => 'business',
 				'tab' => 'Business'
 			];
@@ -588,10 +626,6 @@ class Theme {
 		/* Addtional scripts */
 
 		$this->scripts = $scripts;
-
-		/* Child theme */
-
-		$this->child = $child;
 
 		// add options page to settings
 		add_action( 'admin_menu', [$this, 'menu'] );
@@ -682,17 +716,16 @@ class Theme {
 			if( is_callable( $this->scripts ) )
 				call_user_func( $this->scripts );
 
-			$path = FRM::$src_path . 'admin/assets/public/';
-			$uri = $this->$child ? get_stylesheet_directory_uri() : get_template_directory_uri();
+			$uri = FRM::$src_url . 'Admin/assets/public';
 
 			wp_enqueue_style(
 				FRM::$namespace . '-settings-styles',
-				$uri . $path . 'css/settings.css'
+				$uri . '/css/settings.css'
 			);
 
 			wp_enqueue_script(
 				FRM::$namespace . '-theme-settings-script',
-				FRM::$src_url . 'admin/assets/public/js/settings.js',
+				$uri . '/js/settings.js',
 				[],
 				NULL,
 				true
@@ -700,8 +733,8 @@ class Theme {
 
 			if( $this->tab_nav ) {
 				wp_enqueue_script(
-					FRM::$namespace . '-theme-settings-script',
-					FRM::$src_url . 'admin/assets/public/js/tab-nav.js',
+					FRM::$namespace . '-theme-settings-tab-nav-script',
+					$uri . '/js/tab-nav.js',
 					[],
 					NULL,
 					true
@@ -710,14 +743,14 @@ class Theme {
 
 			if( $this->business ) {
 				wp_enqueue_script(
-					FRM::$namespace . '-theme-settings-admin-script',
-					FRM::$src_url . 'admin/assets/public/js/business.js',
+					FRM::$namespace . '-theme-settings-business-script',
+					$uri . '/js/business.js',
 					[],
 					NULL,
 					true
 				);
 
-				additional_script_data( FRM::$namespace, $data = [
+				additional_script_data( FRM::$namespace, [
 					'geonames_un' => get_option( FRM::$namespace . '_geonames_username' ) 
 				], true );
 			}

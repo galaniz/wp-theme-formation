@@ -8,8 +8,9 @@ const path = require( 'path' );
 
 let resolve = {
   alias: {
-    Formation: path.resolve( __dirname, '../../formation/src' )
-    // Formation: '@alanizcreative/formation/src'
+    Formation: path.resolve( __dirname, '../../formation/src' ),
+    // Formation: '@alanizcreative/formation/src',
+    Admin: path.resolve( __dirname, 'Formation/Admin/src' )
   },
   extensions: [
     '.sass',
@@ -101,10 +102,7 @@ let blocks = [
   'contact-form/group',
   'contact-form/group-top',
   'contact-form/group-bottom',
-  'extend-media/attr',
-  'extend-media/control',
-  'insert-block',
-  'media'
+  'insert-block'
 ];
 
 let blocksEntry = {};
@@ -168,7 +166,7 @@ module.exports = [
   {
     mode: 'production',
     entry: {
-      'tab-nav': [
+      'business': [
         __dirname + '/Formation/Admin/assets/src/settings/business/admin.js'
       ] 
     },
