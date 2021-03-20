@@ -231,18 +231,23 @@ class Theme {
 
 		/* Google Geocode */
 
-		if( $geocode ) {
+		if( $geocode || $business ) {
 			$this->sections[] = [
 				'id' => 'google-geocode',
 				'title' => 'Geocode'
 			];
 
-			$this->fields[] = [
+			$geocode_field = [
 				'name' => 'geocode_key',
 				'label' => 'Geocode API Key',
 				'section' => 'google-geocode',
 				'tab' => 'Google'
 			];
+
+			if( $business )
+				$geocode_field['helper'] = 'Used to fetch lat/lng coordinates in Business section.';
+
+			$this->fields[] = $geocode_field;
 		}
 
 		/* Google Analytics */

@@ -282,15 +282,15 @@ class Field {
 				$col = $multi_col ? ' data-col' : '';
 				$section_class = $section_class ? " $section_class" : '';
 
-				$output .= "<div class='o-field-section$section_class' data-name='$top_level_name'$hide$col>";
+				$output .= "<div class='" . $pre . "-section$section_class' data-name='$top_level_name'$hide$col>";
 			}
 		} else {
 			if( !$no_group )
-				$output .= '<div class="o-field-group l-100 l-flex" data-wrap data-align="center">';
+				$output .= '<div class="' . $pre . '-group l-100 l-flex" data-wrap data-align="center">';
 		}
 
 		if( isset( $args['label'] ) && !isset( $args['label_hidden'] ) && !$no_group  )
-			$output .= '<div class="o-field-group__label">' . $args['label'] . '</div>';
+			$output .= '<div class="' . $pre . '-group__label">' . $args['label'] . '</div>';
 
 		if( $multi )
 			$output .= '<div class="o-multi">';
@@ -395,6 +395,7 @@ class Field {
 
 	public static function render_field( $args = [], &$output, $index = 0, $data = '', $copy = false, $multi = false, $multi_col = false ) {
 		$args = array_replace_recursive( self::$default['field'], $args );
+		
 		extract( $args );
 
 		$name = FRM::get_namespaced_str( $name );
@@ -407,9 +408,11 @@ class Field {
 		$name = $multi && !$copy ? self::index_name( $name, $index ) : $name;
 
 		$id = self::format_id( $name );
-		$classes = 'o-field__' . $type . ' js-input' . ( $class ? " $class" : '' );
+		$pre = is_admin() ? 'o-field' : FRM::$classes['field_prefix'];
+		$classes = $pre . '__' . $type . ' js-input' . ( $class ? " $class" : '' );
 		$placeholder = $placeholder ? 'placeholder="' . $placeholder . '"' : '';
 		$checkbox_radio = $type === 'checkbox' || $type === 'radio';
+		$label_class = $pre . "__label" . ( $label_class ? " $label_class" : '' );
 
 		if( !is_admin() ) {
 			$classes .= ( FRM::$classes['input'] ? ' ' . FRM::$classes['input'] : '' );
@@ -441,11 +444,9 @@ class Field {
 		$output .= $before_field;
 
 		$output .=
-			"<div class='o-field" . ( $field_class ? " $field_class" : '' ) . "' data-type='$type'$hidden$field_attr>";
+			"<div class='" . $pre . ( $pre != 'o-field' ? '__field' : '' ) . ( $field_class ? " $field_class" : '' ) . "' data-type='$type'$hidden$field_attr>";
 
 		if( $label && !$label_hidden ) {
-			$label_class = "o-field__label" . ( $label_class ? "$label_class" : '' );
-
 			if( $type != 'checkbox-group' && $type != 'radio-group' )
 				$output .= '<label>';
 
@@ -473,7 +474,7 @@ class Field {
 				}
 
 				if( $type === 'text' || $type === 'email' )
-					$classes .= ' o-field__input';
+					$classes .= ' ' . $pre .  '__input';
 
 				$checked = '';
 				$v = $val;
@@ -498,7 +499,7 @@ class Field {
 				);
 
 				if( $checkbox_radio )
-					$output .= '<span class="o-field__control"></span>';
+					$output .= '<span class="' . $pre . '__control"></span>';
 
 				break;
 			case 'checkbox-group':

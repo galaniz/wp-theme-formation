@@ -4,13 +4,15 @@
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const path = require( 'path' );
 
+console.log(path.resolve( __dirname, 'Formation/Admin/src' ));
+
 /* Resolve to root */
 
 let resolve = {
   alias: {
     Formation: path.resolve( __dirname, '../../formation/src' ),
     // Formation: '@alanizcreative/formation/src',
-    Admin: path.resolve( __dirname, 'Formation/Admin/src' )
+    Admin: path.resolve( __dirname, 'Formation/Admin/assets/src' )
   },
   extensions: [
     '.sass',
@@ -38,7 +40,7 @@ let rules = [
             targets: {
               browsers: [
                 'last 3 versions',
-                'ie >= 10'
+                'ie >= 11'
               ]
             }
           }
@@ -75,7 +77,7 @@ let rules = [
               'postcss-preset-env': {
                 browsers: [
                   'last 3 versions',
-                  'ie >= 10'
+                  'ie >= 11'
                 ]
               },
               'cssnano': {},

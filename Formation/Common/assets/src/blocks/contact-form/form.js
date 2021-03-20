@@ -14,8 +14,14 @@ const {
 const { 
   Panel,
   PanelBody,
-  TextControl
+  TextControl,
+  SelectControl
 } = wp.components;
+
+const { 
+  select,
+  withSelect
+} = wp.data;
 
 const { 
   InspectorControls,
@@ -37,24 +43,51 @@ const nO = getNamespaceObj( getNamespace() );
 const attr = nO.blocks[name]['attr'];
 const def = nO.blocks[name]['default'];
 
+/* Set data */
+
+const dataSelector = withSelect( ( select, ownProps ) => {
+  let clientID = ownProps.clientId,
+      args = { clientID: clientID };
+
+  if( !ownProps.attributes.hasOwnProperty( 'id' ) )
+    ownProps.attributes.id = clientID;
+
+  return args;
+} );
+
 /* Block */
 
 registerBlockType( name, {
   title: 'Contact Form',
   category: 'theme-blocks',
+  icon: 'email',
   attributes: attr,
-  edit( props ) {
-    const { attributes, setAttributes, clientId } = props;
+  edit: dataSelector( ( props ) => {
+    const { attributes, setAttributes, clientID } = props;
 
     let { 
-      id = clientId,
+      id = clientID,
       email = def.email,
       subject = def.subject,
       submit_text = def.submit_text,
-      success_message = def.success_message
+      success_message = def.success_message,
+      gap = def.gap
     } = attributes;
 
-    setAttributes( { id: id } );
+    let gapSelect = '';
+
+    if( nO.gap_options.length ) {
+      gapSelect = (
+        <div>
+          <SelectControl
+            label="Fields Gap"
+            value={ gap }
+            options={ nO.gap_options }
+            onChange={ ( gap ) => setAttributes( { gap } ) }
+          />
+        </div>
+      );
+    }
 
     return [
       <Fragment>
@@ -75,10 +108,11 @@ registerBlockType( name, {
               value={ submit_text }
               onChange={ submit_text => setAttributes( { submit_text } ) }
             />
+            { gapSelect }
           </PanelBody>
         </InspectorControls>
       </Fragment>,
-      <Panel header="Fields">
+      <Panel header="Fields" className="o-form">
         <PanelBody>
           <InnerBlocks 
             allowedBlocks={ [n + 'contact-form-field', n + 'contact-form-group'] } 
@@ -91,14 +125,14 @@ registerBlockType( name, {
               multiline="p"
               value={ success_message }
               onChange={ ( success_message ) => setAttributes( { success_message } ) } 
-              formattingControls={ ['bold', 'italic', 'link'] }
+              allowedFormats={ ['bold', 'italic', 'link'] }
               placeholder={ 'Success message...' }
             />
           </div>
         </PanelBody>
       </Panel>   
     ];
-  },
+  } ),
   save() {
     return <InnerBlocks.Content />; // this block is rendered in php
   }

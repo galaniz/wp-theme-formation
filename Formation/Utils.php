@@ -128,17 +128,21 @@ trait Utils {
   */
 
   public static function get_excerpt( $args = [] ) {
+    $post_id = $args['post_id'] ?? get_the_ID();
     $content = $args['content'] ?? '';
     $words = $args['words'] ?? false;
-    $max = $args['length'] ?? 55;
+    $length = $args['length'] ?? 55;
+
+    // get excerpt
+    if( has_excerpt( $post_id ) )
+      $content = get_the_excerpt( $post_id );
 
     if( !$content ) {
-      $post_id = $args['post_id'] ?? get_the_ID();
       $post = $args['post'] ?? get_post( $post_id );
 
       if( $post->post_excerpt ) {
         $content = $post->post_excerpt;
-        $max = 0;
+        $length = 0;
       } else {
         $content = $post->post_content;
       }
@@ -148,11 +152,11 @@ trait Utils {
       $content = wp_strip_all_tags( $content, true );
       $content = strip_shortcodes( $content );
 
-      if( $max ) {
+      if( $length ) {
         if( $words ) { // trim words
-          $content = wp_trim_words( $content, $max );
+          $content = wp_trim_words( $content, $length );
         } else { // trim characters
-          $content = mb_strimwidth( $content, 0, $max );
+          $content = mb_strimwidth( $content, 0, $length );
         }
       }
     } else {
@@ -379,7 +383,8 @@ trait Utils {
 
     $terms = get_terms( [
       'taxonomy' => $tax,
-      'hide_empty' => true
+      'hide_empty' => true,
+      'exclude' => 1
     ] );
 
     if( $terms ) {
@@ -438,14 +443,8 @@ trait Utils {
       $last_date = new \DateTime( $last_post->post_date );
       $f = new \DateTime( $first_date->format( 'Y-m' ) );
 
-      $months = [
-        'null' => 'Month'
-      ];
-
-      $years = [
-        'null' => 'Year'
-      ];
-
+      $months = [];
+      $years = [];
       $year = '';
 
       while( $f <= $last_date ) { // check if the date is before last date
@@ -453,7 +452,7 @@ trait Utils {
         $y = $f->format( 'Y' );
 
         if( !in_array( $m, $months ) )
-          $months[$m] = $f->format( 'm' );
+          $months[$m] = $f->format( 'M' );
 
         if( !in_array( $y, $years ) ) {
           $year = $y;
@@ -463,6 +462,12 @@ trait Utils {
         $f->modify( '+1 month' ); // add month and repeat
       }
 
+      ksort( $months );
+      ksort( $years );
+
+      $months = ['null' => 'Month'] + $months;
+      $years = ['null' => 'Year'] + $years;
+
       $arr = [
         'months' => $months,
         'years' => $years
@@ -470,6 +475,33 @@ trait Utils {
     }
 
     return $arr;
+  }
+
+ /*
+  * Check if url is external.
+  *
+  * source: https://bit.ly/3aPpU3O
+  *
+  * @param string $url
+  * @return array
+  */
+
+  public static function is_external_url( $url = '' ) {
+    if( !$url )
+      return false;
+
+    $is_external = false;
+
+    // parse home URL and parameter URL
+    $link_url = parse_url( $url );    
+    $home_url = parse_url( home_url() );
+
+    if( $link_url['host'] ) {
+      if( $link_url['host'] !== $home_url['host'] )
+        $is_external = true;
+    }
+
+    return $is_external;
   }
 
 } // end Utils

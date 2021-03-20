@@ -112,10 +112,10 @@ trait Utils_Render {
 		}
 
 		if( $links ) {
-			$theme_locations = get_nav_menu_locations();
+			$menu_locations = get_nav_menu_locations();
 
-			if( isset( $theme_locations[$links] ) ) {
-				$social_links = wp_get_nav_menu_items( $theme_locations[$links] );
+			if( isset( $menu_locations[$links] ) ) {
+				$social_links = wp_get_nav_menu_items( $menu_locations[$links] );
 
 				foreach( $social_links as $s ) {
 					$item = [
@@ -125,6 +125,8 @@ trait Utils_Render {
 
 					$data[] = $item;
 				}
+			} else {
+				return '';
 			}
 		}
 
@@ -249,6 +251,10 @@ trait Utils_Render {
 
 		extract( $args );
 
+		/* Form classes prefix */
+
+		$pre = static::$classes['field_prefix'];
+
 		/* Form attributes */
 
 		$form_attr['data-type'] = $form_data_type;
@@ -281,7 +287,7 @@ trait Utils_Render {
 			'<form class="o-form js-' . static::$namespace . '-form%1$s" id="%2$s"%3$s novalidate>' .
 				'<div class="u-p-r l-flex" data-gap="%4$s" data-wrap%5$s>' .
 					'%6$s' .
-					"<div class='o-field' data-type='submit'>" .
+					"<div class='" . $pre . ( $pre != 'o-field' ? '__field' : '' ) . "' data-type='submit'>" .
 						'<button class="o-button js-submit%7$s" type="submit"%8$s>' .
 							static::render_loader( [
 								'icon_class' => static::$classes['icon'],
@@ -292,12 +298,18 @@ trait Utils_Render {
 					'</div>' .
 				'</div>' .
 				'<div class="o-result">' .
-					'<div class="o-result__message l-flex" data-gap="%10$s" data-align="center" aria-live="polite">' .
-						'<div class="o-result__icon u-p-r">' .
-							'<div class="o-result__error u-p-c">%11$s</div>' .
-							'<div class="o-result__success u-p-c">%12$s</div>' .
+					'<div class="o-result__message">' .
+						'<div class="l-flex" data-gap="%10$s" data-align="center" aria-live="polite">' .
+							'<div>' .
+								'<div class="o-result__icon u-p-r">' .
+									'<div class="o-result__error u-p-c">%11$s</div>' .
+									'<div class="o-result__success u-p-c">%12$s</div>' .
+								'</div>' .
+							'</div>' .
+							'<div>' .
+								'<div class="o-result__text"></div>' .
+							'</div>' .
 						'</div>' .
-						'<div class="o-result__text"></div>' .
 					'</div>' .
 				'</div>' .
 			'</form>',

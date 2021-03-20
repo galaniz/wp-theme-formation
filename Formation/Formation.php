@@ -159,6 +159,16 @@ class Formation {
 	public $defer_script_handles = [];
 
  /*
+	* Handles and attribute strings for scripts. Set in scripts callback.
+	*
+	* @var array $script_attributes {
+	*		@type string $handle => string $attr
+	* }
+	*/
+
+	public $script_attributes = [];
+
+ /*
 	* Markup for default loader icon.
 	*
 	* @var string $loader_icon
@@ -167,12 +177,21 @@ class Formation {
 	public static $loader_icon = '';
 
  /*
+	* Options for gap in flex layouts.
+	*
+	* @var array $loader_icon
+	*/
+
+	public static $gap_options = [];
+
+ /*
 	* Optional classes to add to fields, labels, buttons...
 	*
 	* @var array $classes
 	*/
 
 	public static $classes = [
+		'field_prefix' => 'o-field',
 		'field' => '',
 		'button' => '',
 		'label' => '',
@@ -254,6 +273,7 @@ class Formation {
 
 		additional_script_data( 'namespace', static::$namespace, true, true );
 		additional_script_data( 'namespace', static::$namespace, false, true );
+		additional_script_data( static::$namespace, ['gap_options' => self::$gap_options ], true, true );
 
 		$ajax_url = ['ajax_url' => admin_url( 'admin-ajax.php' )];
 
@@ -278,7 +298,8 @@ class Formation {
 	private function setup_filters() {
 		add_filter( 'document_title_separator', [$this, 'title_separator'] );
 		add_filter( 'nav_menu_css_class', [$this, 'cpt_nav_classes'], 10, 2 );
-		add_filter( 'script_loader_tag', [$this, 'add_defer_async_attributes'], 10, 2 );
+		add_filter( 'excerpt_more', [$this, 'excerpt_more'] );
+		add_filter( 'script_loader_tag', [$this, 'add_script_attributes'], 10, 2 );
 		add_filter( 'image_size_names_choose', [$this, 'custom_image_sizes'] );
 		add_filter( 'render_block', [$this, 'filter_block'], 10, 2 );
 
@@ -618,6 +639,14 @@ class Formation {
 	}
 
  /*
+	* Change excerpt end to ellipsis.
+	*/
+
+	public function excerpt_more( $more ) {
+		return '&hellip;';
+	}
+
+ /*
 	* Remove current from blog when on custom post type.
 	*/
 
@@ -648,13 +677,20 @@ class Formation {
 	}
 
  /*
-	* Add defer / async attributes to $this->defer_script_handles.
+	* Add attributes to $this->defer_script_handles and $this->script_attributes.
 	*/
 
-	public function add_defer_async_attributes( $tag, $handle ) {
+	public function add_script_attributes( $tag, $handle ) {
 		foreach( $this->defer_script_handles as $script ) {
 			if( $script === $handle )
-				return str_replace( ' src', ' defer="defer" async="async" src', $tag );
+				$tag = str_replace( ' src', ' defer="defer" async="async" src', $tag );
+		}
+
+		foreach( $this->script_attributes as $script => $attr ) {
+			$s = static::$namespace . '-' . $script;
+			
+			if( $s === $handle && $attr )
+				$tag = str_replace( ' src', " $attr src", $tag );
 		}
 
 		return $tag;

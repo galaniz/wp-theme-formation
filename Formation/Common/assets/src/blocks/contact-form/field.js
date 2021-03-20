@@ -23,6 +23,11 @@ const {
 } = wp.components;
 
 const { 
+  select,
+  withSelect
+} = wp.data;
+
+const { 
   InspectorControls,
   InnerBlocks
 } = wp.blockEditor;
@@ -43,19 +48,32 @@ const nO = getNamespaceObj( getNamespace() );
 const attr = nO.blocks[name]['attr'];
 const def = nO.blocks[name]['default'];
 
+/* Set data */
+
+const dataSelector = withSelect( ( select, ownProps ) => {
+  let clientID = ownProps.clientId,
+      args = { clientID: clientID };
+
+  if( !ownProps.attributes.hasOwnProperty( 'name' ) )
+    ownProps.attributes.name = clientID;
+
+  return args;
+} );
+
 /* Block */
 
 registerBlockType( name, {
   title: 'Field',
   category: 'theme-blocks',
+  icon: 'email',
   parent: [n + 'contact-form', n + 'contact-form-group-bottom'],
   attributes: attr,
-  edit( props ) {
-    const { attributes, setAttributes, clientId } = props;
+  edit: dataSelector( ( props ) => {
+    const { attributes, setAttributes, clientID } = props;
 
     let { 
       type = def.type,
-      name = clientId,
+      name = clientID,
       label = def.label,
       placeholder = def.placeholder,
       required = def.required,
@@ -67,8 +85,6 @@ registerBlockType( name, {
       padding_small = def.padding_small,
       preview = false
     } = attributes;
-
-    setAttributes( { name: name } );
 
     /* Optional inputs */
 
@@ -198,7 +214,7 @@ registerBlockType( name, {
         { previewContent }
       </div>
     ];
-  },
+  } ),
   save() {
     return null; // this block is rendered in php
   }
