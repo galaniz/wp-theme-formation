@@ -26,7 +26,7 @@ const {
 const { 
   InspectorControls,
   InnerBlocks,
-  RichText
+  PlainText
 } = wp.blockEditor;
 
 const { Fragment } = wp.element;
@@ -62,7 +62,7 @@ registerBlockType( name, {
   category: 'theme-blocks',
   icon: 'email',
   attributes: attr,
-  edit: dataSelector( ( props ) => {
+  edit: dataSelector( props => {
     const { attributes, setAttributes, clientID } = props;
 
     let { 
@@ -83,7 +83,7 @@ registerBlockType( name, {
             label="Fields Gap"
             value={ gap }
             options={ nO.gap_options }
-            onChange={ ( gap ) => setAttributes( { gap } ) }
+            onChange={ gap => setAttributes( { gap } ) }
           />
         </div>
       );
@@ -112,22 +112,21 @@ registerBlockType( name, {
           </PanelBody>
         </InspectorControls>
       </Fragment>,
-      <Panel header="Fields" className="o-form">
-        <PanelBody>
-          <InnerBlocks 
-            allowedBlocks={ [n + 'contact-form-field', n + 'contact-form-group'] } 
-          />  
-        </PanelBody>
-        <PanelBody>
-          <div>
-            <RichText
-              tagName="div"
-              multiline="p"
-              value={ success_message }
-              onChange={ ( success_message ) => setAttributes( { success_message } ) } 
-              allowedFormats={ ['bold', 'italic', 'link'] }
-              placeholder={ 'Success message...' }
-            />
+      <Panel className="o-form">
+        <PanelBody title="Fields">
+          <div className="l-section">
+            <InnerBlocks 
+              allowedBlocks={ [n + 'contact-form-field', n + 'contact-form-group'] } 
+            />  
+          </div>
+          <div className="l-section">
+            <div>
+              <PlainText
+                value={ success_message }
+                onChange={ success_message => setAttributes( { success_message } ) }
+                placeholder={ 'Success message...' }
+              />
+            </div>
           </div>
         </PanelBody>
       </Panel>   

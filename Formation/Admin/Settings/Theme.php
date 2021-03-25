@@ -340,9 +340,7 @@ class Theme {
 
 				$this->fields[] = [
 					'name' => $name . '_success_message',
-					'type' => 'richtext',
-					'toolbar' => 'bold,italic,link',
-					'wpautop' => true,
+					'type' => 'textarea',
 					'label' => 'Success Message',
 					'section' => $section_id,
 					'tab' => 'Mailchimp',
@@ -364,13 +362,13 @@ class Theme {
 
 							if( $tag || $merge_field ) {
 								if( !isset( $v['attr'] ) )
-										$v['attr'] = [];
+									$v['attr'] = [];
 
 								if( $tag )
-										$v['attr']['data-tag'] = 'true';
+									$v['attr']['data-tag'] = 'true';
 
 								if( $merge_field )
-										$v['attr']['data-merge-field'] = 'true';
+									$v['attr']['data-merge-field'] = 'true';
 							}
 						}
 
@@ -556,7 +554,7 @@ class Theme {
 					if( !is_array( $value ) )
 						return $value;
 
-					foreach( $value as $v ) {
+					foreach( $value as &$v ) {
 						if( !isset( $v['line1'] ) || !isset( $v['city'] ) || !isset( $v['postal_code'] ) )
 							continue;
 
@@ -566,7 +564,7 @@ class Theme {
 
 						if( $lat_lng )
 							$v['lat_lng'] = $lat_lng;
-					} 
+					}
 
 					return $value;
 				},

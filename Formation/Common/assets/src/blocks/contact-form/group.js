@@ -71,14 +71,14 @@ registerBlockType( name, {
   icon: 'email',
   attributes: attr,
   parent: [n + 'contact-form'],
-  edit: dataSelector( ( props ) => {  
+  edit: dataSelector( props => {  
     const { attributes, setAttributes } = props;
     const { email_label = def.email_label } = attributes;
 
     return [
       <Fragment>
         <InspectorControls>
-          <PanelBody title={ 'Field Group Options' }>
+          <PanelBody title="Field Group Options">
             <TextControl
               label="Email Label"
               value={ email_label }
@@ -87,12 +87,14 @@ registerBlockType( name, {
           </PanelBody>
         </InspectorControls>
       </Fragment>,
-      <Panel header="Field Group">
-        <PanelBody>
-          <InnerBlocks 
-            allowedBlocks={ [n + 'contact-form-group-top', n + 'contact-form-group-bottom'] } 
-            template={ [ [n + 'contact-form-group-top', {}, []], [n + 'contact-form-group-bottom', {}, []] ] }
-          />
+      <Panel>
+        <PanelBody title="Field Group">
+          <div className="l-section">
+            <InnerBlocks 
+              allowedBlocks={ [n + 'contact-form-group-top', n + 'contact-form-group-bottom'] } 
+              template={ [ [n + 'contact-form-group-top', {}, []], [n + 'contact-form-group-bottom', {}, []] ] }
+            />
+          </div>
         </PanelBody>
       </Panel>   
     ];

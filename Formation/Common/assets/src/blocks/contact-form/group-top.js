@@ -35,9 +35,11 @@ registerBlockType( name, {
     return [
       <Panel>
         <PanelBody>
-          <InnerBlocks 
-            allowedBlocks={ ['core/paragraph', 'core/heading', 'core/image'] } 
-          />  
+          <div className="l-section">
+            <InnerBlocks 
+              allowedBlocks={ ['core/paragraph', 'core/heading', 'core/image'] } 
+            />  
+          </div>
         </PanelBody>
       </Panel>   
     ];

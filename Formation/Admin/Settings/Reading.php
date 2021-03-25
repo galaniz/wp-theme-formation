@@ -111,7 +111,7 @@ class Reading {
 				'class' => 'c-cpt',
 				'attr' => [
 					'step' => '1',
-					'min' => '1'
+					'min' => '-1'
 				]
 			];
 

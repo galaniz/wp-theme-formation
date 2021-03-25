@@ -42,7 +42,7 @@ class Contact_Form {
 				'id' => '',
 				'email' => '',
 				'subject' => '',
-				'submit_label' => 'Submit',
+				'submit_label' => 'Send',
 				'success_message' => '',
 				'gap' => ''
 			],

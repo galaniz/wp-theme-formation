@@ -59,7 +59,7 @@ registerBlockType( name, {
                 label="Fields Gap"
                 value={ gap }
                 options={ nO.gap_options }
-                onChange={ ( gap ) => setAttributes( { gap } ) }
+                onChange={ gap => setAttributes( { gap } ) }
               />
             </PanelBody>
           </InspectorControls>
@@ -69,9 +69,11 @@ registerBlockType( name, {
       ),
       <Panel>
         <PanelBody>
-          <InnerBlocks 
-            allowedBlocks={ [n + 'contact-form-field'] } 
-          />  
+          <div className="l-section">
+            <InnerBlocks 
+              allowedBlocks={ [n + 'contact-form-field'] } 
+            /> 
+          </div> 
         </PanelBody>
       </Panel>   
     ];

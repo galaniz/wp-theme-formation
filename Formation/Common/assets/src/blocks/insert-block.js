@@ -49,11 +49,11 @@ document.addEventListener( 'DOMContentLoaded', () => {
 
 		let blocksInEditor = wp.data.select( 'core/block-editor' ).getBlocks();
 
-		insertBlocks.forEach( ( bb ) => {
+		insertBlocks.forEach( bb => {
 			let blockName = bb.name,
 				blockExists = false;
 
-			blocksInEditor.forEach( ( b ) => {
+			blocksInEditor.forEach( b => {
 				if( b.name == blockName ) {
 					blockExists = true;
 					return;

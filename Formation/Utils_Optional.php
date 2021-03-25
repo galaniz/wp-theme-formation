@@ -342,8 +342,8 @@ class Utils_Optional {
     return
       $location['line1'] .
       ( isset( $location['line2'] ) ? ' ' . $location['line2'] : '' ) . ( $line_break ? '<br>' : ' ' ) .
-      $location['city'] . ', ' . $location['admin3'] . ( $include_admin1 ? ', ' . $location['admin1_name'] : ' ' ) .
-      $location['postal_code'];
+      $location['city'] . ', ' . $location['admin3'] . ( $include_admin1 ? ', ' . $location['admin1_name'] : '' ) .
+      ( isset( $location['postal_code'] ) ? ' ' . $location['postal_code'] : '' ); 
   }
 
  /*

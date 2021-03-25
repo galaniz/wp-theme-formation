@@ -7,6 +7,8 @@
 
 namespace Formation;
 
+use function Formation\write_log;
+
 trait Utils {
 
  /*
@@ -356,7 +358,7 @@ trait Utils {
     $resp = json_decode( $resp_json, true );
 
     // response status will be 'OK', if able to geocode given address
-    if( $resp['status']=='OK' ) {
+    if( $resp['status'] == 'OK' ) {
       // get the important data
       $lat = isset($resp['results'][0]['geometry']['location']['lat']) ? $resp['results'][0]['geometry']['location']['lat'] : '';
       $lng = isset($resp['results'][0]['geometry']['location']['lng']) ? $resp['results'][0]['geometry']['location']['lng'] : '';

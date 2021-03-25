@@ -6,6 +6,12 @@
 
 $_bgButton: #1E1E1E;
 
+/* Base */
+
+svg {
+  fill: currentColor;
+}
+
 /* Utilities */
 
 .u-disable {
@@ -21,10 +27,33 @@ $_bgButton: #1E1E1E;
   }
 }
 
+.components-toolbar__control.components-button:not(:disabled).is-active > svg {
+  background: transparent !important;
+}
+
+.components-panel__body {
+  padding: 0;
+}
+
+.components-panel__body-title {
+  margin: 0 !important;
+}
+
+.components-panel__body-toggle {
+  @extend %u-font-family-primary;
+  @extend %u-color-foreground-dark;
+  font-size: calcRem( 20px );
+}
+
 /* Layout */
 
 .l-breakout {
   margin: 0;
+}
+
+.l-section {
+  border-top: calcRem( 1px ) solid #E0E0E0;
+  padding: calcRem( 16px );
 }
 
 .o-field {

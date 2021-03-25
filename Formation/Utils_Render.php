@@ -242,7 +242,7 @@ trait Utils_Render {
 				'fields_attr' => [],
 				'button_class' => '',
 				'button_attr' => [],
-				'submit_label' => 'Submit',
+				'submit_label' => 'Send',
 				'result_gap' => 'xs',
 				'success_message' => ''
 			],

@@ -261,6 +261,7 @@ class Field {
 
 		$count = 1;
 		$top_level_name = '';
+		$pre = is_admin() ? 'o-field' : FRM::$classes['field_prefix'];
 
 		// if single field passed in
 		if( !$fields )

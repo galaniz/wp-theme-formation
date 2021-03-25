@@ -11,14 +11,14 @@ const getNamespace = ( slash = false ) => {
 	return '';
 };
 
-const getNamespaceObj = ( namespace ) => {
+const getNamespaceObj = namespace => {
 	if( !window.hasOwnProperty( namespace ) )
 	  return false;
 
 	return window[namespace];
 };
 
-const editInnerBlocks = ( allowedBlocks ) => {
+const editInnerBlocks = allowedBlocks => {
 	return [
     <div>
       <InnerBlocks allowedBlocks={ allowedBlocks } /> 

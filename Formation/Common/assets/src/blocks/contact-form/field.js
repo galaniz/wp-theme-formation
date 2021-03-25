@@ -68,7 +68,7 @@ registerBlockType( name, {
   icon: 'email',
   parent: [n + 'contact-form', n + 'contact-form-group-bottom'],
   attributes: attr,
-  edit: dataSelector( ( props ) => {
+  edit: dataSelector( props => {
     const { attributes, setAttributes, clientID } = props;
 
     let { 
@@ -108,7 +108,7 @@ registerBlockType( name, {
           label="Label after"
           value="1"
           checked={ label_after ? true : false }
-          onChange={ ( checked ) => setAttributes( { label_after: checked } ) }
+          onChange={ checked => setAttributes( { label_after: checked } ) }
         />
       ];
     }
@@ -123,7 +123,7 @@ registerBlockType( name, {
         <TextareaControl
           label="Options (label : value)"
           value={ options }
-          onChange={ ( options ) => setAttributes( { options } ) }
+          onChange={ options => setAttributes( { options } ) }
         />
       ];
     }
@@ -150,7 +150,7 @@ registerBlockType( name, {
     return [
       <Fragment>
         <InspectorControls>
-          <PanelBody title={ 'Field Options' }>
+          <PanelBody title="Field Options">
             <TextControl
               label="Name"
               value={ name }
@@ -183,19 +183,19 @@ registerBlockType( name, {
             <TextareaControl
               label="Attributes (label : value)"
               value={ attr }
-              onChange={ ( attr ) => setAttributes( { attr } ) }
+              onChange={ attr => setAttributes( { attr } ) }
             />
             <CheckboxControl
               label="Required"
               value="1"
               checked={ required ? true : false }
-              onChange={ ( checked ) => setAttributes( { required: checked } ) }
+              onChange={ checked => setAttributes( { required: checked } ) }
             />
             <CheckboxControl
               label="Padding small"
               value="1"
               checked={ padding_small ? true : false }
-              onChange={ ( checked ) => setAttributes( { padding_small: checked } ) }
+              onChange={ checked => setAttributes( { padding_small: checked } ) }
             />
             <RadioControl
               label="Width"
@@ -205,7 +205,7 @@ registerBlockType( name, {
                 { label: '50%', value: '50' },
                 { label: 'Auto', value: 'auto' }
               ] }
-              onChange={ ( width ) => { setAttributes( { width } ) } }
+              onChange={ width => { setAttributes( { width } ) } }
             />
           </PanelBody>
         </InspectorControls>
