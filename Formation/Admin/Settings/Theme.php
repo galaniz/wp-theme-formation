@@ -159,6 +159,16 @@ class Theme {
 
 	public function __construct( $args = [] ) {
 
+		/* Add callbacks to some fields */
+
+		$this->fields[2]['on_save'] = function( $value ) {
+			return $value;
+		};
+
+		$this->fields[3]['on_save'] = function( $value ) {
+			return wp_kses( $value, 'post' );
+		};
+
 		/* Default args */
 
 		$args = array_replace_recursive( [
@@ -187,7 +197,20 @@ class Theme {
 				'data-full' => ''
 			],
 			'on_save' => function( $value ) {
-				return $value;
+				return wp_kses( $value, [
+					'script' => [
+						'id' => [],
+						'src' => [],
+						'defer' => [],
+						'async' => [],
+						'type' => [],
+						'crossorigin' => [],
+						'integrity' => [],
+						'nomodule' => [],
+						'nonce' => [],
+						'referrerpolicy' => []
+					]
+				] );
 			}
 		];
 
@@ -202,7 +225,20 @@ class Theme {
 				'data-full' => ''
 			],
 			'on_save' => function( $value ) {
-				return $value;
+				return wp_kses( $value, [
+					'script' => [
+						'id' => [],
+						'src' => [],
+						'defer' => [],
+						'async' => [],
+						'type' => [],
+						'crossorigin' => [],
+						'integrity' => [],
+						'nomodule' => [],
+						'nonce' => [],
+						'referrerpolicy' => []
+					]
+				] );
 			}
 		];
 
@@ -328,7 +364,10 @@ class Theme {
 					'toolbar' => 'bold,italic,link',
 					'wpautop' => true,
 					'section' => $section_id,
-					'tab' => 'Mailchimp'
+					'tab' => 'Mailchimp',
+					'on_save' => function( $value ) {
+						return wp_kses( $value, 'post' );
+					}
 				];
 
 				$this->fields[] = [
@@ -372,7 +411,15 @@ class Theme {
 							}
 						}
 
-						return Select_Fields::filter( $value );
+						$filter_value = Select_Fields::filter( $value );
+
+						// sanitize
+						array_walk_recursive( $filter_value, function( &$v, $key ) {
+							if( !is_array( $v ) )
+								$v = sanitize_text_field( $v );
+						} );
+
+						return $filter_value;
 					},
 					'fields' => $f,
 					'section' => $section_id,
@@ -551,8 +598,18 @@ class Theme {
 				'fields' => $location_fields,
 				'multi' => true,
 				'on_save' => function( $value ) {
-					if( !is_array( $value ) )
+					if( !is_array( $value ) ) {
+						if( is_string( $value ) ) 
+							$value = sanitize_text_field( $value );
+
 						return $value;
+					}
+
+					// sanitize
+					array_walk_recursive( $value, function( &$v, $key ) {
+						if( !is_array( $v ) )
+							$v = sanitize_text_field( $v );
+					} );
 
 					foreach( $value as &$v ) {
 						if( !isset( $v['line1'] ) || !isset( $v['city'] ) || !isset( $v['postal_code'] ) )
@@ -581,7 +638,16 @@ class Theme {
 				'multi' => true,
 				'multi_col' => true,
 				'section' => 'business',
-				'tab' => 'Business'
+				'tab' => 'Business',
+				'on_save' => function( $value ) {
+					// sanitize
+					array_walk_recursive( $value, function( &$v, $key ) {
+						if( !is_array( $v ) )
+							$v = sanitize_text_field( $v );
+					} );
+
+					return $value;
+				}
 			];
 
 			$this->fields[] = [
@@ -621,7 +687,10 @@ class Theme {
 					'value' => 1,
 					'section' => 'uploads',
 					'tab' => 'Uploads',
-					'after' => $uploads
+					'after' => $uploads,
+					'on_save' => function( $value ) {
+						return $value;
+					}
 				];
 			}
 		}
@@ -693,7 +762,7 @@ class Theme {
 		<div class="wrap">
 			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 			<?php echo $this->tab_nav; ?>
-			<form action="options.php" method="post"<?php echo $this->tab_nav ? ' style="padding-top: 30px;"' : ''; ?>>
+			<form action="options.php" method="post"<?php echo $this->tab_nav ? ' style="padding-top: 1.875rem;"' : ''; ?>>
 				<div class="js-section">
 				<?php
 					settings_fields( $this->page );

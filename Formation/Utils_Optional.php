@@ -86,7 +86,7 @@ class Utils_Optional {
       if( !$image )
         return '';
 
-      $src = $image['url'];
+      $src = esc_url( $image['url'] );
       $alt = $image['alt'];
       $srcset = $image['srcset'];
       $sizes = $image['sizes'];
@@ -161,19 +161,9 @@ class Utils_Optional {
     if( !$rows )
       return '';
 
-    $class = $class ? " $class" : '';
-    $row_class = $row_class ? " $row_class" : '';
-
-    if( $attr ) {
-      $attr_formatted = [];
-
-      foreach( $attr as $a => $v )
-        $attr_formatted[] = $a . '="' . $v . '"';
-
-      $attr = ' ' . implode( ' ', $attr_formatted );
-    } else {
-      $attr = '';
-    }
+    $class = esc_attr( $class ? " $class" : '' );
+    $row_class = esc_attr( $row_class ? " $row_class" : '' );
+    $attr = Utils::get_attr_as_str( $attr );
 
     $output = !$row ? "<table class='o-table$class'$attr>" : '';
 
@@ -237,15 +227,15 @@ class Utils_Optional {
     if( !$content )
       return '';
 
-    $class = $class ? " $class" : "";
-    $trigger_class = $trigger_class ? " $trigger_class" : "";
+    $class = esc_attr( $class ? " $class" : '' );
+    $trigger_class = esc_attr( $trigger_class ? " $trigger_class" : '' );
     $scale_transition = $scale_transition ? ' data-scale-transition="true"' : '';
     $alt_trigger = $alt_trigger ? ' data-alt-trigger=".js-trigger"' : '';
 
     return
       "<div class='o-modal$class'$scale_transition$alt_trigger>" .
         "<button class='o-modal__trigger$trigger_class' type='button'>" .
-          '<div>' . $button_text . '</div>' .
+          '<div>' . esc_html( $button_text ) . '</div>' .
         '</button>' .
         '<div class="o-modal__overlay"></div>' .
         '<div class="o-modal__window">' .
@@ -254,7 +244,7 @@ class Utils_Optional {
               $content .
               '<button class="o-modal__close">' .
                 '<div class="u-v-h">Close modal</div>' .
-                "<div class='o-modal__x'>$x</div>" .
+                "<div class='o-modal__x'>" . esc_html( $x ) . "</div>" .
               '</button>' .
             ( $scale_transition ? '</div>' : '' ) .
           '</div>' .
@@ -275,28 +265,27 @@ class Utils_Optional {
       'field_class' => '',
       'input_class' => '',
       'button_class' => '',
-      'icon_class' => ''
+      'icon' => ''
     ], $args );
 
     extract( $args );
 
     $unique_id = 'search-' . uniqid();
 
-    $field_class = $field_class ? " $field_class" : '';
-    $input_class = $input_class ? " $input_class" : '';
-    $form_class = $form_class ? " class='$form_class'" : ''; 
-    $button_class = $button_class ? " class='$button_class'" : ''; 
-    $icon_class = $icon_class ? " class='$icon_class'" : ''; 
+    $field_class = esc_attr( $field_class ? " $field_class" : '' );
+    $input_class = esc_attr( $input_class ? " $input_class" : '' );
+    $form_class = esc_attr( $form_class ? " $form_class" : '' ); 
+    $button_class = esc_attr( $button_class ? " class='$button_class'" : '' );  
 
     return
-      "<form$form_class role='search' method='get' action='" . esc_url( home_url( '/' ) ) . "'>" .
+      "<form class='o-form$form_class' role='search' method='get' action='" . esc_url( home_url( '/' ) ) . "'>" .
         "<div class='o-field$field_class'>" .
           '<div class="u-p-r">' .
             "<label class='u-v-h' for='$unique_id'>Search for:</label>" .
             "<input class='o-field__input$input_class' type='search' id='$unique_id' placeholder='Search' value='" . get_search_query() . "' name='s' />" .
             "<button$button_class type='submit'>" .
               '<span class="u-v-h">Submit search query</span>' .
-              "<div$icon_class></div>" .
+              $icon .
             '</button>' .
           '</div>' .
         '</div>' .

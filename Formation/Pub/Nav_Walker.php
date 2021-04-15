@@ -56,8 +56,8 @@ class Nav_Walker extends \Walker_Nav_Menu {
   /* Output li element */
 
   public function start_el( &$output, $item, $depth = 0, $args = [], $id = 0 ) {
-    $title = $item->title;
-    $permalink = $item->url;
+    $title = esc_html( $item->title );
+    $permalink = esc_url( $item->url );
     $id = $item->ID;
 
     if( is_callable( $this->before_output ) )
@@ -67,14 +67,14 @@ class Nav_Walker extends \Walker_Nav_Menu {
     $classes[] = 'menu-item-' . $item->ID;
     $classes[] = $this->li_class;
 
-    $class_names = join( ' ', apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item, $args, $depth ) );
+    $class_names = esc_attr( join( ' ', apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item, $args, $depth ) ) );
 
     $output .= "<li class='$class_names'" . $this->li_attr . " data-depth='$depth'" . ( $args->walker->has_children ? " data-has-children" : '' ) . ">";
 
     if( is_callable( $this->before_link_output ) )
       call_user_func_array( $this->before_link_output, [&$this, &$output, $depth, $args, $item] );
 
-    $output .= "<a class='" . $this->a_class . "' " . $this->a_attr . "href='$permalink' data-depth='$depth'>";
+    $output .= "<a class='" . esc_attr( $this->a_class ) . "' " . $this->a_attr . "href='$permalink' data-depth='$depth'>";
 
     if( is_callable( $this->before_link_text_output ) )
       call_user_func_array( $this->before_link_text_output, [&$this, &$output, $depth, $args, $item] );

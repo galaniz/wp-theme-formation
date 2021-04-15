@@ -86,10 +86,12 @@ class Reading {
 				'options' => $page_options,
 				'label_hidden' => true,
 				'on_save' => function( $value ) use ( $c, $meta ) {
-					if( isset( $meta['no_slug'] ) )
-						return $value; 
+					$v = sanitize_text_field( $value );
 
-					$id = (int) $value;
+					if( isset( $meta['no_slug'] ) )
+						return $v; 
+
+					$id = (int) $v;
 
 					// get page slug of assigned page
 					$slug = get_post_field( 'post_name', $id );
@@ -98,7 +100,7 @@ class Reading {
 
 					flush_rewrite_rules();
 
-					return $value;
+					return $v;
 				}
 			];
 

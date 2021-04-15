@@ -12,6 +12,14 @@
 
 namespace Formation;
 
+/*
+ * Imports
+ * -------
+ */
+
+use Formation\Common\Field\Field;
+use function Formation\write_log;
+
 class Formation {
 
  /*
@@ -222,6 +230,37 @@ class Formation {
 	public static $uploads_url = '';
 
  /*
+	* Fields for attachments.
+	*
+	* @var array $attachment_fields
+	*/
+
+	public static $attachment_fields = [];
+
+ /*
+	* Media position options for attachments.
+	*
+	* @var bool $media_pos_add
+	* @var string $media_pos_class_pre
+	* @var array $media_pos
+	*/
+
+	public static $media_pos_add = false;
+	public static $media_pos_class_pre = 'u-p-';
+	public static $media_pos = [
+		'' => '— Select —',
+		'lt' => 'Left Top',
+		'lc' => 'Left Center',
+		'lb' => 'Left Bottom',
+		'rt' => 'Right Top',
+		'rc' => 'Right Center',
+		'rb' => 'Right Bottom',
+		'ct' => 'Center Top',
+		'cc' => 'Center Center',
+		'cb' => 'Center Bottom'
+	];
+
+ /*
 	* Constructor
 	* -----------
 	*/
@@ -229,6 +268,20 @@ class Formation {
 	public function __construct() {
 		$this->setup_actions();
 		$this->setup_filters();
+
+		/* Add and save field for media pos  */
+
+		if( self::$media_pos_add ) {
+			self::$attachment_fields[] = [
+        'name' => 'media_pos',
+        'label' => 'Cover position',
+        'type' => 'select',
+        'options' => self::$media_pos
+			];
+
+			add_filter( 'attachment_fields_to_edit', [$this, 'add_attachment_fields'], 11, 2 );
+			add_action( 'edit_attachment', [$this, 'save_attachment_fields'], 11, 1 );
+		}
 	}
 
  /*
@@ -703,6 +756,59 @@ class Formation {
 	public function tiny_mce_remove_h1( $init ) {
 		$init['block_formats'] = 'Paragraph=p;Heading 2=h2;Heading 3=h3;Heading 4=h4;';
 		return $init;
+	}
+
+ /*
+  * Render fields to attachment.
+  *
+  * @param array $form_fields
+  * @param object $post
+  * @return array $form_fields
+  */
+
+	public function add_attachment_fields( $form_fields, $post ) {
+    $post_id = $post->ID;
+
+    foreach( self::$attachment_fields as $f ) {
+      $output = '';
+
+      $name = self::get_namespaced_str( $f['name'] );
+      $data = get_post_meta( $post_id, $name, true );
+      $label = $f['label'];
+
+      unset( $f['label'] );
+
+      Field::render( [
+        'fields' => [$f],
+        'data' => [
+          $name => $data
+        ] 
+      ], $output );
+
+      $form_fields[$name] = [
+        'value' => $data ? $data : '',
+        'label' => $label,
+        'input' => 'html',
+        'html' => $output
+      ];
+    }
+
+    return $form_fields;
+	}
+
+ /*
+  * Save fields to attachment.
+  *
+  * @param int $attachment_id
+  */
+
+	public function save_attachment_fields( $attachment_id ) {
+		foreach( self::$attachment_fields as $f ) {
+			$name = self::get_namespaced_str( $f['name'] );
+
+			if( isset( $_REQUEST[$name] ) )
+				update_post_meta( $attachment_id, $name, $_REQUEST[$name] );
+		}
 	}
 
 } // end Formation

@@ -254,9 +254,9 @@ trait Utils {
         $target = '';
 
       return [
-        'text' => $v[0] ?? '',
-        'url' => $v[1] ?? '',
-        'target' => $target
+        'text' => esc_html( $v[0] ?? '' ),
+        'url' => esc_url( $v[1] ?? '' ),
+        'target' => esc_attr( $target )
       ];
     } else {
       return false;
@@ -288,7 +288,7 @@ trait Utils {
       $image = wp_get_attachment_image_src( $id, $s );
 
       if( $image ) {
-        $urls[] = $image[0];
+        $urls[] = esc_url( $image[0] );
         $srcsets[] = wp_get_attachment_image_srcset( $id, $s );
         $sizes[] = wp_get_attachment_image_sizes( $id, $s );
       }
@@ -297,10 +297,10 @@ trait Utils {
     if( $urls ) {
       return [
         'url' => $single ? $urls[0] : $urls,
-        'title' => get_the_title( $id ),
-        'alt' => get_post_meta( $id, '_wp_attachment_image_alt', true ),
-        'srcset' => $single ? $srcsets[0] : $srcsets,
-        'sizes' => $single ? $sizes[0] : $sizes
+        'title' => esc_attr( get_the_title( $id ) ),
+        'alt' => esc_attr( get_post_meta( $id, '_wp_attachment_image_alt', true ) ),
+        'srcset' => esc_attr( $single ? $srcsets[0] : $srcsets ),
+        'sizes' => esc_attr( $single ? $sizes[0] : $sizes )
       ];
     }
 
@@ -318,7 +318,7 @@ trait Utils {
       $attr_formatted = [];
 
       foreach( $attr as $a => $v ) {
-        $attr_formatted[] = $a . '="' . $v . '"';
+        $attr_formatted[] = $a . '="' . esc_attr( $v ) . '"';
 
         if( is_callable( $callback ) )
           call_user_func_array( $callback, [$a, $v] );
@@ -504,6 +504,28 @@ trait Utils {
     }
 
     return $is_external;
+  }
+
+ /*
+  * Get media position class.
+  *
+  * @param string $pos
+  * @return string
+  */
+
+  public static function get_media_pos_class( $pos = '', $id = 0 ) {
+    if( !$pos ) {
+      if( $id ) {
+        $pos = get_post_meta( $id, static::get_namespaced_str( 'media_pos' ), true );
+      } else {
+        return '';
+      }
+    }
+
+    if( !$pos )
+      return '';
+
+    return static::$media_pos_class_pre . $pos;
   }
 
 } // end Utils

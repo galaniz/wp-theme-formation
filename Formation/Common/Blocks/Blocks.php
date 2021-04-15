@@ -102,7 +102,7 @@ class Blocks {
 				wp_register_script(
 					$handle,
 					$folder_url . $b['script'],
-					['wp-blocks', 'wp-element', 'wp-editor', 'wp-blocks'],
+					['wp-blocks', 'wp-element', 'wp-components', 'wp-data', 'wp-core-data', 'wp-block-editor', 'wp-editor'],
 					NULL,
 					true
 				);

@@ -7,7 +7,6 @@
 
 namespace Formation;
 
-use Formation\Utils;
 use function Formation\additional_script_data;
 
 trait Utils_Render {
@@ -52,13 +51,13 @@ trait Utils_Render {
 		$tag = $div ? 'div' : 'ul';
 		$child_tag = $div ? 'div' : 'li';
 
-		$list_class = 'o-social l-flex' . ( $list_class ? " $list_class" : '' );
-		$item_class = 'o-social__item' . ( $item_class ? " $item_class" : '' );
-		$link_class = 'o-social__link' . ( $link_class ? " $link_class" : '' );
-		$icon_class = 'o-social__icon' . ( $icon_class ? " $icon_class" : '' );
+		$list_class = esc_attr( 'o-social l-flex' . ( $list_class ? " $list_class" : '' ) );
+		$item_class = esc_attr( 'o-social__item' . ( $item_class ? " $item_class" : '' ) );
+		$link_class = esc_attr( 'o-social__link' . ( $link_class ? " $link_class" : '' ) );
+		$icon_class = esc_attr( 'o-social__icon' . ( $icon_class ? " $icon_class" : '' ) );
 
-		$list_attr = Utils::get_attr_as_str( $list_attr );
-		$link_attr = Utils::get_attr_as_str( $link_attr );
+		$list_attr = static::get_attr_as_str( $list_attr );
+		$link_attr = static::get_attr_as_str( $link_attr );
 
 		if( $list_attr )
 			$list_attr = " $list_attr";
@@ -131,7 +130,7 @@ trait Utils_Render {
 		}
 
 		foreach( $data as $d ) {
-			$url = $d['url'];
+			$url = esc_url( $d['url'] );
 			$id = $d['id'];
 			$icon_html = '';
 			$w = '';
@@ -185,9 +184,9 @@ trait Utils_Render {
 		/* Loader */
 
 		if( $loader_class )
-			$loader_class = " $loader_class";
+			$loader_class = esc_attr( " $loader_class" );
 
-		$loader_attr = Utils::get_attr_as_str( $loader_attr );
+		$loader_attr = static::get_attr_as_str( $loader_attr );
 
 		if( $loader_attr )
 			$loader_attr = " $loader_attr";
@@ -195,9 +194,9 @@ trait Utils_Render {
 		/* Icon */
 
 		if( $icon_class )
-			$icon_class = " $icon_class";
+			$icon_class = esc_attr( " $icon_class" );
 
-		$icon_attr = Utils::get_attr_as_str( $icon_attr );
+		$icon_attr = static::get_attr_as_str( $icon_attr );
 
 		if( $icon_attr )
 			$icon_attr = " $icon_attr";
@@ -258,14 +257,14 @@ trait Utils_Render {
 		/* Form attributes */
 
 		$form_attr['data-type'] = $form_data_type;
-		$form_attr = Utils::get_attr_as_str( $form_attr );
+		$form_attr = static::get_attr_as_str( $form_attr );
 
 		if( $form_attr )
 			$form_attr = " $form_attr";
 
 		/* Fields attributes */
 
-		$fields_attr = Utils::get_attr_as_str( $fields_attr );
+		$fields_attr = static::get_attr_as_str( $fields_attr );
 
 		if( $fields_attr )
 			$fields_attr = " $fields_attr";
@@ -273,7 +272,7 @@ trait Utils_Render {
 		/* Button */
 
 		$button_class = ( static::$classes['button'] ? ' ' . static::$classes['button'] : '' ) . ( $button_class ? ' ' . $button_class : '' );
-		$button_attr = Utils::get_attr_as_str( $button_attr );
+		$button_attr = static::get_attr_as_str( $button_attr );
 
 		if( $button_attr )
 			$button_attr = " $button_attr";
@@ -313,15 +312,15 @@ trait Utils_Render {
 					'</div>' .
 				'</div>' .
 			'</form>',
-			$form_class,
+			esc_attr( $form_class ),
 			$form_id,
 			$form_attr,
 			$fields_gap,
 			$fields_attr,
 			$fields,
-			$button_class,
+			esc_attr( $button_class ),
 			$button_attr,
-			$submit_label,
+			esc_html( $submit_label ),
 			$result_gap,
 			static::$form_svg['error'], 
 			static::$form_svg['success']

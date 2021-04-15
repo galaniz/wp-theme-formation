@@ -24,7 +24,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			return;
 
 		let insertBlock = false,
-			insertBlocks = false;
+				insertBlocks = false;
 
 		if( nO.hasOwnProperty( 'insert_block' ) )
 			insertBlock = nO.insert_block;
@@ -43,6 +43,9 @@ document.addEventListener( 'DOMContentLoaded', () => {
 				}
 			];
 		}
+
+		if( !insertBlocks )
+			return;
 
 		if( !insertBlocks.length )
 			return;

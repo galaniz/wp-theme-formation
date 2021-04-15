@@ -193,6 +193,7 @@ class Settings {
 	  	$name = FRM::get_namespaced_str( $field['name'] );
 	  	$top_level_name = Field::get_top_level_name( $name );
 	  	$label = $field['label'] ?? '';
+	  	$type = $field['type'] ?? 'text';
 	  	$register_args = [];
 
 	  	if( $label && isset( $field['helper'] ) )
@@ -204,6 +205,18 @@ class Settings {
 	  	if( isset( $field['on_save'] ) ) {
 	  		if( is_callable( $field['on_save'] ) ) {
 	  			$register_args['sanitize_callback'] = $field['on_save'];
+	  		}
+	  	} else {
+	  		if( $type != 'file' ) {
+	  			if( $type == 'email' ) {
+						$field['on_save'] = function( $value ) {
+							return sanitize_email( $value );
+						};
+	  			} else {
+						$field['on_save'] = function( $value ) {
+							return sanitize_text_field( $value );
+						};
+	  			}
 	  		}
 	  	}
 
