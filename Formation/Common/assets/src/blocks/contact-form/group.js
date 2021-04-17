@@ -43,7 +43,7 @@ const def = nO.blocks[name]['default'];
 
 /* Loop through inner blocks */
 
-const recurseInnerBlocks = ( innerBlocks, email_label) => {
+const recurseInnerBlocks = ( innerBlocks, email_label ) => {
   innerBlocks.forEach( ( b ) => {
     if( b.name == n + 'contact-form-field' )
       b.attributes.email_label = email_label;
@@ -68,16 +68,17 @@ const dataSelector = withSelect( ( select, ownProps ) => {
 registerBlockType( name, {
   title: 'Field Group',
   category: 'theme-blocks',
+  icon: 'email',
   attributes: attr,
   parent: [n + 'contact-form'],
-  edit: dataSelector( ( props ) => {  
+  edit: dataSelector( props => {  
     const { attributes, setAttributes } = props;
     const { email_label = def.email_label } = attributes;
 
     return [
       <Fragment>
         <InspectorControls>
-          <PanelBody title={ 'Field Group Options' }>
+          <PanelBody title="Field Group Options">
             <TextControl
               label="Email Label"
               value={ email_label }
@@ -86,12 +87,14 @@ registerBlockType( name, {
           </PanelBody>
         </InspectorControls>
       </Fragment>,
-      <Panel header="Field Group" className="c-panel">
-        <PanelBody>
-          <InnerBlocks 
-            allowedBlocks={ [n + 'contact-form-group-top', n + 'contact-form-group-bottom'] } 
-            template={ [ [n + 'contact-form-group-top', {}, []], [n + 'contact-form-group-bottom', {}, []] ] }
-          />
+      <Panel>
+        <PanelBody title="Field Group">
+          <div className="l-section">
+            <InnerBlocks 
+              allowedBlocks={ [n + 'contact-form-group-top', n + 'contact-form-group-bottom'] } 
+              template={ [ [n + 'contact-form-group-top', {}, []], [n + 'contact-form-group-bottom', {}, []] ] }
+            />
+          </div>
         </PanelBody>
       </Panel>   
     ];

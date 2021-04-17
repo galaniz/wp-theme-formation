@@ -5,7 +5,7 @@
  * ---------------------------------------
  */
 
-namespace Formation\Public;
+namespace Formation\Pub;
 
 use \Formation\Formation as FRM;
 use function \Formation\write_log;
@@ -200,7 +200,7 @@ trait Ajax {
 
 		$data_center = explode( '-', $key )[1];
 
-		$list_id = get_option( $n . 'mailchimp_list_' . $location . '_id', '' );
+		$list_id = get_option( $n . $location . '_list_id', '' );
 
 		if( !$list_id )
 			throw new \Exception( 'No List ID' );
@@ -213,7 +213,7 @@ trait Ajax {
 
 		$body = [
 			'email_address' => $email,
-			'status' => 'subscribed',
+			'status' => 'pending',
 		];
 
 		if( count( $tags ) > 0 )

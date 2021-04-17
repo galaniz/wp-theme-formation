@@ -192,7 +192,12 @@ class Settings {
 	  foreach( $fields as $field ) {
 	  	$name = FRM::get_namespaced_str( $field['name'] );
 	  	$top_level_name = Field::get_top_level_name( $name );
+	  	$label = $field['label'] ?? '';
+	  	$type = $field['type'] ?? 'text';
 	  	$register_args = [];
+
+	  	if( $label && isset( $field['helper'] ) )
+	  		$label .= '<p class="u-helper">' . $field['helper'] . '</p>';
 
 	  	if( !isset( $field['fields'] ) )
 	  		$field['label_hidden'] = true;
@@ -200,6 +205,18 @@ class Settings {
 	  	if( isset( $field['on_save'] ) ) {
 	  		if( is_callable( $field['on_save'] ) ) {
 	  			$register_args['sanitize_callback'] = $field['on_save'];
+	  		}
+	  	} else {
+	  		if( $type != 'file' ) {
+	  			if( $type == 'email' ) {
+						$field['on_save'] = function( $value ) {
+							return sanitize_email( $value );
+						};
+	  			} else {
+						$field['on_save'] = function( $value ) {
+							return sanitize_text_field( $value );
+						};
+	  			}
 	  		}
 	  	}
 
@@ -211,7 +228,7 @@ class Settings {
 
 		  add_settings_field( 
 		  	$name, 
-		  	$field['label'] ?? '', 
+		  	$label, 
 		  	function( $args ) use ( $top_level_name ) { // $args = $field
 		  		$output = '';
 

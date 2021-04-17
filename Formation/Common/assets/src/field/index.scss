@@ -6,10 +6,7 @@
 
 /* Config, variables, utilities, functions, mixins */
 
-$g-breakpoints: (
-	782: 782px
-);
-
+@import '~Admin/config/config';
 @import '~Formation/index';
 
 /* Layouts */

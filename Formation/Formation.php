@@ -12,6 +12,14 @@
 
 namespace Formation;
 
+/*
+ * Imports
+ * -------
+ */
+
+use Formation\Common\Field\Field;
+use function Formation\write_log;
+
 class Formation {
 
  /*
@@ -31,7 +39,7 @@ class Formation {
 	* @var string $src_path
 	*/
 
-	public static $src_path = '/vendor/alanizcreative/wp-theme-formation/src/';
+	public static $src_path = '/vendor/alanizcreative/wp-theme-formation/Formation/';
 	public static $src_url = '';
 
  /*
@@ -104,6 +112,14 @@ class Formation {
 	public $nav_menus = [];
 
  /*
+	* If child theme change styles path
+	*
+	* @var boolean $child
+	*/
+
+	public static $child = false;
+
+ /*
 	* Stylesheet path for admin editor styles relative to theme root.
 	*
 	* @var string $editor_style
@@ -151,6 +167,16 @@ class Formation {
 	public $defer_script_handles = [];
 
  /*
+	* Handles and attribute strings for scripts. Set in scripts callback.
+	*
+	* @var array $script_attributes {
+	*		@type string $handle => string $attr
+	* }
+	*/
+
+	public $script_attributes = [];
+
+ /*
 	* Markup for default loader icon.
 	*
 	* @var string $loader_icon
@@ -159,12 +185,21 @@ class Formation {
 	public static $loader_icon = '';
 
  /*
+	* Options for gap in flex layouts.
+	*
+	* @var array $loader_icon
+	*/
+
+	public static $gap_options = [];
+
+ /*
 	* Optional classes to add to fields, labels, buttons...
 	*
 	* @var array $classes
 	*/
 
 	public static $classes = [
+		'field_prefix' => 'o-field',
 		'field' => '',
 		'button' => '',
 		'label' => '',
@@ -173,87 +208,14 @@ class Formation {
 	];
 
  /*
-	* Stores svg sprite meta.
+	* Svg output for error and success in forms.
 	*
-	* @var array $sprites
+	* @var array $form_svg
 	*/
 
-	public static $sprites = [
-		'Facebook' => [
-			'id' => 'facebook',
-			'w' => 16,
-			'h' => 28
-		],
-		'Twitter' => [
-			'id' => 'twitter',
-			'w' => 26,
-			'h' => 28
-		],
-		'Linkedin' => [
-			'id' => 'linkedin',
-			'w' => 24,
-			'h' => 28
-		],
-		'YouTube' => [
-			'id' => 'youtube',
-			'w' => 28,
-			'h' => 28
-		],
-		'Vimeo' => [
-			'id' => 'vimeo',
-			'w' => 28,
-			'h' => 28
-		],
-		'Pinterest' => [
-			'id' => 'pinterest',
-			'w' => 20,
-			'h' => 28
-		],
-		'Instagram' => [
-			'id' => 'instagram',
-			'w' => 24,
-			'h' => 28
-		],
-		'Email' => [
-			'id' => 'email',
-			'w' => 28,
-			'h' => 28
-		],
-		'Location' => [
-			'id' => 'location',
-			'w' => 32,
-			'h' => 32,
-		],
-		'Caret' => [
-			'id' => 'caret',
-			'w' => 24,
-			'h' => 24
-		],
-		'Carousel' => [
-			'id' => 'carousel',
-			'w' => 20,
-			'h' => 20
-		],
-		'Play' => [
-			'id' => 'play',
-			'w' => 20,
-			'h' => 23
-		],
-		'Error' => [
-			'id' => 'error',
-			'w' => 32,
-			'h' => 32
-		],
-		'Success' => [
-			'id' => 'success',
-			'w' => 20,
-			'h' => 20
-		],
-		'Search' => [
-			'id' => 'search',
-			'w' => 26,
-			'h' => 28
-		]
+	public static $form_svg = [
+		'error' => '',
+		'success' => ''
 	];
 
  /*
@@ -268,6 +230,37 @@ class Formation {
 	public static $uploads_url = '';
 
  /*
+	* Fields for attachments.
+	*
+	* @var array $attachment_fields
+	*/
+
+	public static $attachment_fields = [];
+
+ /*
+	* Media position options for attachments.
+	*
+	* @var bool $media_pos_add
+	* @var string $media_pos_class_pre
+	* @var array $media_pos
+	*/
+
+	public static $media_pos_add = false;
+	public static $media_pos_class_pre = 'u-p-';
+	public static $media_pos = [
+		'' => '— Select —',
+		'lt' => 'Left Top',
+		'lc' => 'Left Center',
+		'lb' => 'Left Bottom',
+		'rt' => 'Right Top',
+		'rc' => 'Right Center',
+		'rb' => 'Right Bottom',
+		'ct' => 'Center Top',
+		'cc' => 'Center Center',
+		'cb' => 'Center Bottom'
+	];
+
+ /*
 	* Constructor
 	* -----------
 	*/
@@ -275,6 +268,20 @@ class Formation {
 	public function __construct() {
 		$this->setup_actions();
 		$this->setup_filters();
+
+		/* Add and save field for media pos  */
+
+		if( self::$media_pos_add ) {
+			self::$attachment_fields[] = [
+        'name' => 'media_pos',
+        'label' => 'Cover position',
+        'type' => 'select',
+        'options' => self::$media_pos
+			];
+
+			add_filter( 'attachment_fields_to_edit', [$this, 'add_attachment_fields'], 11, 2 );
+			add_action( 'edit_attachment', [$this, 'save_attachment_fields'], 11, 1 );
+		}
 	}
 
  /*
@@ -319,6 +326,7 @@ class Formation {
 
 		additional_script_data( 'namespace', static::$namespace, true, true );
 		additional_script_data( 'namespace', static::$namespace, false, true );
+		additional_script_data( static::$namespace, ['gap_options' => self::$gap_options ], true, true );
 
 		$ajax_url = ['ajax_url' => admin_url( 'admin-ajax.php' )];
 
@@ -330,8 +338,8 @@ class Formation {
 		self::$uploads_url = get_site_option( 'siteurl' ) . '/wp-content/' . static::$namespace . '_uploads/';
 
 		/* Set source url */
-
-		self::$src_url = get_template_directory_uri() . self::$src_path;
+		
+		self::$src_url = ( self::$child ? get_stylesheet_directory_uri() : get_template_directory_uri() ) . self::$src_path;
 	}
 
  /*
@@ -343,7 +351,8 @@ class Formation {
 	private function setup_filters() {
 		add_filter( 'document_title_separator', [$this, 'title_separator'] );
 		add_filter( 'nav_menu_css_class', [$this, 'cpt_nav_classes'], 10, 2 );
-		add_filter( 'script_loader_tag', [$this, 'add_defer_async_attributes'], 10, 2 );
+		add_filter( 'excerpt_more', [$this, 'excerpt_more'] );
+		add_filter( 'script_loader_tag', [$this, 'add_script_attributes'], 10, 2 );
 		add_filter( 'image_size_names_choose', [$this, 'custom_image_sizes'] );
 		add_filter( 'render_block', [$this, 'filter_block'], 10, 2 );
 
@@ -606,10 +615,10 @@ class Formation {
 	*/
 
 	public function remove_meta_boxes() {
-	remove_meta_box( 'commentstatusdiv', 'post', 'normal' );
-	remove_meta_box( 'tagsdiv-post_tag', 'post', 'normal' );
-	remove_meta_box( 'tagsdiv-post_tag', 'post', 'advanced' );
-	remove_submenu_page( 'edit.php', 'edit-tags.php?taxonomy=post_tag' );
+		remove_meta_box( 'commentstatusdiv', 'post', 'normal' );
+		remove_meta_box( 'tagsdiv-post_tag', 'post', 'normal' );
+		remove_meta_box( 'tagsdiv-post_tag', 'post', 'advanced' );
+		remove_submenu_page( 'edit.php', 'edit-tags.php?taxonomy=post_tag' );
 	}
 
  /*
@@ -647,7 +656,7 @@ class Formation {
 	* Ajax callbacks
 	*/
 
-	use Public\Ajax;
+	use Pub\Ajax;
 
  /*
 	* Utility methods
@@ -683,6 +692,14 @@ class Formation {
 	}
 
  /*
+	* Change excerpt end to ellipsis.
+	*/
+
+	public function excerpt_more( $more ) {
+		return '&hellip;';
+	}
+
+ /*
 	* Remove current from blog when on custom post type.
 	*/
 
@@ -696,16 +713,12 @@ class Formation {
 			$c_single = is_singular( $c );
 
 			if( $c_archive || $c_tax || $c_single ) {
-				// if on blog page remove current page parent class
-				if( get_post_meta( $item->ID, '_menu_item_object_id', true ) == get_option( 'page_for_posts' ) )
-					$classes = array_diff( $classes, ['current_page_parent'] );
-
 				// get slug of nav item
 				$nav_object_slug = get_post_field( 'post_name', (int) $item->object_id );
 
 				// check if slug matches cpt or tax
 				if( $nav_object_slug == $meta['slug'] )
-					$classes[] = 'current_page_parent';
+					$classes[] = 'current-menu-item';
 			}
 		}
 
@@ -713,13 +726,20 @@ class Formation {
 	}
 
  /*
-	* Add defer / async attributes to $this->defer_script_handles.
+	* Add attributes to $this->defer_script_handles and $this->script_attributes.
 	*/
 
-	public function add_defer_async_attributes( $tag, $handle ) {
+	public function add_script_attributes( $tag, $handle ) {
 		foreach( $this->defer_script_handles as $script ) {
 			if( $script === $handle )
-				return str_replace( ' src', ' defer="defer" async="async" src', $tag );
+				$tag = str_replace( ' src', ' defer="defer" async="async" src', $tag );
+		}
+
+		foreach( $this->script_attributes as $script => $attr ) {
+			$s = static::$namespace . '-' . $script;
+			
+			if( $s === $handle && $attr )
+				$tag = str_replace( ' src', " $attr src", $tag );
 		}
 
 		return $tag;
@@ -732,6 +752,59 @@ class Formation {
 	public function tiny_mce_remove_h1( $init ) {
 		$init['block_formats'] = 'Paragraph=p;Heading 2=h2;Heading 3=h3;Heading 4=h4;';
 		return $init;
+	}
+
+ /*
+  * Render fields to attachment.
+  *
+  * @param array $form_fields
+  * @param object $post
+  * @return array $form_fields
+  */
+
+	public function add_attachment_fields( $form_fields, $post ) {
+    $post_id = $post->ID;
+
+    foreach( self::$attachment_fields as $f ) {
+      $output = '';
+
+      $name = self::get_namespaced_str( $f['name'] );
+      $data = get_post_meta( $post_id, $name, true );
+      $label = $f['label'];
+
+      unset( $f['label'] );
+
+      Field::render( [
+        'fields' => [$f],
+        'data' => [
+          $name => $data
+        ] 
+      ], $output );
+
+      $form_fields[$name] = [
+        'value' => $data ? $data : '',
+        'label' => $label,
+        'input' => 'html',
+        'html' => $output
+      ];
+    }
+
+    return $form_fields;
+	}
+
+ /*
+  * Save fields to attachment.
+  *
+  * @param int $attachment_id
+  */
+
+	public function save_attachment_fields( $attachment_id ) {
+		foreach( self::$attachment_fields as $f ) {
+			$name = self::get_namespaced_str( $f['name'] );
+
+			if( isset( $_REQUEST[$name] ) )
+				update_post_meta( $attachment_id, $name, $_REQUEST[$name] );
+		}
 	}
 
 } // end Formation

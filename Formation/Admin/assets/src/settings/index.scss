@@ -13,3 +13,31 @@
     }
   }
 }
+
+.o-time {
+	& label {
+		width: 3.75rem;
+		display: block;
+		position: relative;
+
+		&::before {
+			content: ':';
+			position: absolute;
+			left: -0.6875rem;
+			bottom: 12%;
+		}
+	}
+
+	& .o-field__label {
+		height: 1rem;
+		opacity: 0;
+	}
+}
+
+/* Utilities */
+
+.u-helper {
+	font-size: 0.875rem;
+	font-weight: 400;
+	opacity: 0.75;
+}

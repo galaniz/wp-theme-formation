@@ -34,13 +34,17 @@ class Contact_Form {
 				'id' => ['type' => 'string'],
 				'email' => ['type' => 'string'],
 				'subject' => ['type' => 'string'],
-				'submit_label' => ['type' => 'string']
+				'submit_label' => ['type' => 'string'],
+				'success_message' => ['type' => 'string'],
+				'gap' => ['type' => 'string']
 			],
 			'default' => [
 				'id' => '',
 				'email' => '',
 				'subject' => '',
-				'submit_label' => 'Submit'
+				'submit_label' => 'Send',
+				'success_message' => '',
+				'gap' => ''
 			],
 			'render' => [__CLASS__, 'render_contact_form'],
 			'handle' => 'contact_form',
@@ -63,6 +67,12 @@ class Contact_Form {
 			'script' => 'contact-form/group-top.js'
 		], 
 		'contact-form-group-bottom' => [
+			'attr' => [
+				'gap' => ['type' => 'string']
+			],
+			'default' => [
+				'gap' => ''
+			],
 			'render' => [__CLASS__, 'render_contact_form_group_bottom'],
 			'handle' => 'contact_form_group_bottom',
 			'script' => 'contact-form/group-bottom.js'
@@ -214,27 +224,26 @@ class Contact_Form {
 			] );
 		} 
 
-		$s_error = FRM::$sprites['Error'];
-		$s_success = FRM::$sprites['Success'];
-
 		return FRM::render_form( [
-			'id' => $id,
-			'data_type' => 'contact',
+			'form_id' => $id,
+			'form_data_type' => 'contact',
 			'fields' => $content,
-			'submit_label' => $submit_label
+			'fields_gap' => $gap,
+			'submit_label' => $submit_label,
+			'success_message' => $success_message
 		] );
 	}
 
 	public static function render_contact_form_group( $attributes, $content ) {
-		return "<div class='o-field-group l-100'>$content</div>";
+		return "<div class='" . FRM::$classes['field_prefix'] . "-group l-100'>$content</div>";
 	}
 
 	public static function render_contact_form_group_top( $attributes, $content ) {
-		return "<div class='o-field-group__top'>$content</div>";
+		return "<div class='" . FRM::$classes['field_prefix'] . "-group__top'>$content</div>";
 	}
 
 	public static function render_contact_form_group_bottom( $attributes, $content ) {
-		return "<div class='o-field-group__bottom l-flex' data-wrap>$content</div>";
+		return "<div class='" . FRM::$classes['field_prefix'] . "-group__bottom l-flex' data-gap='$gap' data-wrap>$content</div>";
 	}
 
 	public static function render_contact_form_field( $attributes ) {
@@ -284,6 +293,9 @@ class Contact_Form {
 
 		$field['attr'] = $attr_array;
 		$field['options'] = $options_array;
+
+		// filter args
+		$field = apply_filters( 'formation_contact_form_field_args', $field );
 
 		if( $type == 'radio' || $type == 'checkbox' ) {
 			$field['class'] = 'u-h-i';

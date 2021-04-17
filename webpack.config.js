@@ -4,12 +4,15 @@
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const path = require( 'path' );
 
+console.log(path.resolve( __dirname, 'Formation/Admin/src' ));
+
 /* Resolve to root */
 
 let resolve = {
   alias: {
-    Formation: path.resolve( __dirname, '../../formation/src' )
-    // Formation: '@alanizcreative/formation/src'
+    // Formation: path.resolve( __dirname, '../../formation/src' ),
+    Formation: '@alanizcreative/formation/src',
+    Admin: path.resolve( __dirname, 'Formation/Admin/assets/src' )
   },
   extensions: [
     '.sass',
@@ -37,7 +40,7 @@ let rules = [
             targets: {
               browsers: [
                 'last 3 versions',
-                'ie >= 10'
+                'ie >= 11'
               ]
             }
           }
@@ -74,7 +77,7 @@ let rules = [
               'postcss-preset-env': {
                 browsers: [
                   'last 3 versions',
-                  'ie >= 10'
+                  'ie >= 11'
                 ]
               },
               'cssnano': {},
@@ -101,10 +104,7 @@ let blocks = [
   'contact-form/group',
   'contact-form/group-top',
   'contact-form/group-bottom',
-  'extend-media/attr',
-  'extend-media/control',
-  'insert-block',
-  'media'
+  'insert-block'
 ];
 
 let blocksEntry = {};
@@ -168,7 +168,7 @@ module.exports = [
   {
     mode: 'production',
     entry: {
-      'tab-nav': [
+      'business': [
         __dirname + '/Formation/Admin/assets/src/settings/business/admin.js'
       ] 
     },

@@ -4,6 +4,8 @@
  * -----
  */
 
+$gray: rgba( map-get( $g-colors, 'foreground-dark' ), 0.2 );
+
 .o-field-section {
 	@extend %u-display-inline-block;
 }
@@ -23,6 +25,23 @@
 
 	&[data-type="richtext"] {
 		max-width: calcRem( 750px );
+
+		// MCE overrides
+
+		.wp-editor-container,
+		.mce-top-part::before {
+			box-shadow: none !important;
+		}
+
+		.wp-editor-container,
+		.wp-switch-editor {
+			border-color: $gray !important;
+		}
+
+		.html-active .switch-html, 
+		.tmce-active .switch-tmce {
+			border-bottom-color: map-get( $g-colors, 'background-dark' ) !important;
+		}
 	}
 }
 
@@ -37,6 +56,11 @@
 .o-field__select {
 	.o-multi & {
 		@extend %u-width-100;
+	}
+
+	&[data-full] {
+		width: 100%;
+		max-width: calcRem( 750px );
 	}
 }
 

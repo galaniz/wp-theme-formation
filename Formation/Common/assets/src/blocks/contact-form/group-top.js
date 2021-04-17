@@ -29,14 +29,17 @@ const name = n + 'contact-form-group-top';
 registerBlockType( name, {
   title: 'Field Group Top',
   category: 'theme-blocks',
+  icon: 'email',
   parent: [n + 'contact-form-group'],
   edit( props ) {
     return [
       <Panel>
         <PanelBody>
-          <InnerBlocks 
-            allowedBlocks={ ['core/paragraph', 'core/heading', 'core/image'] } 
-          />  
+          <div className="l-section">
+            <InnerBlocks 
+              allowedBlocks={ ['core/paragraph', 'core/heading', 'core/image'] } 
+            />  
+          </div>
         </PanelBody>
       </Panel>   
     ];

@@ -24,7 +24,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			return;
 
 		let insertBlock = false,
-			insertBlocks = false;
+				insertBlocks = false;
 
 		if( nO.hasOwnProperty( 'insert_block' ) )
 			insertBlock = nO.insert_block;
@@ -44,16 +44,19 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			];
 		}
 
+		if( !insertBlocks )
+			return;
+
 		if( !insertBlocks.length )
 			return;
 
 		let blocksInEditor = wp.data.select( 'core/block-editor' ).getBlocks();
 
-		insertBlocks.forEach( ( bb ) => {
+		insertBlocks.forEach( bb => {
 			let blockName = bb.name,
 				blockExists = false;
 
-			blocksInEditor.forEach( ( b ) => {
+			blocksInEditor.forEach( b => {
 				if( b.name == blockName ) {
 					blockExists = true;
 					return;

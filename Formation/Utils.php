@@ -7,6 +7,8 @@
 
 namespace Formation;
 
+use function Formation\write_log;
+
 trait Utils {
 
  /*
@@ -128,17 +130,21 @@ trait Utils {
   */
 
   public static function get_excerpt( $args = [] ) {
+    $post_id = $args['post_id'] ?? get_the_ID();
     $content = $args['content'] ?? '';
     $words = $args['words'] ?? false;
-    $max = $args['length'] ?? 55;
+    $length = $args['length'] ?? 55;
+
+    // get excerpt
+    if( has_excerpt( $post_id ) )
+      $content = get_the_excerpt( $post_id );
 
     if( !$content ) {
-      $post_id = $args['post_id'] ?? get_the_ID();
       $post = $args['post'] ?? get_post( $post_id );
 
       if( $post->post_excerpt ) {
         $content = $post->post_excerpt;
-        $max = 0;
+        $length = 0;
       } else {
         $content = $post->post_content;
       }
@@ -148,11 +154,11 @@ trait Utils {
       $content = wp_strip_all_tags( $content, true );
       $content = strip_shortcodes( $content );
 
-      if( $max ) {
+      if( $length ) {
         if( $words ) { // trim words
-          $content = wp_trim_words( $content, $max );
+          $content = wp_trim_words( $content, $length );
         } else { // trim characters
-          $content = mb_strimwidth( $content, 0, $max );
+          $content = mb_strimwidth( $content, 0, $length );
         }
       }
     } else {
@@ -248,9 +254,9 @@ trait Utils {
         $target = '';
 
       return [
-        'text' => $v[0] ?? '',
-        'url' => $v[1] ?? '',
-        'target' => $target
+        'text' => esc_html( $v[0] ?? '' ),
+        'url' => esc_url( $v[1] ?? '' ),
+        'target' => esc_attr( $target )
       ];
     } else {
       return false;
@@ -282,7 +288,7 @@ trait Utils {
       $image = wp_get_attachment_image_src( $id, $s );
 
       if( $image ) {
-        $urls[] = $image[0];
+        $urls[] = esc_url( $image[0] );
         $srcsets[] = wp_get_attachment_image_srcset( $id, $s );
         $sizes[] = wp_get_attachment_image_sizes( $id, $s );
       }
@@ -291,10 +297,10 @@ trait Utils {
     if( $urls ) {
       return [
         'url' => $single ? $urls[0] : $urls,
-        'title' => get_the_title( $id ),
-        'alt' => get_post_meta( $id, '_wp_attachment_image_alt', true ),
-        'srcset' => $single ? $srcsets[0] : $srcsets,
-        'sizes' => $single ? $sizes[0] : $sizes
+        'title' => esc_attr( get_the_title( $id ) ),
+        'alt' => esc_attr( get_post_meta( $id, '_wp_attachment_image_alt', true ) ),
+        'srcset' => esc_attr( $single ? $srcsets[0] : $srcsets ),
+        'sizes' => esc_attr( $single ? $sizes[0] : $sizes )
       ];
     }
 
@@ -312,7 +318,7 @@ trait Utils {
       $attr_formatted = [];
 
       foreach( $attr as $a => $v ) {
-        $attr_formatted[] = $a . '="' . $v . '"';
+        $attr_formatted[] = $a . '="' . esc_attr( $v ) . '"';
 
         if( is_callable( $callback ) )
           call_user_func_array( $callback, [$a, $v] );
@@ -352,7 +358,7 @@ trait Utils {
     $resp = json_decode( $resp_json, true );
 
     // response status will be 'OK', if able to geocode given address
-    if( $resp['status']=='OK' ) {
+    if( $resp['status'] == 'OK' ) {
       // get the important data
       $lat = isset($resp['results'][0]['geometry']['location']['lat']) ? $resp['results'][0]['geometry']['location']['lat'] : '';
       $lng = isset($resp['results'][0]['geometry']['location']['lng']) ? $resp['results'][0]['geometry']['location']['lng'] : '';
@@ -366,6 +372,160 @@ trait Utils {
     } else {
       return false;
     }
+  }
+
+ /*
+  * Get terms as associative array of name, value and checked.
+  *
+  * @return array
+  */
+
+  public static function get_terms_as_options( $tax = 'category', $all_label = 'All' ) {
+    $arr = [];
+
+    $terms = get_terms( [
+      'taxonomy' => $tax,
+      'hide_empty' => true,
+      'exclude' => 1
+    ] );
+
+    if( $terms ) {
+      $any_checked = false;
+
+      $terms = array_map( function( $c ) use( &$any_checked, $tax ) {
+        $checked = is_tax( $tax, $c->term_id );
+
+        if( $checked )
+          $any_checked = true;
+
+        return [
+          'checked' => $checked,
+          'value' => $c->term_id,
+          'label' => $c->name
+        ];
+      }, $terms );
+
+      array_unshift( $terms, [
+        'checked' => !$any_checked ? true : false,
+        'value' => 'null',
+        'label' => $all_label
+      ] );
+
+      $arr = $terms;
+    }
+
+    return $arr;
+  }
+
+ /*
+  * Get archive as associative array months and years.
+  *
+  * @return array
+  */
+
+  public static function get_archive_as_options( $post_type = 'post' ) {
+    $arr = [];
+
+    $first_post = get_posts( [
+      'numberposts' => 1,
+      'order' => 'ASC',
+      'post_type' =>  $post_type
+    ] );
+
+    $last_post = get_posts( [
+      'numberposts' => 1,
+      'post_type' =>  $post_type
+    ] );
+
+    if( isset( $first_post[0] ) && isset( $last_post[0] ) ) {
+      $first_post = $first_post[0];
+      $last_post = $last_post[0];
+
+      $first_date = new \DateTime( $first_post->post_date );
+      $last_date = new \DateTime( $last_post->post_date );
+      $f = new \DateTime( $first_date->format( 'Y-m' ) );
+
+      $months = [];
+      $years = [];
+      $year = '';
+
+      while( $f <= $last_date ) { // check if the date is before last date
+        $m = $f->format( 'm' );
+        $y = $f->format( 'Y' );
+
+        if( !in_array( $m, $months ) )
+          $months[$m] = $f->format( 'M' );
+
+        if( !in_array( $y, $years ) ) {
+          $year = $y;
+          $years[$y] = $y;
+        }
+
+        $f->modify( '+1 month' ); // add month and repeat
+      }
+
+      ksort( $months );
+      ksort( $years );
+
+      $months = ['null' => 'Month'] + $months;
+      $years = ['null' => 'Year'] + $years;
+
+      $arr = [
+        'months' => $months,
+        'years' => $years
+      ];
+    }
+
+    return $arr;
+  }
+
+ /*
+  * Check if url is external.
+  *
+  * source: https://bit.ly/3aPpU3O
+  *
+  * @param string $url
+  * @return array
+  */
+
+  public static function is_external_url( $url = '' ) {
+    if( !$url )
+      return false;
+
+    $is_external = false;
+
+    // parse home URL and parameter URL
+    $link_url = parse_url( $url );    
+    $home_url = parse_url( home_url() );
+
+    if( $link_url['host'] ) {
+      if( $link_url['host'] !== $home_url['host'] )
+        $is_external = true;
+    }
+
+    return $is_external;
+  }
+
+ /*
+  * Get media position class.
+  *
+  * @param string $pos
+  * @return string
+  */
+
+  public static function get_media_pos_class( $pos = '', $id = 0 ) {
+    if( !$pos ) {
+      if( $id ) {
+        $pos = get_post_meta( $id, static::get_namespaced_str( 'media_pos' ), true );
+      } else {
+        return '';
+      }
+    }
+
+    if( !$pos )
+      return '';
+
+    return static::$media_pos_class_pre . $pos;
   }
 
 } // end Utils

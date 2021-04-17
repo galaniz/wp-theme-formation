@@ -13,10 +13,14 @@ namespace Formation\Admin\Settings;
  */
 
 use Formation\Formation as FRM;
+use Formation\Utils_Optional;
+
 use Formation\Common\Field\Field;
 use Formation\Common\Field\Select_Fields;
 use Formation\Admin\Settings\Settings;
+
 use function Formation\write_log;
+use function Formation\additional_script_data;
 
 class Theme {
 
@@ -56,14 +60,6 @@ class Theme {
 	private $business = false;
 
  /*
-	* If child theme change styles path
-	*
-	* @var boolean $child
-	*/
-
-	private $child = false;
-
- /*
 	* Sections.
 	*
 	* @var array $sections {
@@ -86,6 +82,10 @@ class Theme {
 		[
 			'id' => 'footer',
 			'title' => 'Footer'
+		],
+		[
+			'id' => 'scripts',
+			'title' => 'Scripts'
 		]
 	];
 
@@ -130,7 +130,7 @@ class Theme {
 			'label' => 'Text',
 			'type' => 'richtext',
 			'toolbar' => 'bold,italic,link',
-			'p_tags' => false,
+			'wpautop' => true,
 			'section' => 'footer',
 			'tab' => 'General'
 		]
@@ -159,6 +159,16 @@ class Theme {
 
 	public function __construct( $args = [] ) {
 
+		/* Add callbacks to some fields */
+
+		$this->fields[2]['on_save'] = function( $value ) {
+			return $value;
+		};
+
+		$this->fields[3]['on_save'] = function( $value ) {
+			return wp_kses( $value, 'post' );
+		};
+
 		/* Default args */
 
 		$args = array_replace_recursive( [
@@ -169,11 +179,68 @@ class Theme {
 			'mailchimp_list_locations' => [],
 			'sections' => [],
 			'fields' => [],
-			'scripts' => null,
-			'child' => false
+			'scripts' => null
 		], $args );
 
 		extract( $args );
+
+		/* Head and Footer Scripts */
+
+		$this->fields[] = [
+			'name' => 'scripts_head',
+			'label' => 'Scripts in Head',
+			'type' => 'textarea',
+			'section' => 'scripts',
+			'tab' => 'General',
+			'attr' => [
+				'rows' => 10,
+				'data-full' => ''
+			],
+			'on_save' => function( $value ) {
+				return wp_kses( $value, [
+					'script' => [
+						'id' => [],
+						'src' => [],
+						'defer' => [],
+						'async' => [],
+						'type' => [],
+						'crossorigin' => [],
+						'integrity' => [],
+						'nomodule' => [],
+						'nonce' => [],
+						'referrerpolicy' => []
+					]
+				] );
+			}
+		];
+
+		$this->fields[] = [
+			'name' => 'scripts_footer',
+			'label' => 'Scripts in Footer',
+			'type' => 'textarea',
+			'section' => 'scripts',
+			'tab' => 'General',
+			'attr' => [
+				'rows' => 10,
+				'data-full' => ''
+			],
+			'on_save' => function( $value ) {
+				return wp_kses( $value, [
+					'script' => [
+						'id' => [],
+						'src' => [],
+						'defer' => [],
+						'async' => [],
+						'type' => [],
+						'crossorigin' => [],
+						'integrity' => [],
+						'nomodule' => [],
+						'nonce' => [],
+						'referrerpolicy' => []
+					]
+				] );
+			}
+		];
 
 		/* Google Recaptcha */
 
@@ -200,18 +267,23 @@ class Theme {
 
 		/* Google Geocode */
 
-		if( $geocode ) {
+		if( $geocode || $business ) {
 			$this->sections[] = [
 				'id' => 'google-geocode',
 				'title' => 'Geocode'
 			];
 
-			$this->fields[] = [
+			$geocode_field = [
 				'name' => 'geocode_key',
 				'label' => 'Geocode API Key',
 				'section' => 'google-geocode',
 				'tab' => 'Google'
 			];
+
+			if( $business )
+				$geocode_field['helper'] = 'Used to fetch lat/lng coordinates in Business section.';
+
+			$this->fields[] = $geocode_field;
 		}
 
 		/* Google Analytics */
@@ -272,7 +344,7 @@ class Theme {
 				];
 
 				$this->fields[] = [
-					'name' => $name . '_id',
+					'name' => $name . '_list_id',
 					'label' => 'List ID',
 					'section' => $section_id,
 					'tab' => 'Mailchimp'
@@ -286,10 +358,35 @@ class Theme {
 				];
 
 				$this->fields[] = [
+					'name' => $name . '_text',
+					'label' => 'Text',
+					'type' => 'richtext',
+					'toolbar' => 'bold,italic,link',
+					'wpautop' => true,
+					'section' => $section_id,
+					'tab' => 'Mailchimp',
+					'on_save' => function( $value ) {
+						return wp_kses( $value, 'post' );
+					}
+				];
+
+				$this->fields[] = [
 					'name' => $name . '_submit_label',
 					'label' => 'Submit Label',
 					'section' => $section_id,
 					'tab' => 'Mailchimp'
+				];
+
+				$this->fields[] = [
+					'name' => $name . '_success_message',
+					'type' => 'textarea',
+					'label' => 'Success Message',
+					'section' => $section_id,
+					'tab' => 'Mailchimp',
+					'attr' => [
+						'rows' => 5,
+						'data-full' => ''
+					]
 				];
 
 				$this->fields[] = [
@@ -304,17 +401,25 @@ class Theme {
 
 							if( $tag || $merge_field ) {
 								if( !isset( $v['attr'] ) )
-										$v['attr'] = [];
+									$v['attr'] = [];
 
 								if( $tag )
-										$v['attr']['data-tag'] = 'true';
+									$v['attr']['data-tag'] = 'true';
 
 								if( $merge_field )
-										$v['attr']['data-merge-field'] = 'true';
+									$v['attr']['data-merge-field'] = 'true';
 							}
 						}
 
-						return Select_Fields::filter( $value );
+						$filter_value = Select_Fields::filter( $value );
+
+						// sanitize
+						array_walk_recursive( $filter_value, function( &$v, $key ) {
+							if( !is_array( $v ) )
+								$v = sanitize_text_field( $v );
+						} );
+
+						return $filter_value;
 					},
 					'fields' => $f,
 					'section' => $section_id,
@@ -328,26 +433,26 @@ class Theme {
 		if( $business ) {
 			$this->business = true;
 
-			$address_fields = [
+			$location_fields = [
 				[
-					'name' => 'address[%i][admin1_name]',
+					'name' => 'location[%i][admin1_name]',
 					'class' => 'js-admin1',
 					'label' => 'Country',
 					'attr' => ['onchange' => 'getAdmin1( event )']
 				],
 				[
 					'type' => 'hidden',
-					'name' => 'address[%i][admin1]'
+					'name' => 'location[%i][admin1]'
 				],
 				[
 					'type' => 'hidden',
-					'name' => 'address[%i][admin1_id]'
+					'name' => 'location[%i][admin1_id]'
 				],
 				[
 					'label' => 'State/Province',
 					'type' => 'select',
-					'class' => 'js-admin3'
-					'name' => 'address[%i][admin3_options]',
+					'class' => 'js-admin3',
+					'name' => 'location[%i][admin3_options]',
 					'attr' => [
 						'disabled' => 'true',
 						'onchange' => 'setAdmin3Input( event )'
@@ -361,35 +466,39 @@ class Theme {
 				],
 				[
 					'type' => 'hidden',
-					'name' => 'address[%i][admin3]'
+					'name' => 'location[%i][admin3]'
 				],
 				[
 					'type' => 'hidden',
-					'name' => 'address[%i][admin3_name]'
+					'name' => 'location[%i][admin3_name]'
 				],
 				[
-					'name' => 'address[%i][city]',
+					'name' => 'location[%i][city]',
 					'label' => 'City'
 				],
 				[
-					'name' => 'address[%i][line1]',
+					'name' => 'location[%i][line1]',
 					'label' => 'Address Line 1'
 				],
 				[
-					'name' => 'address[%i][line2]',
+					'name' => 'location[%i][line2]',
 					'label' => 'Address Line 2',
 					'optional' => true
 				],
 				[
-					'name' => 'address[%i][postal_code]',
+					'name' => 'location[%i][postal_code]',
 					'label' => 'Postal Code'
+				],
+				[
+					'name' => 'location[%i][phone]',
+					'label' => 'Phone Number'
 				]
 			];
 
 			$hours_options = [];
 
 			for( $h = 1; $h <= 24; $h++ ) {
-				$hours[] = [
+				$hours_options[] = [
 					'label' => $h < 10 ? "0$h" : $h,
 					'value' => $h
 				];
@@ -402,53 +511,66 @@ class Theme {
 				'45' => '45'
 			];
 
-			$hours_fields = [
-				[
-					'name' => 'hours[%i][day]',
+			$hours_fields = [];
+			$weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+			foreach( $weekdays as $w ) {
+				$w3 = substr( strtolower( $w ), 0, 3 ); 
+
+				$hours_fields[] = [
+					'name' => "hours[%i][$w3]",
+					'label' => 'Day',
+					'value' => $w,
+					'attr' => ['readonly' => true],
+					'before_field' => '<div class="o-multi__row o-toggle l-flex" data-wrap>'
+				];
+
+				$hours_fields[] = [
+					'name' => "hours[%i][$w3" . "_open_hour]",
+					'label' => 'Open Time',
 					'type' => 'select',
-					'class' => 'o-toggle__item',
-					'options' => [
-						'Monday' => 'Monday',
-						'Tuesday' => 'Tuesday',
-						'Wednesday' => 'Wednesday',
-						'Thursday' => 'Thursday',
-						'Friday' => 'Friday',
-						'Saturday' => 'Saturday',
-						'Sunday' => 'Sunday'
-					]
-				],
-				[
-					'name' => 'hours[%i][open_hour]',
-					'type' => 'select',
+					'field_class' => 'o-toggle__item',
 					'options' => $hours_options,
-					'class' => 'o-toggle__item'
-				],
-				[
-					'name' => 'hours[%i][open_min]',
+					'before_field' => '<div class="l-flex">'
+				];
+
+				$hours_fields[] = [
+					'name' => "hours[%i][$w3" . "_open_min]",
+					'label' => 'Open Minute',
 					'type' => 'select',
+					'field_class' => 'o-toggle__item o-time',
 					'options' => $min_options,
-					'class' => 'o-toggle__item'
-				],
-				[
-					'name' => 'hours[%i][close_hour]',
+					'after_field' => '</div>'
+				];
+
+				$hours_fields[] = [
+					'name' => "hours[%i][$w3" . "_close_hour]",
+					'label' => 'Close Time',
 					'type' => 'select',
+					'field_class' => 'o-toggle__item',
 					'options' => $hours_options,
-					'class' => 'o-toggle__item'
-				],
-				[
-					'name' => 'hours[%i][close_min]',
+					'before_field' => '<div class="l-flex">'
+				];
+
+				$hours_fields[] = [
+					'name' => "hours[%i][$w3" . "_close_min]",
+					'label' => 'Close Minute',
 					'type' => 'select',
+					'field_class' => 'o-toggle__item o-time',
 					'options' => $min_options,
-					'class' => 'o-toggle__item'
-				],
-				[
-					'name' => 'hours[%i][closed]',
+					'after_field' => '</div>'
+				];
+
+				$hours_fields[] = [
+					'name' => "hours[%i][$w3" . "_closed]",
+					'label' => 'Closed',
 					'type' => 'checkbox',
-					'value' => 1
+					'value' => 1,
 					'class' => 'o-toggle__trigger',
-					'attr' => ['onchange' => 'toggleSiblings( event )']
-				]
-			];
+					'attr' => ['onchange' => 'toggleSiblings( event )'],
+					'after_field' => '</div>'
+				];
+			}
 
 			$this->sections[] = [
 				'id' => 'business',
@@ -465,33 +587,41 @@ class Theme {
 				'label' => 'Username',
 				'section' => 'geonames',
 				'tab' => 'GeoNames',
-				'after' => '<p>Used in Business tab to fetch countries and states</p>'
+				'after' => '<p class="u-helper">Used in Business tab to fetch countries and states</p>'
 			];
 
 			$this->fields[] = [
-				'name' => 'address',
-				'label' => 'Address',
-				'fields' => $address_fields,
+				'name' => 'location',
+				'label' => 'Locations',
+				'label_hidden' => true,
+				'helper' => 'The first location is used as the main location in this theme.',
+				'fields' => $location_fields,
 				'multi' => true,
 				'on_save' => function( $value ) {
-					if( !is_array( $value ) )
-						return $value;
+					if( !is_array( $value ) ) {
+						if( is_string( $value ) ) 
+							$value = sanitize_text_field( $value );
 
-					foreach( $value as $v ) {
+						return $value;
+					}
+
+					// sanitize
+					array_walk_recursive( $value, function( &$v, $key ) {
+						if( !is_array( $v ) )
+							$v = sanitize_text_field( $v );
+					} );
+
+					foreach( $value as &$v ) {
 						if( !isset( $v['line1'] ) || !isset( $v['city'] ) || !isset( $v['postal_code'] ) )
 							continue;
 
-						$address = 
-							$v['line1'] .
-							( isset( $v['line2'] ) ? ' ' . $v['line2'] : '' ) . ' ' .
-							$v['city'] . ', ' . $v['admin3'] . ', ' . $v['admin1_name'] .
-							$v['postal_code'];
+						$location = Utils_Optional::format_location( $v );
 
-						$lat_lng = FRM::get_lat_lng( $address );
+						$lat_lng = FRM::get_lat_lng( $location );
 
 						if( $lat_lng )
 							$v['lat_lng'] = $lat_lng;
-					} 
+					}
 
 					return $value;
 				},
@@ -502,18 +632,22 @@ class Theme {
 			$this->fields[] = [
 				'name' => 'hours',
 				'label' => 'Hours',
-				'class' => 'o-toggle',
+				'label_hidden' => true,
+				'helper' => 'Order corresponds with order of locations.',
 				'fields' => $hours_fields,
 				'multi' => true,
+				'multi_col' => true,
 				'section' => 'business',
-				'tab' => 'Business'
-			];
+				'tab' => 'Business',
+				'on_save' => function( $value ) {
+					// sanitize
+					array_walk_recursive( $value, function( &$v, $key ) {
+						if( !is_array( $v ) )
+							$v = sanitize_text_field( $v );
+					} );
 
-			$this->fields[] = [
-				'name' => 'phone',
-				'label' => 'Phone',
-				'section' => 'business',
-				'tab' => 'Business'
+					return $value;
+				}
 			];
 
 			$this->fields[] = [
@@ -553,7 +687,10 @@ class Theme {
 					'value' => 1,
 					'section' => 'uploads',
 					'tab' => 'Uploads',
-					'after' => $uploads
+					'after' => $uploads,
+					'on_save' => function( $value ) {
+						return $value;
+					}
 				];
 			}
 		}
@@ -561,10 +698,6 @@ class Theme {
 		/* Addtional scripts */
 
 		$this->scripts = $scripts;
-
-		/* Child theme */
-
-		$this->child = $child;
 
 		// add options page to settings
 		add_action( 'admin_menu', [$this, 'menu'] );
@@ -629,7 +762,7 @@ class Theme {
 		<div class="wrap">
 			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 			<?php echo $this->tab_nav; ?>
-			<form action="options.php" method="post"<?php echo $this->tab_nav ? ' style="padding-top: 30px;"' : ''; ?>>
+			<form action="options.php" method="post"<?php echo $this->tab_nav ? ' style="padding-top: 1.875rem;"' : ''; ?>>
 				<div class="js-section">
 				<?php
 					settings_fields( $this->page );
@@ -655,17 +788,16 @@ class Theme {
 			if( is_callable( $this->scripts ) )
 				call_user_func( $this->scripts );
 
-			$path = FRM::$src_path . 'admin/assets/public/';
-			$uri = $this->$child ? get_stylesheet_directory_uri() : get_template_directory_uri();
+			$uri = FRM::$src_url . 'Admin/assets/public';
 
 			wp_enqueue_style(
 				FRM::$namespace . '-settings-styles',
-				$uri . $path . 'css/settings.css'
+				$uri . '/css/settings.css'
 			);
 
 			wp_enqueue_script(
 				FRM::$namespace . '-theme-settings-script',
-				FRM::$src_url . 'admin/assets/public/js/settings.js',
+				$uri . '/js/settings.js',
 				[],
 				NULL,
 				true
@@ -673,8 +805,8 @@ class Theme {
 
 			if( $this->tab_nav ) {
 				wp_enqueue_script(
-					FRM::$namespace . '-theme-settings-script',
-					FRM::$src_url . 'admin/assets/public/js/tab-nav.js',
+					FRM::$namespace . '-theme-settings-tab-nav-script',
+					$uri . '/js/tab-nav.js',
 					[],
 					NULL,
 					true
@@ -683,14 +815,14 @@ class Theme {
 
 			if( $this->business ) {
 				wp_enqueue_script(
-					FRM::$namespace . '-theme-settings-admin-script',
-					FRM::$src_url . 'admin/assets/public/js/business.js',
+					FRM::$namespace . '-theme-settings-business-script',
+					$uri . '/js/business.js',
 					[],
 					NULL,
 					true
 				);
 
-				additional_script_data( FRM::$namespace, $data = [
+				additional_script_data( FRM::$namespace, [
 					'geonames_un' => get_option( FRM::$namespace . '_geonames_username' ) 
 				], true );
 			}

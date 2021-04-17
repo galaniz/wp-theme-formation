@@ -30,14 +30,6 @@ class Blocks {
 	public static $folder_url = '';
 
  /*
-	* Optional extend media block.
-	*
-	* @var boolean $extend_media
-	*/
-
-	public static $extend_media = false;
-
- /*
 	* Append blocks with args to register.
 	*
 	* @var array $blocks Accepts array {
@@ -61,21 +53,15 @@ class Blocks {
 
 	public function __construct( $args = [] ) {
 		$args = array_merge( [
-			'folder_url' => '',
-			'extend_media' => false
+			'folder_url' => ''
 		], $args );
 
 		extract( $args );
 
 		self::$folder_url = $folder_url;
-		self::$extend_media = $extend_media;
 
 		// add blocks
 		add_action( 'init', [$this, 'register_blocks'], 999 );
-
-		// modify media output if extend media
-		if( $extend_media )
-			add_filter( 'render_block', [$this, 'extend_media_filter'], 10, 2 );
 
 		// theme block category
 		add_filter( 'block_categories', [$this, 'block_theme_category'], 10, 2 );
@@ -111,12 +97,12 @@ class Blocks {
 				$data['blocks'][$n] = $b;
 
 			if( is_admin() ) {
-				$folder_url = isset( $b['frm'] ) ? FRM::$src_url . 'common/assets/public/js/blocks/' : self::$folder_url;
+				$folder_url = isset( $b['frm'] ) ? FRM::$src_url . 'Common/assets/public/js/blocks/' : self::$folder_url;
 
 				wp_register_script(
 					$handle,
 					$folder_url . $b['script'],
-					['wp-blocks', 'wp-element', 'wp-editor', 'wp-blocks'],
+					['wp-blocks', 'wp-element', 'wp-components', 'wp-data', 'wp-core-data', 'wp-block-editor', 'wp-editor'],
 					NULL,
 					true
 				);
@@ -140,7 +126,7 @@ class Blocks {
 
 					wp_enqueue_script(
 						$utils_script_handle,
-						FRM::$src_url . 'common/assets/public/js/blocks/utils.js',
+						FRM::$src_url . 'Common/assets/public/js/blocks/utils.js',
 						[],
 						NULL,
 						true
@@ -148,25 +134,11 @@ class Blocks {
 
 					wp_enqueue_script(
 						FRM::$namespace . '-insert-block-script',
-						FRM::$src_url . 'common/assets/public/js/blocks/insert-block.js',
+						FRM::$src_url . 'Common/assets/public/js/blocks/insert-block.js',
 						[$utils_script_handle],
 						NULL,
 						true
 					);
-
-					if( self::$extend_media ) {
-						$scripts = ['attr', 'control'];
-
-						foreach( $scripts as $s ) {
-							wp_enqueue_script(
-								FRM::$namespace . '-extend-media-' . $s . '-script',
-								FRM::$src_url . "common/assets/public/js/blocks/extend-media/$s.js",
-								['wp-element', 'wp-blocks', 'wp-editor', 'wp-hooks'],
-								NULL,
-								true
-							);
-						}
-					}
 				}
 			}
 
@@ -174,66 +146,6 @@ class Blocks {
 		}
 
 		additional_script_data( FRM::$namespace, $data, true, true );
-	}
-
- /*
-	* Render block callback to extend media.
-	*
-	* @param string $block_content
-	* @pass array $block
-	* @return string $block_content.
-	*/
-
-	public static function extend_media_filter( $block_content, $block ) {
-		$name = $block['blockName'];
-		$classes = '';
-
-		// target core blocks
-		if( substr( $name, 0, 4 ) == 'core' ) {
-			$embed = false;
-
-			$embed_names = [
-				'core/image',
-				'core/video',
-				'core-embed/youtube',
-				'core-embed/vimeo'
-			];
-
-			if( in_array( $name, $embed_names ) )
-				$embed = true;
-
-			if( !$embed )
-				return $block_content;
-
-			$b_attr = $block['attrs'];
-
-			$caption = strpos( $block_content, 'figcaption' ) !== false ? true : false;
-			$width = '100';
-			$breakout = false;
-
-			if( isset( $b_attr['containerWidth'] ) ) {
-				$w = $b_attr['containerWidth'];
-
-				if( $w != 'breakout' ) {
-					$width = $w;
-				} else {
-					$breakout = true;
-				}
-			}
-
-			$classes = "l-$width";
-
-			if( $breakout ) {
-				$block_content =
-					'<div class="l-breakout">' .
-						$block_content .
-					'</div>';
-			}
-
-			$block_content = sprintf( "<div class='$classes' data-caption='$caption' data-breakout='$breakout'>%s</div>", $block_content );
-		}
-
-		return $block_content;
 	}
 
  /*

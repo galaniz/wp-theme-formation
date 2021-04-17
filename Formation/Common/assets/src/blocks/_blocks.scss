@@ -4,19 +4,18 @@
  * ------
  */
 
+$_bgButton: #1E1E1E;
+
+/* Base */
+
+svg {
+  fill: currentColor;
+}
+
 /* Utilities */
 
 .u-disable {
-	@extend %u-position-relative;
-  
-	&:after {
-		content: '';
-		@extend %u-position-absolute;
-		@extend %u-top-0;
-		@extend %u-right-0;
-		@extend %u-bottom-0;
-		@extend %u-left-0;
-	}
+  pointer-events: none;
 }
 
 /* Components */
@@ -28,10 +27,33 @@
   }
 }
 
+.components-toolbar__control.components-button:not(:disabled).is-active > svg {
+  background: transparent !important;
+}
+
+.components-panel__body {
+  padding: 0;
+}
+
+.components-panel__body-title {
+  margin: 0 !important;
+}
+
+.components-panel__body-toggle {
+  @extend %u-font-family-primary;
+  @extend %u-color-foreground-dark;
+  font-size: calcRem( 20px );
+}
+
 /* Layout */
 
 .l-breakout {
   margin: 0;
+}
+
+.l-section {
+  border-top: calcRem( 1px ) solid #E0E0E0;
+  padding: calcRem( 16px );
 }
 
 .o-field {
@@ -41,11 +63,11 @@
 /* Objects */
 
 .o-remove-button {
-  @extend %u-background-color-background-light;
-  @extend %u-text-align-center;
+  @extend %u-color-background-light;
   @extend %u-position-absolute;
   @extend %u-top-0;
   @extend %u-right-0;
+  background-color: $_bgButton;
   height: calcRem( 40px );
   width: calcRem( 40px );
   z-index: 10;
@@ -53,7 +75,7 @@
 }
 
 .o-remove-button__icon {
+  margin-top: calcRem( -3px );
   font-size: calcRem( 25px );
-  width: calcRem( 40px );
   line-height: 1;
 }
