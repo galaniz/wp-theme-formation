@@ -1,6 +1,6 @@
 {
   "name": "wp-theme-formation",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "Provide base, utilities and added functionality for building WordPress themes",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/galaniz/wp-theme-foundation#readme",
   "devDependencies": {
-    "@alanizcreative/formation": "^1.3.0",
+    "@alanizcreative/formation": "^2.0.0",
     "@babel/core": "^7.12.9",
     "@babel/preset-env": "^7.12.7",
     "autoprefixer": "^10.0.4",

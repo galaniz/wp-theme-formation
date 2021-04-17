@@ -713,16 +713,12 @@ class Formation {
 			$c_single = is_singular( $c );
 
 			if( $c_archive || $c_tax || $c_single ) {
-				// if on blog page remove current page parent class
-				if( get_post_meta( $item->ID, '_menu_item_object_id', true ) == get_option( 'page_for_posts' ) )
-					$classes = array_diff( $classes, ['current_page_parent'] );
-
 				// get slug of nav item
 				$nav_object_slug = get_post_field( 'post_name', (int) $item->object_id );
 
 				// check if slug matches cpt or tax
 				if( $nav_object_slug == $meta['slug'] )
-					$classes[] = 'current_page_parent';
+					$classes[] = 'current-menu-item';
 			}
 		}
 

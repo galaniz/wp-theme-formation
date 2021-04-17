@@ -165,32 +165,32 @@ class Utils_Optional {
     $row_class = esc_attr( $row_class ? " $row_class" : '' );
     $attr = Utils::get_attr_as_str( $attr );
 
-    $output = !$row ? "<table class='o-table$class'$attr>" : '';
+    $output = !$row ? "<table role='table' class='o-table$class'$attr>" : '';
 
     if( $labels && !$row ) {
       $lr = '';
 
       foreach( $labels as $l )
-        $lr .= "<th>$l</th>";
+        $lr .= "<th role='columnheader'>$l</th>";
 
       $output .=
-        '<thead>' .
-          "<tr class='o-table__row$row_class'>" .
+        '<thead role="rowgroup">' .
+          "<tr role='row' class='o-table__row$row_class'>" .
             $lr .
           '</tr>' .
         '</thead>';
     }
 
     if( $rows ) {
-      $output .= !$row ? '<tbody>' : '';
+      $output .= !$row ? '<tbody role="rowgroup">' : '';
 
       foreach( $rows as $r ) {
-        $output .= "<tr class='o-table__row$row_class'>";
+        $output .= "<tr role='row' class='o-table__row$row_class'>";
 
         foreach( $r as $i => $d ) {
           $data_label = $labels[$i] ? ' data-label="' . $labels[$i] . '" class="o-table__label"' : '';
 
-          $output .= "<td$data_label><div>" . $d . '</div></td>';
+          $output .= "<td role='cell'$data_label><div>" . $d . '</div></td>';
         }
 
         $output .= '</tr>';

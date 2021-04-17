@@ -10,8 +10,8 @@ console.log(path.resolve( __dirname, 'Formation/Admin/src' ));
 
 let resolve = {
   alias: {
-    Formation: path.resolve( __dirname, '../../formation/src' ),
-    // Formation: '@alanizcreative/formation/src',
+    // Formation: path.resolve( __dirname, '../../formation/src' ),
+    Formation: '@alanizcreative/formation/src',
     Admin: path.resolve( __dirname, 'Formation/Admin/assets/src' )
   },
   extensions: [
