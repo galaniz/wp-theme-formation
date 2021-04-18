@@ -1,0 +1,14 @@
+
+version: 2
+
+jobs:
+  publish-github-release:
+
+workflows:
+  version: 2
+  publish_github_release:
+    jobs:
+      - publish-github-release:
+          filters:
+            branches:
+              only: master
