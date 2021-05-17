@@ -54,7 +54,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 
 		insertBlocks.forEach( bb => {
 			let blockName = bb.name,
-				blockExists = false;
+					blockExists = false;
 
 			blocksInEditor.forEach( b => {
 				if( b.name == blockName ) {
@@ -64,8 +64,10 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			} );
 
 			if( !blockExists ) {
-				let block = wp.blocks.createBlock( blockName, bb.defaults );
-				wp.data.dispatch( 'core/block-editor' ).insertBlock( block, 0 );
+				let block = wp.blocks.createBlock( blockName, bb.defaults ),
+						blockAdded = wp.data.dispatch( 'core/block-editor' ).insertBlock( block, 0 );
+
+				console.log( `BLOCK ${ blockName } ADDED`, blockAdded );
 			}
 		} );
 	} );
