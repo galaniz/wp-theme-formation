@@ -46,6 +46,9 @@
     "dompurify": "^2.2.8"
   },
   "release-it": {
+    "npm": {
+      "publish": false
+    },
     "git": {
       "requireCommits": true,
       "commitMessage": "Release ${version} [ci skip]"

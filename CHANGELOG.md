@@ -7,3 +7,6 @@ All notable changes to this project will be documented in this file.
 ### Added
 - CircleCI and Release It package to automate releases.
 - Console message for blocks added `insert-block.js`.
+
+### Changed
+- Package and Webpack config updates.
