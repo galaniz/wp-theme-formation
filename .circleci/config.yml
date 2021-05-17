@@ -11,7 +11,6 @@ jobs:
           export GITHUB_TOKEN=$GITHUB_TOKEN
           git config user.name "${GITHUB_USER}"
           git config user.email "${GITHUB_EMAIL}"
-      - run: npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
       - run: npm install
       - run: npm run release
 
