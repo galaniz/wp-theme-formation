@@ -23,6 +23,7 @@
     "@alanizcreative/formation": "^2.1.5",
     "@babel/core": "^7.14.2",
     "@babel/preset-env": "^7.14.2",
+    "@release-it/bumper": "^2.0.0",
     "autoprefixer": "^10.2.5",
     "babel-loader": "^8.2.2",
     "babel-plugin-transform-react-jsx": "^6.24.1",
@@ -55,6 +56,11 @@
     },
     "github": {
       "release": true
+    },
+    "plugins": {
+      "@release-it/bumper": {
+        "out": "composer.json"
+      }
     }
   }
 }
