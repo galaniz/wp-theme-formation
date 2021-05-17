@@ -1,0 +1,26 @@
+
+version: 2.1
+
+jobs:
+  publish-release:
+    docker:
+      - image: circleci/node:latest
+    steps: 
+      - checkout
+      - run: |
+          export GITHUB_TOKEN=$GITHUB_TOKEN
+          git config user.name "${GITHUB_USER}"
+          git config user.email "${GITHUB_EMAIL}"
+      - run: npm install
+      - run: npm run release
+
+workflows:
+  version: 2.1
+  publish_release:
+    jobs:
+      - publish-release:
+          filters:
+            branches:
+              only: master
+            tags:
+              ignore: /.*/

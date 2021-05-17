@@ -4,15 +4,18 @@
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const path = require( 'path' );
 
-console.log(path.resolve( __dirname, 'Formation/Admin/src' ));
+/* Output path */
+
+let outputPath = path.resolve( __dirname, 'Formation', 'Admin', 'assets', 'public' ),
+    outputCommonPath = path.resolve( __dirname, 'Formation', 'Common', 'assets', 'public' );
 
 /* Resolve to root */
 
 let resolve = {
   alias: {
-    // Formation: path.resolve( __dirname, '../../formation/src' ),
+    // Formation: path.resolve( __dirname, '../../../formation/src' ),
     Formation: '@alanizcreative/formation/src',
-    Admin: path.resolve( __dirname, 'Formation/Admin/assets/src' )
+    Admin: path.resolve( __dirname, 'Formation', 'Admin', 'assets', 'src' )
   },
   extensions: [
     '.sass',
@@ -29,20 +32,14 @@ let resolve = {
 let rules = [
   {
     test: /\.js$/,
-    exclude: /node_modules/,
+    // exclude: /node_modules/,
     loader: 'babel-loader',
     options: {
       presets: [
         [
           '@babel/preset-env',
           {
-            modules: false,
-            targets: {
-              browsers: [
-                'last 3 versions',
-                'ie >= 11'
-              ]
-            }
+            targets: { chrome: '58', ie: '11' }
           }
         ]
       ],
@@ -96,6 +93,18 @@ let rules = [
   }
 ];
 
+/* Output environment */
+
+let outputCompatEnv = {
+  arrowFunction: false,
+  bigIntLiteral: false,
+  const: false,
+  destructuring: false,
+  dynamicImport: false,
+  forOf: false,
+  module: false
+};
+
 /* Block paths */
 
 let blocks = [
@@ -109,8 +118,8 @@ let blocks = [
 
 let blocksEntry = {};
 
-blocks.forEach( ( b ) => {
-  blocksEntry[b] = __dirname + '/Formation/Common/assets/src/blocks/' + b + '.js';
+blocks.forEach( b => {
+  blocksEntry[b] = './Formation/Common/assets/src/blocks/' + b + '.js';
 } );
 
 /* Exports */
@@ -123,19 +132,21 @@ module.exports = [
     mode: 'production',
     entry: {
       'settings': [
-        __dirname + '/Formation/Admin/assets/src/settings/index.js', 
-        __dirname + '/Formation/Admin/assets/src/settings/index.scss'
+        './Formation/Admin/assets/src/settings/index.js', 
+        './Formation/Admin/assets/src/settings/index.scss'
       ] 
     },
     output: {
-      path: __dirname + '/Formation/Admin/assets/public/',
+      path: outputPath,
       publicPath: '/',
-      filename: 'js/[name].js'
+      filename: 'js/[name].js',
+      environment: outputCompatEnv
     },
     module: {
       rules: rules
     },
     resolve: resolve,
+    target: 'es5',
     plugins: [
       new MiniCssExtractPlugin( {
         filename: 'css/[name].css'
@@ -149,18 +160,20 @@ module.exports = [
     mode: 'production',
     entry: {
       'tab-nav': [
-        __dirname + '/Formation/Admin/assets/src/settings/tab-nav/sections.js'
+        './Formation/Admin/assets/src/settings/tab-nav/sections.js'
       ] 
     },
     output: {
-      path: __dirname + '/Formation/Admin/assets/public/',
+      path: outputPath,
       publicPath: '/',
-      filename: 'js/[name].js'
+      filename: 'js/[name].js',
+      environment: outputCompatEnv
     },
     module: {
       rules: rules
     },
-    resolve: resolve
+    resolve: resolve,
+    target: 'es5',
   },
 
   /* Admin: settings business */
@@ -169,18 +182,20 @@ module.exports = [
     mode: 'production',
     entry: {
       'business': [
-        __dirname + '/Formation/Admin/assets/src/settings/business/admin.js'
+        './Formation/Admin/assets/src/settings/business/admin.js'
       ] 
     },
     output: {
-      path: __dirname + '/Formation/Admin/assets/public/',
+      path: outputPath,
       publicPath: '/',
-      filename: 'js/[name].js'
+      filename: 'js/[name].js',
+      environment: outputCompatEnv
     },
     module: {
       rules: rules
     },
-    resolve: resolve
+    resolve: resolve,
+    target: 'es5',
   },
 
   /* Common: blocks and field */
@@ -188,21 +203,23 @@ module.exports = [
   {
     mode: 'production',
     entry: {
-      'blocks': __dirname + '/Formation/Common/assets/src/blocks/index.scss',
+      'blocks': './Formation/Common/assets/src/blocks/index.scss',
       'field': [
-        __dirname + '/Formation/Common/assets/src/field/index.js', 
-        __dirname + '/Formation/Common/assets/src/field/index.scss'
+        './Formation/Common/assets/src/field/index.js', 
+        './Formation/Common/assets/src/field/index.scss'
       ]
     },
     output: {
-      path: __dirname + '/Formation/Common/assets/public/',
+      path: outputCommonPath,
       publicPath: '/',
-      filename: 'js/[name].js'
+      filename: 'js/[name].js',
+      environment: outputCompatEnv
     },
     module: {
       rules: rules
     },
     resolve: resolve,
+    target: 'es5',
     plugins: [
       new MiniCssExtractPlugin( {
         filename: 'css/[name].css'
@@ -216,18 +233,20 @@ module.exports = [
     mode: 'production',
     entry: {
       'select-fields': [
-        __dirname + '/Formation/Common/assets/src/field/objects/select-fields.js', 
+        './Formation/Common/assets/src/field/objects/select-fields.js', 
       ] 
     },
     output: {
-      path: __dirname + '/Formation/Common/assets/public/',
+      path: outputCommonPath,
       publicPath: '/',
-      filename: 'js/[name].js'
+      filename: 'js/[name].js',
+      environment: outputCompatEnv
     },
     module: {
       rules: rules
     },
-    resolve: resolve
+    resolve: resolve,
+    target: 'es5'
   },
 
   /* Common: blocks */
@@ -236,14 +255,16 @@ module.exports = [
     mode: 'production',
     entry: blocksEntry,
     output: {
-      path: __dirname + '/Formation/Common/assets/public/',
+      path: outputCommonPath,
       publicPath: '/',
-      filename: 'js/blocks/[name].js'
+      filename: 'js/blocks/[name].js',
+      environment: outputCompatEnv
     },
     module: {
       rules: rules
     },
-    resolve: resolve
+    resolve: resolve,
+    target: 'es5'
   },
 
   /* Common: block utilities */
@@ -251,18 +272,20 @@ module.exports = [
   {
     mode: 'production',
     entry: {
-      'utils': __dirname + '/Formation/Common/assets/src/blocks/utils.js'
+      'utils': './Formation/Common/assets/src/blocks/utils.js'
     },
     output: {
       library: 'blockUtils',
-      path: __dirname + '/Formation/Common/assets/public/',
+      path: outputCommonPath,
       publicPath: '/',
-      filename: 'js/blocks/[name].js'
+      filename: 'js/blocks/[name].js',
+      environment: outputCompatEnv
     },
     module: {
       rules: rules
     },
-    resolve: resolve
+    resolve: resolve,
+    target: 'es5'
   }
 
 ];
