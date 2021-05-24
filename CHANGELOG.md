@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.0.2] - 2021-05-17
+## [2.0.1] - 2021-05-17
 
 ### Added
 - CircleCI and Release It package to automate releases.
@@ -10,3 +10,8 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Package and Webpack config updates.
+
+## [2.0.2] - 2021-05-24
+
+### Added
+- Output head and footer scripts from `Theme`.
