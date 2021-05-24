@@ -295,6 +295,20 @@ class Formation {
 		add_action( 'pre_get_posts', [$this, 'query_vars'] );
 		add_action( 'wp_head', [$this, 'head'] );
 		add_action( 'wp_enqueue_scripts', [$this, 'scripts'] );
+		
+		add_action( 'wp_print_head_scripts', function() {
+			$theme_head_scripts = get_option( static::$namespace . '_scripts_head', '' );
+			
+			if( $theme_head_scripts )
+				echo $theme_head_scripts;
+		} );
+
+		add_action( 'wp_print_footer_scripts', function() {
+			$theme_footer_scripts = get_option( static::$namespace . '_scripts_footer', '' ); 
+			
+			if( $theme_footer_scripts )
+				echo $theme_footer_scripts;
+		} );
 
 		static::ajax_actions();
 
