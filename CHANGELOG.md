@@ -11,7 +11,12 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Package and Webpack config updates.
 
-## [2.0.2] - 2021-05-24
+## [2.0.3] - 2021-05-24
 
 ### Added
 - Output head and footer scripts from `Theme`.
+
+## [2.0.4] - 2021-06-29
+
+### Changed
+- `Ajax` `get_posts` make offset optional and include paged as possible param.
