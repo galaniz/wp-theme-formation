@@ -378,7 +378,6 @@ trait Ajax {
 	/*
 	 * Get more posts for posts and custom post types.
 	 *
-	 * @pass int $offset
 	 * @pass string $type
 	 * @pass int $posts_per_page Required.
 	 * @pass array $query_args_static
@@ -389,7 +388,6 @@ trait Ajax {
 
 	public static function get_posts() {
 		try {
-			$offset = (int) $_POST['offset'] ?? 0;
 			$type = $_POST['type'] ?? 'post';
 			$posts_per_page = (int) $_POST['ppp'] ?? 0;
 
@@ -397,11 +395,16 @@ trait Ajax {
 				throw new \Exception( 'No limit' );
 
 			$args = [
-				'offset' => $offset,
 				'post_type' => $type,
 				'post_status' => 'publish',
 				'posts_per_page' => $posts_per_page
 			];
+
+			if( isset( $_POST['offset'] ) )
+				$args['offset'] = (int) $_POST['offset'];
+
+			if( isset( $_POST['paged'] ) )
+				$args['paged'] = (int) $_POST['paged'];
 
 			if( isset( $_POST['query_args_static'] ) ) {
 				$query_args_static = $_POST['query_args_static'];
