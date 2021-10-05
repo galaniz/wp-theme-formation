@@ -13,7 +13,7 @@ let outputPath = path.resolve( __dirname, 'Formation', 'Admin', 'assets', 'publi
 
 let resolve = {
   alias: {
-    // Formation: path.resolve( __dirname, '../../../formation/src' ),
+    // Formation: path.resolve( __dirname, '../../formation/src' ),
     Formation: '@alanizcreative/formation/src',
     Admin: path.resolve( __dirname, 'Formation', 'Admin', 'assets', 'src' )
   },
@@ -113,6 +113,7 @@ let blocks = [
   'contact-form/group',
   'contact-form/group-top',
   'contact-form/group-bottom',
+  'embed-variations',
   'insert-block'
 ];
 
@@ -140,7 +141,8 @@ module.exports = [
       path: outputPath,
       publicPath: '/',
       filename: 'js/[name].js',
-      environment: outputCompatEnv
+      environment: outputCompatEnv,
+      chunkFormat: 'array-push'
     },
     module: {
       rules: rules
@@ -167,7 +169,8 @@ module.exports = [
       path: outputPath,
       publicPath: '/',
       filename: 'js/[name].js',
-      environment: outputCompatEnv
+      environment: outputCompatEnv,
+      chunkFormat: 'array-push'
     },
     module: {
       rules: rules
@@ -189,7 +192,8 @@ module.exports = [
       path: outputPath,
       publicPath: '/',
       filename: 'js/[name].js',
-      environment: outputCompatEnv
+      environment: outputCompatEnv,
+      chunkFormat: 'array-push'
     },
     module: {
       rules: rules
@@ -213,7 +217,8 @@ module.exports = [
       path: outputCommonPath,
       publicPath: '/',
       filename: 'js/[name].js',
-      environment: outputCompatEnv
+      environment: outputCompatEnv,
+      chunkFormat: 'array-push'
     },
     module: {
       rules: rules
@@ -240,7 +245,8 @@ module.exports = [
       path: outputCommonPath,
       publicPath: '/',
       filename: 'js/[name].js',
-      environment: outputCompatEnv
+      environment: outputCompatEnv,
+      chunkFormat: 'array-push'
     },
     module: {
       rules: rules
@@ -258,7 +264,8 @@ module.exports = [
       path: outputCommonPath,
       publicPath: '/',
       filename: 'js/blocks/[name].js',
-      environment: outputCompatEnv
+      environment: outputCompatEnv,
+      chunkFormat: 'array-push'
     },
     module: {
       rules: rules
@@ -279,7 +286,8 @@ module.exports = [
       path: outputCommonPath,
       publicPath: '/',
       filename: 'js/blocks/[name].js',
-      environment: outputCompatEnv
+      environment: outputCompatEnv,
+      chunkFormat: 'array-push'
     },
     module: {
       rules: rules

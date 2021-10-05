@@ -10,8 +10,8 @@ import {
 	addClass,
 	removeClass,
 	show,
-	disableButtonLoader
-} from 'Formation/utils/utils';
+	setLoaders
+} from 'Formation/utils';
 
 import DOMPurify from 'dompurify';
 
@@ -25,11 +25,10 @@ const fileUpload = ( args ) => {
 	/* Helpers */
 
 	const disable = ( disable = true ) => {
-		disableButtonLoader( 
-			f.selectButton, // button 
-			f.loader, // loader
-			!disable, // hide loader
-			disable // disable button
+		setLoaders(
+			[f.loader], // loaders
+			[f.button], // buttons
+			disable // show
 		);
 	};
 

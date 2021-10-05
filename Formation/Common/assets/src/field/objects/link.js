@@ -4,7 +4,7 @@
  * -------
  */				
 
-import { mergeObjects, show } from 'Formation/utils/utils';
+import { mergeObjects, show } from 'Formation/utils';
 
 /*
  * Select link from Insert / edit link modal

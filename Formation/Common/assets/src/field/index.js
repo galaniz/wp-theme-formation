@@ -10,7 +10,7 @@ import 'core-js/es/array/from';
 import 'core-js/es/promise';
 
 // functions
-import { closest } from 'Formation/utils/utils';
+import { closest } from 'Formation/utils';
 
 // modules
 import fileUpload from './objects/file/upload';

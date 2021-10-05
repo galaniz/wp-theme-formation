@@ -283,6 +283,8 @@ trait Utils {
     $urls = [];
     $srcsets = [];
     $sizes = [];
+    $widths = [];
+    $heights = [];
 
     foreach( $size as $s ) {
       $image = wp_get_attachment_image_src( $id, $s );
@@ -291,6 +293,8 @@ trait Utils {
         $urls[] = esc_url( $image[0] );
         $srcsets[] = wp_get_attachment_image_srcset( $id, $s );
         $sizes[] = wp_get_attachment_image_sizes( $id, $s );
+        $widths[] = $image[1];
+        $heights[] = $image[2];
       }
     }
 
@@ -300,7 +304,9 @@ trait Utils {
         'title' => esc_attr( get_the_title( $id ) ),
         'alt' => esc_attr( get_post_meta( $id, '_wp_attachment_image_alt', true ) ),
         'srcset' => esc_attr( $single ? $srcsets[0] : $srcsets ),
-        'sizes' => esc_attr( $single ? $sizes[0] : $sizes )
+        'sizes' => esc_attr( $single ? $sizes[0] : $sizes ),
+        'width' => $single ? $widths[0] : $widths,
+        'height' => $single ? $heights[0] : $heights
       ];
     }
 

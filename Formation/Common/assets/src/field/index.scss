@@ -6,12 +6,12 @@
 
 /* Config, variables, utilities, functions, mixins */
 
-@import '~Admin/config/config';
-@import '~Formation/index';
+@import '~Admin/config';
+@import '~Formation';
 
 /* Layouts */
 
-@import '~Formation/layouts/layouts';
+@import '~Formation/layouts';
 
 .l-table__cell {
 	@include breakpointMax( 600 ) {

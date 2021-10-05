@@ -64,7 +64,7 @@ class Blocks {
 		add_action( 'init', [$this, 'register_blocks'], 999 );
 
 		// theme block category
-		add_filter( 'block_categories', [$this, 'block_theme_category'], 10, 2 );
+		add_filter( 'block_categories_all', [$this, 'block_theme_category'], 10, 2 );
 	}
 
  /*
@@ -139,6 +139,14 @@ class Blocks {
 						NULL,
 						true
 					);
+
+					wp_enqueue_script(
+						FRM::$namespace . '-embed-variations-script',
+						FRM::$src_url . 'Common/assets/public/js/blocks/embed-variations.js',
+						[$utils_script_handle],
+						NULL,
+						true
+					);
 				}
 			}
 
@@ -156,9 +164,9 @@ class Blocks {
 	* @return array
 	*/
 
-	public function block_theme_category( $categories, $post ) {
+	public function block_theme_category( $block_categories, $block_editor_context ) {
 		return array_merge(
-			$categories,
+			$block_categories,
 			[
 				[
 					'slug' => 'theme-blocks',
