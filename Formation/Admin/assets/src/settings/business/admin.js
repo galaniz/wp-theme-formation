@@ -8,7 +8,7 @@ import {
   closest,
   hasClass,
   request
-} from 'Formation/utils/utils';
+} from 'Formation/utils';
 
 /*
  * DOM Loaded

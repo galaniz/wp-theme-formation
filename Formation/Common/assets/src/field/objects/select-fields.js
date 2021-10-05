@@ -4,7 +4,7 @@
  * -------
  */
 
-import { closest } from 'Formation/utils/utils';
+import { closest } from 'Formation/utils';
 
 /*
  * Show hidden fields depending on value of option

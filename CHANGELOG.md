@@ -20,3 +20,13 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - `Ajax` `get_posts` make offset optional and include paged as possible param.
+
+## [2.0.5] - 2021-10-04
+
+### Added
+- Script to restrict embed variations in gutenberg editor.
+- Width and height to return array in `get_image` utility method.
+
+### Changed
+- Update front-end dependencies to latest version.
+- Update webpack config and front-end asset structure from dependencies updates.
