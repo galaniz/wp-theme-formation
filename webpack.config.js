@@ -4,18 +4,25 @@
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const path = require( 'path' );
 
+/* State */
+
+const prod = true;
+
 /* Output path */
 
 let outputPath = path.resolve( __dirname, 'Formation', 'Admin', 'assets', 'public' ),
     outputCommonPath = path.resolve( __dirname, 'Formation', 'Common', 'assets', 'public' );
 
+/* Asset paths */
+
+let adminPath = path.resolve( __dirname, 'Formation', 'Admin', 'assets', 'src' );
+let formationPath = prod ? '@alanizcreative/formation/src' : path.resolve( __dirname, '../../formation/src' );
+
 /* Resolve to root */
 
 let resolve = {
   alias: {
-    // Formation: path.resolve( __dirname, '../../formation/src' ),
-    Formation: '@alanizcreative/formation/src',
-    Admin: path.resolve( __dirname, 'Formation', 'Admin', 'assets', 'src' )
+    Formation: formationPath
   },
   extensions: [
     '.sass',
@@ -86,7 +93,13 @@ let rules = [
       {
         loader: 'sass-loader',
         options: {
-          implementation: require( 'sass' )
+          implementation: require( 'sass' ),
+          sassOptions: {
+            includePaths: [
+              adminPath,
+              'node_modules'
+            ]
+          }
         }
       }
     ]

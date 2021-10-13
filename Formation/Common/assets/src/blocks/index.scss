@@ -4,10 +4,10 @@
  * ------
  */
 
-/* Config, variables, utilities, functions, mixins */
+/* Config */
 
-@import '~Formation';
+@forward 'config';
 
-/* Blocks */
+/* Styles */
 
-@import 'blocks';
+@use 'styles';

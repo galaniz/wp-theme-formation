@@ -1,22 +1,35 @@
 
 /*
+ * Imports
+ * -------
+ */
+
+@use '@alanizcreative/formation/src/config/mixins' as mix;
+
+/*
  * Config
  * ------
  */
 
-$g-breakpoints: (
-	782: 782px
-);
+/* Variables */
 
-$g-colors: (
-	foreground: (
-		base: #222222,
-		light: #CCCCCC,
-		dark: #1E1E1E
+@use '@alanizcreative/formation/src/config' with (
+
+	$colors: (
+		foreground: (
+			base: #222222,
+			light: #CCCCCC,
+			dark: #1E1E1E
+		),
+		background: (
+			base: #F8F8F8,
+			light: #FFFFFF,
+			dark: #F5F5F5
+		)
 	),
-	background: (
-		base: #F8F8F8,
-		light: #FFFFFF,
-		dark: #F5F5F5
+
+	$breakpoints: (
+		782: 782px
 	)
+
 );

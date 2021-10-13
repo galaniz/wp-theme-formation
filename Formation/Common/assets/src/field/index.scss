@@ -4,26 +4,19 @@
  * -----
  */
 
-/* Config, variables, utilities, functions, mixins */
+/* Config */
 
-@import '~Admin/config';
-@import '~Formation';
+@forward 'config';
 
 /* Layouts */
 
-@import '~Formation/layouts';
-
-.l-table__cell {
-	@include breakpointMax( 600 ) {
-		width: 100%;
-		display: block;
-	}
-}
+@use '@alanizcreative/formation/src/layouts';
+@use 'layouts' as l;
 
 /* Objects */
 
-@import 'objects/asset';
-@import 'objects/multi';
-@import 'objects/field';
-@import 'objects/loader';
-@import 'objects/button';
+@use 'objects/asset';
+@use 'objects/multi';
+@use 'objects/field';
+@use 'objects/loader';
+@use 'objects/button';

@@ -1,10 +1,21 @@
 
 /*
- * Blocks
+ * Imports
  * ------
  */
 
-$_bgButton: #1E1E1E;
+@use '@alanizcreative/formation/src/config';
+@use '@alanizcreative/formation/src/utils/functions' as func;
+
+/*
+ * Styles
+ * ------
+ */
+
+/* Internal variables */
+
+$_black: #1E1E1E;
+$_gray: #E0E0E0;
 
 /* Base */
 
@@ -22,7 +33,7 @@ svg {
 
 .components-panel__header {
   & h2 {
-    font-size: calcRem( 20px );
+    font-size: func.calcRem( 20px );
     margin: 0;
   }
 }
@@ -42,7 +53,7 @@ svg {
 .components-panel__body-toggle {
   @extend %u-font-family-primary;
   @extend %u-color-foreground-dark;
-  font-size: calcRem( 20px );
+  font-size: func.calcRem( 20px );
 }
 
 /* Layout */
@@ -52,8 +63,8 @@ svg {
 }
 
 .l-section {
-  border-top: calcRem( 1px ) solid #E0E0E0;
-  padding: calcRem( 16px );
+  border-top: func.calcRem( 1px ) solid $_gray;
+  padding: func.calcRem( 16px );
 }
 
 .o-field {
@@ -67,15 +78,15 @@ svg {
   @extend %u-position-absolute;
   @extend %u-top-0;
   @extend %u-right-0;
-  background-color: $_bgButton;
-  height: calcRem( 40px );
-  width: calcRem( 40px );
+  background-color: $_black;
+  height: func.calcRem( 40px );
+  width: func.calcRem( 40px );
   z-index: 10;
   padding: 0;
 }
 
 .o-remove-button__icon {
-  margin-top: calcRem( -3px );
-  font-size: calcRem( 25px );
+  margin-top: func.calcRem( -3px );
+  font-size: func.calcRem( 25px );
   line-height: 1;
 }

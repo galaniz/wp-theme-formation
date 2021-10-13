@@ -1,13 +1,26 @@
 
 /*
+ * Imports
+ * ------
+ */
+
+@use '@alanizcreative/formation/src/config';
+@use '@alanizcreative/formation/src/utils/functions' as func;
+@use '@alanizcreative/formation/src/utils/mixins' as mix;
+
+/*
  * Asset
  * -----
  */
 
-$gray: rgba( map-get( $g-colors, 'foreground-dark' ), 0.2 );
+/* Internal variables */
+
+$_gray: rgba( func.getColor( 'foreground-dark' ), 0.2 );
+
+/* Objects */
 
 .o-asset-row {
-  margin-bottom: calcRem( 20px );
+  margin-bottom: func.calcRem( 20px );
 
   &:empty {
     @extend %u-display-none;
@@ -28,29 +41,29 @@ $gray: rgba( map-get( $g-colors, 'foreground-dark' ), 0.2 );
 
 .o-asset__exists {
   @extend %u-background-color-background-base;
-  border: calcRem( 1px ) solid $gray;
+  border: func.calcRem( 1px ) solid $_gray;
 
   &,
   & > div {
-    height: calcRem( 80px );
+    height: func.calcRem( 80px );
   }
 }
 
 .o-asset__image,
 .o-asset__icon {
-  max-width: calcRem( 200px );
-  max-height: calcRem( 80px );
+  max-width: func.calcRem( 200px );
+  max-height: func.calcRem( 80px );
 
-  @include breakpointMax( 782 ) {
+  @include mix.breakpointMax( 782 ) {
     width: 33%;
   }
 }
 
 .o-asset__icon {
-  font-size: calcRem( 16px );
+  font-size: func.calcRem( 16px );
 	font-weight: 600;
-  padding: 0 calcRem( 15px ) 0 calcRem( 25px );
-  border-radius: calcRem( 4px );
+  padding: 0 func.calcRem( 15px ) 0 func.calcRem( 25px );
+  border-radius: func.calcRem( 4px );
 
   &:empty {
   	@extend %u-display-none;
@@ -60,7 +73,7 @@ $gray: rgba( map-get( $g-colors, 'foreground-dark' ), 0.2 );
 .o-asset__image {
   @extend %u-width-100;
   @extend %u-height-100;
-  background-color: $gray;
+  background-color: $_gray;
   object-fit: contain;
 
   &[src=""] {
@@ -72,7 +85,7 @@ $gray: rgba( map-get( $g-colors, 'foreground-dark' ), 0.2 );
 	@extend %u-overflow-hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding: 0 calcRem( 15px );
+  padding: 0 func.calcRem( 15px );
   min-width: 0;
   width: 0;
   flex-shrink: 1;
@@ -89,8 +102,8 @@ $gray: rgba( map-get( $g-colors, 'foreground-dark' ), 0.2 );
   @extend %u-background-color-background-base;
 	@extend %u-position-relative;
 	@extend %u-text-align-center;
-  width: calcRem( 50px );
-  height: calcRem( 50px );
+  width: func.calcRem( 50px );
+  height: func.calcRem( 50px );
   padding: 0;
   border: none;
   outline: none;

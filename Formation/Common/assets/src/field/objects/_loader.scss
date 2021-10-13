@@ -1,5 +1,13 @@
 
 /*
+ * Imports
+ * ------
+ */
+
+@use '@alanizcreative/formation/src/config';
+@use '@alanizcreative/formation/src/utils/functions' as func;
+
+/*
  * Loader
  * ------
  */
@@ -27,7 +35,7 @@
   @extend %u-left-0;
   @extend %u-right-0;
   float: none !important;
-  width: calcRem( 15px) !important;
-  height: calcRem( 15px ) !important;
-  background-size: calcRem( 15px ) calcRem( 15px );
+  width: func.calcRem( 15px) !important;
+  height: func.calcRem( 15px ) !important;
+  background-size: func.calcRem( 15px ) func.calcRem( 15px );
 }

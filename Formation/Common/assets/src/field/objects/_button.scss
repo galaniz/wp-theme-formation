@@ -1,5 +1,13 @@
 
 /*
+ * Imports
+ * ------
+ */
+
+@use '@alanizcreative/formation/src/config';
+@use '@alanizcreative/formation/src/utils/functions' as func;
+
+/*
  * Button
  * ------
  */
@@ -9,15 +17,15 @@
   align-items: center;
 
   &[data-lg] {
-    font-size: calcRem( 16px ) !important;
-    padding: 0 calcRem( 15px ) calcRem( 1px );
-    height: calcRem( 45px );
+    font-size: func.calcRem( 16px ) !important;
+    padding: 0 func.calcRem( 15px ) func.calcRem( 1px );
+    height: func.calcRem( 45px );
 
     & .dashicons {
-      font-size: calcRem( 22px ) !important;
-      width: calcRem( 22px );
-      height: calcRem( 22px );
-      padding-right: calcRem( 8px );
+      font-size: func.calcRem( 22px ) !important;
+      width: func.calcRem( 22px );
+      height: func.calcRem( 22px );
+      padding-right: func.calcRem( 8px );
     }
   }
 }
