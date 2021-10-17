@@ -8,6 +8,10 @@
 
 @forward 'config';
 
+/* Utility classes */
+
+@use '@alanizcreative/formation/src/utils/classes';
+
 /* Layouts */
 
 @use '@alanizcreative/formation/src/layouts';
