@@ -30,3 +30,8 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Update front-end dependencies to latest version.
 - Update webpack config and front-end asset structure from dependencies updates.
+
+## [2.0.6] - 2021-10-25
+
+### Changed
+- Update Formation library version.
