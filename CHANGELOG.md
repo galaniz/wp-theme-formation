@@ -34,4 +34,5 @@ All notable changes to this project will be documented in this file.
 ## [2.0.6] - 2021-10-25
 
 ### Changed
+- Replace `@import` with `@use` and `@forward`.
 - Update Formation library version.
