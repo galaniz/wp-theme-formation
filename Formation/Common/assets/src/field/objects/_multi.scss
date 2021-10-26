@@ -1,10 +1,23 @@
 
 /*
+ * Imports
+ * ------
+ */
+
+@use '@alanizcreative/formation/src/config';
+@use '@alanizcreative/formation/src/utils/functions' as func;
+@use '@alanizcreative/formation/src/utils/mixins' as mix;
+
+/*
  * Multi field
  * -----------
  */
 
-$border: calcRem( 1px ) solid rgba( map-get( $g-colors, 'foreground-dark' ), 0.2 );
+/* Internal variables */
+
+$_border: func.calcRem( 1px ) solid rgba( func.getColor( 'foreground-dark' ), 0.2 );
+
+/* Objects */
 
 .o-multi__fields {
   .o-field-section[data-col] & {
@@ -12,8 +25,8 @@ $border: calcRem( 1px ) solid rgba( map-get( $g-colors, 'foreground-dark' ), 0.2
     flex-direction: column;
   }
 
-  @include breakpointMin( 700 ) {
-    padding-right: calcRem( 18px );
+  @include mix.breakpointMin( 700 ) {
+    padding-right: func.calcRem( 18px );
   }
 }
 
@@ -21,21 +34,21 @@ $border: calcRem( 1px ) solid rgba( map-get( $g-colors, 'foreground-dark' ), 0.2
   .o-field-section[data-col] & {
     @extend %u-display-flex;
     flex-wrap: wrap;
-    margin: calcRem( -10px );
+    margin: func.calcRem( -10px );
   }
 }
 
 .o-multi__item {
 	@extend %u-background-color-background-base;
-	border: $border;
-  padding: calcRem( 8px ) calcRem( 10px );
-  margin-bottom: calcRem( 20px );
+	border: $_border;
+  padding: func.calcRem( 8px ) func.calcRem( 10px );
+  margin-bottom: func.calcRem( 20px );
 
   .o-field-section[data-col] & {
-    margin: calcRem( 10px );
+    margin: func.calcRem( 10px );
   }
 
-  @include breakpointMin( 700 ) {
+  @include mix.breakpointMin( 700 ) {
   	display: flex;
   	justify-content: space-between;
   }
@@ -43,8 +56,8 @@ $border: calcRem( 1px ) solid rgba( map-get( $g-colors, 'foreground-dark' ), 0.2
 
 .o-multi__row {
   @extend %u-position-relative;
-  padding-bottom: calcRem( 15px );
-  margin-bottom: calcRem( 10px );
+  padding-bottom: func.calcRem( 15px );
+  margin-bottom: func.calcRem( 10px );
 
   &::after {
     @extend %u-content-empty;
@@ -54,8 +67,8 @@ $border: calcRem( 1px ) solid rgba( map-get( $g-colors, 'foreground-dark' ), 0.2
     @extend %u-right-0;
     @extend %u-left-0;
     @extend %u-margin-auto;
-    width: calc( 100% - #{ calcRem( 20px ) } );
-    height: calcRem( 1px );
+    width: calc( 100% - #{ func.calcRem( 20px ) } );
+    height: func.calcRem( 1px );
     opacity: 0.2;
   }
 
@@ -74,16 +87,16 @@ $border: calcRem( 1px ) solid rgba( map-get( $g-colors, 'foreground-dark' ), 0.2
 }
 
 .o-multi__buttons {
-	margin: calcRem( -8px ) calcRem( -10px );
+	margin: func.calcRem( -8px ) func.calcRem( -10px );
 
-	@include breakpointMax( 700 ) {
-		margin-top: calcRem( 15px );
-		border-top: $border;
+	@include mix.breakpointMax( 700 ) {
+		margin-top: func.calcRem( 15px );
+		border-top: $_border;
 	}
 
-  @include breakpointMin( 700 ) {
+  @include mix.breakpointMin( 700 ) {
   	flex-direction: column;
-  	border-left: $border;
+  	border-left: $_border;
   }
 }
 
@@ -94,7 +107,7 @@ $border: calcRem( 1px ) solid rgba( map-get( $g-colors, 'foreground-dark' ), 0.2
   appearance: none !important;
   box-shadow: none !important;
   border-radius: 0;
-  padding: calcRem( 8px );
+  padding: func.calcRem( 8px );
 
   &:hover,
   &:active,
@@ -105,22 +118,22 @@ $border: calcRem( 1px ) solid rgba( map-get( $g-colors, 'foreground-dark' ), 0.2
   }
 
   & .o-multi__icon {
-  	color: rgba( map-get( $g-colors, 'foreground-dark' ), 0.30 );
+  	color: rgba( func.getColor( 'foreground-dark' ), 0.30 );
   }
 
-  @include breakpointMax( 700 ) {
+  @include mix.breakpointMax( 700 ) {
   	width: 100%;
 
   	&:nth-child( 2 ) {
-  		border-left: $border;
+  		border-left: $_border;
   	}
   }
 
-  @include breakpointMin( 700 ) {
+  @include mix.breakpointMin( 700 ) {
   	height: 100%;
 
   	&:nth-child( 2 ) {
-  		border-top: $border;
+  		border-top: $_border;
   	}
   }
 }

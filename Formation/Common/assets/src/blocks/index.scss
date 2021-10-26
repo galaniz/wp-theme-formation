@@ -4,10 +4,14 @@
  * ------
  */
 
-/* Config, variables, utilities, functions, mixins */
+/* Config */
 
-@import '~Formation';
+@forward 'config';
 
-/* Blocks */
+/* Utility classes */
 
-@import 'blocks';
+@use '@alanizcreative/formation/src/utils/classes';
+
+/* Styles */
+
+@use 'styles';

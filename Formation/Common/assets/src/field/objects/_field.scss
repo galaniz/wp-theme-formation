@@ -1,20 +1,33 @@
 
 /*
+ * Imports
+ * ------
+ */
+
+@use '@alanizcreative/formation/src/config';
+@use '@alanizcreative/formation/src/utils/functions' as func;
+@use '@alanizcreative/formation/src/utils/mixins' as mix;
+
+/*
  * Field
  * -----
  */
 
-$gray: rgba( map-get( $g-colors, 'foreground-dark' ), 0.2 );
+/* Internal variables */
+
+$_gray: rgba( func.getColor( 'foreground-dark' ), 0.2 );
+
+/* Objects */
 
 .o-field-section {
 	@extend %u-display-inline-block;
 }
 
 .o-field {
-	margin-bottom: calcRem( 15px );
+	margin-bottom: func.calcRem( 15px );
 
 	.o-multi & {
-		padding: calcRem( 10px );
+		padding: func.calcRem( 10px );
 		flex-grow: 1;
 	}
 
@@ -24,7 +37,7 @@ $gray: rgba( map-get( $g-colors, 'foreground-dark' ), 0.2 );
 	}
 
 	&[data-type="richtext"] {
-		max-width: calcRem( 750px );
+		max-width: func.calcRem( 750px );
 
 		// MCE overrides
 
@@ -35,19 +48,19 @@ $gray: rgba( map-get( $g-colors, 'foreground-dark' ), 0.2 );
 
 		.wp-editor-container,
 		.wp-switch-editor {
-			border-color: $gray !important;
+			border-color: $_gray !important;
 		}
 
 		.html-active .switch-html, 
 		.tmce-active .switch-tmce {
-			border-bottom-color: map-get( $g-colors, 'background-dark' ) !important;
+			border-bottom-color: func.getColor( 'background-dark' ) !important;
 		}
 	}
 }
 
 .o-field__label {
-	font-size: calcRem( 13px );
-	margin-bottom: calcRem( 6px );
+	font-size: func.calcRem( 13px );
+	margin-bottom: func.calcRem( 6px );
 	font-weight: 600;
 }
 
@@ -60,12 +73,12 @@ $gray: rgba( map-get( $g-colors, 'foreground-dark' ), 0.2 );
 
 	&[data-full] {
 		width: 100%;
-		max-width: calcRem( 750px );
+		max-width: func.calcRem( 750px );
 	}
 }
 
 .o-field__checkbox {
-	@include breakpointMax( 782 ) {
-		margin: 0 calcRem( 4px ) 0 0 !important;
+	@include mix.breakpointMax( 782 ) {
+		margin: 0 func.calcRem( 4px ) 0 0 !important;
 	}
 }
