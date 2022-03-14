@@ -1,84 +1,83 @@
-
-/*
+/**
  * Contact form group bottom block
- * -------------------------------
  */
 
 /* Dependencies */
 
-const { 
+const {
   getNamespace,
   getNamespaceObj
-} = blockUtils;
+} = window.blockUtils
 
-const { 
+const {
   Panel,
   PanelBody,
   SelectControl
-} = wp.components;
+} = window.wp.components
 
-const { 
+const {
   InspectorControls,
   InnerBlocks
-} = wp.blockEditor;
+} = window.wp.blockEditor
 
-const { Fragment } = wp.element;
-const { registerBlockType } = wp.blocks;
+const { Fragment } = window.wp.element
+const { registerBlockType } = window.wp.blocks
 
 /* Namespace */
 
-const n = getNamespace( true );
-const name = n + 'contact-form-group-bottom';
+const n = getNamespace(true)
+const name = n + 'contact-form-group-bottom'
 
 /* Attributes from serverside */
 
-const nO = getNamespaceObj( getNamespace() );
-const attr = nO.blocks[name]['attr'];
-const def = nO.blocks[name]['default'];
+const nO = getNamespaceObj(getNamespace())
+const attr = nO.blocks[name].attr
+const def = nO.blocks[name].default
 
 /* Block */
 
-registerBlockType( name, {
+registerBlockType(name, {
   title: 'Field Group Bottom',
   category: 'theme-blocks',
   icon: 'email',
   attributes: attr,
   parent: [n + 'contact-form-group'],
-  edit( props ) {
-    const { attributes, setAttributes } = props;
-    const { gap = def.gap } = attributes;
+  edit (props) {
+    const { attributes, setAttributes } = props
+    const { gap = def.gap } = attributes
+    let frag = ''
 
-    return [
-      (
-        nO.gap_options.length
-        ?
-        <Fragment>
+    if (nO.gap_options.length) {
+      frag = (
+        <Fragment key='frag'>
           <InspectorControls>
-            <PanelBody title={ 'Field Group Bottom Options' }>
+            <PanelBody title='Field Group Bottom Options'>
               <SelectControl
-                label="Fields Gap"
-                value={ gap }
-                options={ nO.gap_options }
-                onChange={ gap => setAttributes( { gap } ) }
+                label='Fields Gap'
+                value={gap}
+                options={nO.gap_options}
+                onChange={gap => setAttributes({ gap })}
               />
             </PanelBody>
           </InspectorControls>
         </Fragment>
-        :
-        ''
-      ),
-      <Panel>
+      )
+    }
+
+    return [
+      frag,
+      <Panel key='panel'>
         <PanelBody>
-          <div className="l-section">
-            <InnerBlocks 
-              allowedBlocks={ [n + 'contact-form-field'] } 
-            /> 
-          </div> 
+          <div className='l-section'>
+            <InnerBlocks
+              allowedBlocks={[n + 'contact-form-field']}
+            />
+          </div>
         </PanelBody>
-      </Panel>   
-    ];
+      </Panel>
+    ]
   },
-  save() {
-    return <InnerBlocks.Content />; // this block is rendered in php
+  save () {
+    return <InnerBlocks.Content /> // this block is rendered in php
   }
-} );
+})

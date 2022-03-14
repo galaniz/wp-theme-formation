@@ -1,17 +1,15 @@
-
-/*
+/**
  * Blocks
- * ------
  */
 
 /* Config */
 
-@forward 'config';
+@forward "config";
 
 /* Utility classes */
 
-@use '@alanizcreative/formation/src/utils/classes';
+@use "@alanizcreative/formation/src/utils/classes";
 
 /* Styles */
 
-@use 'styles';
+@use "styles";

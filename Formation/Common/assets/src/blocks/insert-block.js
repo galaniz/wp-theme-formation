@@ -1,76 +1,68 @@
-
-/*
- * Insert block into editor 
- * ------------------------
+/**
+ * Insert block into editor
  *
  * Note: workaround for gutenberg templates.
  */
 
 /* Dependencies */
 
-const { 
-	getNamespace,
-	getNamespaceObj
-} = blockUtils;
+const {
+  getNamespace,
+  getNamespaceObj
+} = window.blockUtils
 
 /* Loop through and insert blocks array */
 
-window.addEventListener( 'load', () => {
-	const n = getNamespace( true );
+window.addEventListener('load', () => {
+  const n = getNamespace(true)
 
-	if( !n )
-		return;
+  if (!n) { return }
 
-	const nO = getNamespaceObj( getNamespace() );
+  const nO = getNamespaceObj(getNamespace())
 
-	if( !nO )
-		return;
+  if (!nO) { return }
 
-	let insertBlock = false,
-			insertBlocks = false;
+  let insertBlock = false
+  let insertBlocks = false
 
-	if( nO.hasOwnProperty( 'insert_block' ) )
-		insertBlock = nO.insert_block;
+  if (Object.getOwnPropertyDescriptor(nO, 'insert_block')) {
+    insertBlock = nO.insert_block
+  }
 
-	if( nO.hasOwnProperty( 'insert_blocks' ) )
-		insertBlocks = nO.insert_blocks;
+  if (Object.getOwnPropertyDescriptor(nO, 'insert_blocks')) { insertBlocks = nO.insert_blocks }
 
-	if( !insertBlock && !insertBlocks )
-		return;
+  if (!insertBlock && !insertBlocks) { return }
 
-	if( insertBlock ) {
-		insertBlocks = [
-			{
-				name: insertBlock,
-				defaults: nO.insert_block_defaults
-			}
-		];
-	}
+  if (insertBlock) {
+    insertBlocks = [
+      {
+        name: insertBlock,
+        defaults: nO.insert_block_defaults
+      }
+    ]
+  }
 
-	if( !insertBlocks )
-		return;
+  if (!insertBlocks) { return }
 
-	if( !insertBlocks.length )
-		return;
+  if (!insertBlocks.length) { return }
 
-	let blocksInEditor = wp.data.select( 'core/block-editor' ).getBlocks();
+  const blocksInEditor = window.wp.data.select('core/block-editor').getBlocks()
 
-	insertBlocks.forEach( bb => {
-		let blockName = bb.name,
-				blockExists = false;
+  insertBlocks.forEach(bb => {
+    const blockName = bb.name
+    let blockExists = false
 
-		blocksInEditor.forEach( b => {
-			if( b.name == blockName ) {
-				blockExists = true;
-				return;
-			}
-		} );
+    blocksInEditor.forEach(b => {
+      if (b.name === blockName) {
+        blockExists = true
+      }
+    })
 
-		if( !blockExists ) {
-			let block = wp.blocks.createBlock( blockName, bb.defaults ),
-					blockAdded = wp.data.dispatch( 'core/block-editor' ).insertBlock( block, 0 );
+    if (!blockExists) {
+      const block = window.wp.blocks.createBlock(blockName, bb.defaults)
+      const blockAdded = window.wp.data.dispatch('core/block-editor').insertBlock(block, 0)
 
-			console.log( `BLOCK ${ blockName } ADDED`, blockAdded );
-		}
-	} );
-} );
+      console.log(`BLOCK ${blockName} ADDED`, blockAdded)
+    }
+  })
+})

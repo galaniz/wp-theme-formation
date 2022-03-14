@@ -1,26 +1,26 @@
 
 /* Imports */
 
-const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
-const path = require( 'path' );
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const path = require('path')
 
 /* State */
 
-const prod = true;
+const prod = true
 
 /* Output path */
 
-let outputPath = path.resolve( __dirname, 'Formation', 'Admin', 'assets', 'public' ),
-    outputCommonPath = path.resolve( __dirname, 'Formation', 'Common', 'assets', 'public' );
+const outputPath = path.resolve(__dirname, 'Formation', 'Admin', 'assets', 'public')
+const outputCommonPath = path.resolve(__dirname, 'Formation', 'Common', 'assets', 'public')
 
 /* Asset paths */
 
-let adminPath = path.resolve( __dirname, 'Formation', 'Admin', 'assets', 'src' );
-let formationPath = prod ? '@alanizcreative/formation/src' : path.resolve( __dirname, '../../formation/src' );
+const adminPath = path.resolve(__dirname, 'Formation', 'Admin', 'assets', 'src')
+const formationPath = prod ? '@alanizcreative/formation/src' : path.resolve(__dirname, '../../formation/src')
 
 /* Resolve to root */
 
-let resolve = {
+const resolve = {
   alias: {
     Formation: formationPath
   },
@@ -32,11 +32,11 @@ let resolve = {
     '.json',
     '.jsx'
   ]
-};
+}
 
 /* Rules */
 
-let rules = [
+const rules = [
   {
     test: /\.js$/,
     // exclude: /node_modules/,
@@ -84,16 +84,16 @@ let rules = [
                   'ie >= 11'
                 ]
               },
-              'cssnano': {},
+              cssnano: {},
               'postcss-combine-duplicated-selectors': {}
-            },
-          },
+            }
+          }
         }
       },
       {
         loader: 'sass-loader',
         options: {
-          implementation: require( 'sass' ),
+          implementation: require('sass'),
           sassOptions: {
             includePaths: [
               adminPath,
@@ -104,11 +104,11 @@ let rules = [
       }
     ]
   }
-];
+]
 
 /* Output environment */
 
-let outputCompatEnv = {
+const outputCompatEnv = {
   arrowFunction: false,
   bigIntLiteral: false,
   const: false,
@@ -116,11 +116,11 @@ let outputCompatEnv = {
   dynamicImport: false,
   forOf: false,
   module: false
-};
+}
 
 /* Block paths */
 
-let blocks = [
+const blocks = [
   'contact-form/field',
   'contact-form/form',
   'contact-form/group',
@@ -128,27 +128,27 @@ let blocks = [
   'contact-form/group-bottom',
   'embed-variations',
   'insert-block'
-];
+]
 
-let blocksEntry = {};
+const blocksEntry = {}
 
-blocks.forEach( b => {
-  blocksEntry[b] = './Formation/Common/assets/src/blocks/' + b + '.js';
-} );
+blocks.forEach(b => {
+  blocksEntry[b] = './Formation/Common/assets/src/blocks/' + b + '.js'
+})
 
 /* Exports */
 
 module.exports = [
-  
+
   /* Admin: settings */
 
   {
     mode: 'production',
     entry: {
-      'settings': [
-        './Formation/Admin/assets/src/settings/index.js', 
+      settings: [
+        './Formation/Admin/assets/src/settings/index.js',
         './Formation/Admin/assets/src/settings/index.scss'
-      ] 
+      ]
     },
     output: {
       path: outputPath,
@@ -163,12 +163,12 @@ module.exports = [
     resolve: resolve,
     target: 'es5',
     plugins: [
-      new MiniCssExtractPlugin( {
+      new MiniCssExtractPlugin({
         filename: 'css/[name].css'
-      } )
+      })
     ]
   },
-  
+
   /* Admin: settings tab nav */
 
   {
@@ -176,7 +176,7 @@ module.exports = [
     entry: {
       'tab-nav': [
         './Formation/Admin/assets/src/settings/tab-nav/sections.js'
-      ] 
+      ]
     },
     output: {
       path: outputPath,
@@ -189,7 +189,7 @@ module.exports = [
       rules: rules
     },
     resolve: resolve,
-    target: 'es5',
+    target: 'es5'
   },
 
   /* Admin: settings business */
@@ -197,9 +197,9 @@ module.exports = [
   {
     mode: 'production',
     entry: {
-      'business': [
+      business: [
         './Formation/Admin/assets/src/settings/business/admin.js'
-      ] 
+      ]
     },
     output: {
       path: outputPath,
@@ -212,7 +212,7 @@ module.exports = [
       rules: rules
     },
     resolve: resolve,
-    target: 'es5',
+    target: 'es5'
   },
 
   /* Common: blocks and field */
@@ -220,9 +220,9 @@ module.exports = [
   {
     mode: 'production',
     entry: {
-      'blocks': './Formation/Common/assets/src/blocks/index.scss',
-      'field': [
-        './Formation/Common/assets/src/field/index.js', 
+      blocks: './Formation/Common/assets/src/blocks/index.scss',
+      field: [
+        './Formation/Common/assets/src/field/index.js',
         './Formation/Common/assets/src/field/index.scss'
       ]
     },
@@ -239,11 +239,11 @@ module.exports = [
     resolve: resolve,
     target: 'es5',
     plugins: [
-      new MiniCssExtractPlugin( {
+      new MiniCssExtractPlugin({
         filename: 'css/[name].css'
-      } )
+      })
     ]
-  }, 
+  },
 
   /* Common: select fields */
 
@@ -251,8 +251,8 @@ module.exports = [
     mode: 'production',
     entry: {
       'select-fields': [
-        './Formation/Common/assets/src/field/objects/select-fields.js', 
-      ] 
+        './Formation/Common/assets/src/field/objects/select-fields.js'
+      ]
     },
     output: {
       path: outputCommonPath,
@@ -292,7 +292,7 @@ module.exports = [
   {
     mode: 'production',
     entry: {
-      'utils': './Formation/Common/assets/src/blocks/utils.js'
+      utils: './Formation/Common/assets/src/blocks/utils.js'
     },
     output: {
       library: 'blockUtils',
@@ -309,4 +309,4 @@ module.exports = [
     target: 'es5'
   }
 
-];
+]

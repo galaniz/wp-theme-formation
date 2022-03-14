@@ -1,30 +1,28 @@
-
-/*
- * Imports
- * ------
- */
-
-@use '@alanizcreative/formation/src/config';
-@use '@alanizcreative/formation/src/utils/functions' as func;
-
-/*
+/**
  * Loader
- * ------
  */
+
+/* Imports */
+
+@use "@alanizcreative/formation/src/config";
+@use "@alanizcreative/formation/src/utils/functions" as func;
+
+/* Styles */
 
 .o-loader {
-	@extend %u-position-absolute;
-	@extend %u-top-0;
-	@extend %u-left-0;
-	@extend %u-right-0;
-	@extend %u-bottom-0;
-	@extend %u-display-none;
-	@extend %u-margin-auto;
+  @extend %u-position-absolute;
+  @extend %u-top-0;
+  @extend %u-left-0;
+  @extend %u-right-0;
+  @extend %u-bottom-0;
+  @extend %u-display-none;
+  @extend %u-margin-auto;
   @extend %u-text-align-center;
+
   background: inherit;
 
-  &:not( [data-hide] ) {
-  	@extend %u-display-block;
+  &:not([data-hide]) {
+    @extend %u-display-block;
   }
 }
 
@@ -34,8 +32,9 @@
   @extend %u-margin-auto;
   @extend %u-left-0;
   @extend %u-right-0;
+
   float: none !important;
-  width: func.calcRem( 15px) !important;
-  height: func.calcRem( 15px ) !important;
-  background-size: func.calcRem( 15px ) func.calcRem( 15px );
+  width: func.calc-rem(15px) !important;
+  height: func.calc-rem(15px) !important;
+  background-size: func.calc-rem(15px) func.calc-rem(15px);
 }

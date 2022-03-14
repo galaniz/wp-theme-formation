@@ -1,104 +1,98 @@
-
-/*
- * Imports
- * -------
- */				
-
-import { 
-	mergeObjects, 
-	request,
-	addClass,
-	removeClass,
-	show,
-	setLoaders,
-	urlEncode
-} from 'Formation/utils';
-
-/*
+/**
  * Handle file removal
- * -------------------
- */		
+ */
 
-const fileRemove = ( args ) => {
+/* Imports */
 
-	/* Helpers */
+import {
+  mergeObjects,
+  request,
+  setLoaders,
+  urlEncode
+} from 'Formation/utils'
 
-	const disable = ( disable = true ) => {
-		setLoaders(
-			[f.loader], // loaders
-			[f.button], // buttons
-			disable // show
-		);
-	};
+/* Module */
 
-	/* Event callbacks */
+const fileRemove = (args) => {
+  /* Helpers */
 
-	const remove = () => {
-		disable( true );
-
-		let data = {
-			action: f.action,
-			file_path: f.filePath
-		};
-
-		data[f.nonce.name] = f.nonce.nonce;
-
-		console.log(data);
-
-		request( { 
-			method: 'POST', 
-			url: f.url,
-			headers: { 'Content-type': 'application/x-www-form-urlencoded' },
-			body: urlEncode( data )
-		} )
-	  .then( response => {
-	  	console.log( 'RESPONSE', response );
-
-	  	disable( false );
-	  	f.parent.removeChild( f.item );
-	  } )
-	  .catch( xhr => {
-	    console.log( 'ERROR', xhr, xhr.responseText );
-	    disable( false );
-	  } );
-	};
-  
-  /* Merge args with defaults */
-
-  mergeObjects( {
-  	item: null,
-		button: null,
-		loader: null,
-		filePath: '',
-		url: '',
-		action: '',
-		nonce: {
-			nonce: '',
-			name: ''
-		}
-  }, args );
-
-  let error = false;
-
-  // check for empty elements
-  for( let prop in args ) {
-  	if( !args[prop] ) {
-  		error = true;
-  		break;
-  	}
+  const disable = (disable = true) => {
+    setLoaders(
+      [f.loader], // loaders
+      [f.button], // buttons
+      disable // show
+    )
   }
 
-  if( error )
-  	return false;
+  /* Event callbacks */
 
-  let f = args;
+  const remove = () => {
+    disable(true)
 
-  f['parent'] = f.item.parentElement;
+    const data = {
+      action: f.action,
+      file_path: f.filePath
+    }
 
-	/* Event listeners */
+    data[f.nonce.name] = f.nonce.nonce
 
-	f.button.addEventListener( 'click', remove );
+    console.log(data)
 
-};
+    request({
+      method: 'POST',
+      url: f.url,
+      headers: { 'Content-type': 'application/x-www-form-urlencoded' },
+      body: urlEncode(data)
+    })
+      .then(response => {
+        console.log('RESPONSE', response)
 
-export default fileRemove;
+        disable(false)
+        f.parent.removeChild(f.item)
+      })
+      .catch(xhr => {
+        console.log('ERROR', xhr, xhr.responseText)
+        disable(false)
+      })
+  }
+
+  /* Merge args with defaults */
+
+  mergeObjects({
+    item: null,
+    button: null,
+    loader: null,
+    filePath: '',
+    url: '',
+    action: '',
+    nonce: {
+      nonce: '',
+      name: ''
+    }
+  }, args)
+
+  /* Check for empty elements */
+
+  let error = false
+
+  for (const prop in args) {
+    if (!args[prop]) {
+      error = true
+      break
+    }
+  }
+
+  if (error) { return false }
+
+  const f = args
+
+  f.parent = f.item.parentElement
+
+  /* Event listeners */
+
+  f.button.addEventListener('click', remove)
+}
+
+/* Exports */
+
+export default fileRemove

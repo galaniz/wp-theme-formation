@@ -1,77 +1,72 @@
-
-/*
+/**
  * Contact form field block
- * ------------------------
  */
 
 /* Dependencies */
 
-const { 
+const {
   getNamespace,
   getNamespaceObj
-} = blockUtils;
+} = window.blockUtils
 
-const { 
-  Panel,
+const {
   PanelBody,
-  BaseControl,
   TextControl,
   TextareaControl,
   SelectControl,
   CheckboxControl,
   RadioControl
-} = wp.components;
+} = window.wp.components
 
-const { 
-  select,
+const {
   withSelect
-} = wp.data;
+} = window.wp.data
 
-const { 
-  InspectorControls,
-  InnerBlocks
-} = wp.blockEditor;
+const {
+  InspectorControls
+} = window.wp.blockEditor
 
-const { Fragment } = wp.element;
-const { registerBlockType } = wp.blocks;
-const { apiFetch } = wp;
+const { Fragment } = window.wp.element
+const { registerBlockType } = window.wp.blocks
+const { apiFetch } = window.wp
 
 /* Namespace */
 
-const n = getNamespace( true );
-const nn = getNamespace();
-const name = n + 'contact-form-field';
+const n = getNamespace(true)
+const nn = getNamespace()
+const name = n + 'contact-form-field'
 
 /* Attributes from serverside */
 
-const nO = getNamespaceObj( getNamespace() );
-const attr = nO.blocks[name]['attr'];
-const def = nO.blocks[name]['default'];
+const nO = getNamespaceObj(getNamespace())
+const attr = nO.blocks[name].attr
+const def = nO.blocks[name].default
 
 /* Set data */
 
-const dataSelector = withSelect( ( select, ownProps ) => {
-  let clientID = ownProps.clientId,
-      args = { clientID: clientID };
+const dataSelector = withSelect((select, ownProps) => {
+  const clientID = ownProps.clientId
+  const args = { clientID: clientID }
 
-  if( !ownProps.attributes.hasOwnProperty( 'name' ) )
-    ownProps.attributes.name = clientID;
+  if (!Object.getOwnPropertyDescriptor(ownProps.attributes, 'name')) {
+    ownProps.attributes.name = clientID
+  }
 
-  return args;
-} );
+  return args
+})
 
 /* Block */
 
-registerBlockType( name, {
+registerBlockType(name, {
   title: 'Field',
   category: 'theme-blocks',
   icon: 'email',
   parent: [n + 'contact-form', n + 'contact-form-group-bottom'],
   attributes: attr,
-  edit: dataSelector( props => {
-    const { attributes, setAttributes, clientID } = props;
+  edit: dataSelector(props => {
+    const { attributes, setAttributes, clientID } = props
 
-    let { 
+    const {
       type = def.type,
       name = clientID,
       label = def.label,
@@ -81,91 +76,94 @@ registerBlockType( name, {
       options = def.options,
       width = def.width,
       value = def.value,
-      label_after = def.label_after,
-      padding_small = def.padding_small,
+      labelAfter = def.label_after,
+      paddingSmall = def.padding_small,
       preview = false
-    } = attributes;
+    } = attributes
 
     /* Optional inputs */
 
-    let placeholderInput = '',
-      optionsInput = '',
-      valueInput = '';
+    let placeholderInput = ''
+    let optionsInput = ''
+    let valueInput = ''
 
-    if( type == 'text' || type == 'email' ) {
+    if (type === 'text' || type === 'email') {
       placeholderInput = (
         <TextControl
-          label="Placeholder"
-          value={ placeholder }
-          onChange={ placeholder => setAttributes( { placeholder } ) }
+          label='Placeholder'
+          value={placeholder}
+          onChange={placeholder => setAttributes({ placeholder })}
         />
-      );
+      )
     }
 
-    if( type == 'radio' || type == 'checkbox' ) {
-      valueInput = [
+    if (type === 'radio' || type === 'checkbox') {
+      valueInput = (
         <CheckboxControl
-          label="Label after"
-          value="1"
-          checked={ label_after ? true : false }
-          onChange={ checked => setAttributes( { label_after: checked } ) }
+          label='Label after'
+          value='1'
+          checked={!!labelAfter}
+          onChange={checked => setAttributes({ label_after: checked })}
         />
-      ];
+      )
     }
 
-    if( type == 'select' || type == 'radio' || type == 'checkbox' || type == 'radio-group' || type == 'checkbox-group' ) {
-      optionsInput = [
-        <TextControl
-          label="Value"
-          value={ value }
-          onChange={ value => setAttributes( { value } ) }
-        />,
-        <TextareaControl
-          label="Options (label : value)"
-          value={ options }
-          onChange={ options => setAttributes( { options } ) }
-        />
-      ];
+    if (type === 'select' || type === 'radio' || type === 'checkbox' || type === 'radio-group' || type === 'checkbox-group') {
+      optionsInput = (
+        <Fragment>
+          <TextControl
+            label='Value'
+            value={value}
+            onChange={value => setAttributes({ value })}
+          />
+          <TextareaControl
+            label='Options (label : value)'
+            value={options}
+            onChange={options => setAttributes({ options })}
+          />
+        </Fragment>
+      )
     }
 
     /* Preview form markup */
 
-    let previewContent = ( <h4>{ `Field ${ label ? ': ' + label : '' }` }</h4> );
+    let previewContent = (<h4>{`Field ${label ? ': ' + label : ''}`}</h4>)
 
-    if( preview )
-      previewContent = ( 
-        <div dangerouslySetInnerHTML={ { __html: preview } } /> 
-      );
+    if (preview) {
+      previewContent = (
+        <div dangerouslySetInnerHTML={{ __html: preview }} />
+      )
+    }
 
-    apiFetch( { 
-      path: `/${ nn }/preview-contact-form?type=${ type }&name=${ name }&label=${ label }&placeholder=${ placeholder }&required=${ required }&attr=${ attr }&options=${ options }&width=${ width }`
-    } ).then( p => {
+    apiFetch({
+      path: `/${nn}/preview-contact-form?type=${type}&name=${name}&label=${label}&placeholder=${placeholder}&required=${required}&attr=${attr}&options=${options}&width=${width}`
+    }).then(p => {
       // console.log( p );
-      setAttributes( { preview: p } );
-    } ).catch( err => {
-      console.log( err );
-      setAttributes( { preview: false } );
-    } );
+      setAttributes({ preview: p })
+    }).catch(err => {
+      console.log(err)
+      setAttributes({ preview: false })
+    })
 
     return [
-      <Fragment>
+      <Fragment key='frag'>
         <InspectorControls>
-          <PanelBody title="Field Options">
+          <PanelBody title='Field Options'>
             <TextControl
-              label="Name"
-              value={ name }
-              onChange={ name => setAttributes( { name } ) }
+              label='Name'
+              value={name}
+              onChange={name => setAttributes({ name })}
             />
             <TextControl
-              label="Label"
-              value={ label }
-              onChange={ label => setAttributes( { label } ) }
+              label='Label'
+              value={label}
+              onChange={label => setAttributes({ label })}
             />
-            { placeholderInput }
+            {placeholderInput}
             <SelectControl
-              label="Type"
-              value={ type }
-              options={ [
+              label='Type'
+              value={type}
+              options={[
                 { label: 'Text', value: 'text' },
                 { label: 'Email', value: 'email' },
                 { label: 'Checkbox', value: 'checkbox' },
@@ -175,47 +173,47 @@ registerBlockType( name, {
                 { label: 'Number', value: 'number' },
                 { label: 'Textarea', value: 'textarea' },
                 { label: 'Select', value: 'select' }
-              ] }
-              onChange={ type => setAttributes( { type } ) }
+              ]}
+              onChange={type => setAttributes({ type })}
             />
-            { valueInput }
-            { optionsInput }
+            {valueInput}
+            {optionsInput}
             <TextareaControl
-              label="Attributes (label : value)"
-              value={ attr }
-              onChange={ attr => setAttributes( { attr } ) }
+              label='Attributes (label : value)'
+              value={attr}
+              onChange={attr => setAttributes({ attr })}
             />
             <CheckboxControl
-              label="Required"
-              value="1"
-              checked={ required ? true : false }
-              onChange={ checked => setAttributes( { required: checked } ) }
+              label='Required'
+              value='1'
+              checked={!!required}
+              onChange={checked => setAttributes({ required: checked })}
             />
             <CheckboxControl
-              label="Padding small"
-              value="1"
-              checked={ padding_small ? true : false }
-              onChange={ checked => setAttributes( { padding_small: checked } ) }
+              label='Padding small'
+              value='1'
+              checked={!!paddingSmall}
+              onChange={checked => setAttributes({ padding_small: checked })}
             />
             <RadioControl
-              label="Width"
-              selected={ width }
-              options={ [
+              label='Width'
+              selected={width}
+              options={[
                 { label: '100%', value: '100' },
                 { label: '50%', value: '50' },
                 { label: 'Auto', value: 'auto' }
-              ] }
-              onChange={ width => { setAttributes( { width } ) } }
+              ]}
+              onChange={width => { setAttributes({ width }) }}
             />
           </PanelBody>
         </InspectorControls>
       </Fragment>,
-      <div className="u-disable">
-        { previewContent }
+      <div className='u-disable' key='div'>
+        {previewContent}
       </div>
-    ];
-  } ),
-  save() {
-    return null; // this block is rendered in php
+    ]
+  }),
+  save () {
+    return null // rendered in php
   }
-} );
+})

@@ -1,133 +1,123 @@
-
-/*
- * Imports
- * -------
- */				
-
-import { mergeObjects, show } from 'Formation/utils';
-
-/*
+/**
  * WP media select
- * ---------------
- */		
+ */
 
-const wpMedia = ( args ) => {
+/* Import */
 
-	/* Event callbacks */
+import { mergeObjects, show } from 'Formation/utils'
 
-	const openModal = ( e ) => {
-		e.preventDefault();
-		mediaModal.frame.open();
-	};
+/* Module */
 
-	const remove = ( e ) => {
-		if( e ) 
-			e.preventDefault();
+const wpMedia = (args) => {
+  /* Event callbacks */
 
-		f.fileName.textContent = '';
-		f.fileInput.value = '';
-
-		show( f.noFileContainer );
-		show( f.fileContainer, false );
-	};
-
-	const closeModal = ( e ) => {
-		let selection =  mediaModal.frame.state().get( 'selection' );
-
-		selection.forEach( ( attachment, i ) => {
-			let image = true;
-
-			if( image ) {
-				f.fileImage.setAttribute( 'src', attachment.attributes.url );
-				f.fileImage.setAttribute( 'alt', attachment.attributes.alt );
-			} else {
-				f.fileIcon.textContent = attachment.attributes.subtype;
-			}
-
-			f.fileName.textContent = attachment.attributes.filename;
-			f.fileInput.value = attachment.id;
-
-			show( f.noFileContainer, false );
-			show( f.fileContainer );
-		} );
-	};
-  
-  /* Merge args with defaults */
-
-  mergeObjects( {
-  	selectButton: null,
-		removeButton: null,
-		fileContainer: null,
-		noFileContainer: null,
-		fileImage: null,
-		fileIcon: null,
-		fileName: null,
-		fileInput: null,
-		fileType: 'file',
-		mediaVars: {},
-		reset: false
-  }, args );
-
-  let error = false;
-
-  // check for empty elements
-  for( let prop in args ) {
-  	if( !args[prop] ) {
-  		error = true;
-  		break;
-  	}
+  const openModal = (e) => {
+    e.preventDefault()
+    mediaModal.frame.open()
   }
 
-  if( error )
-  	return false;
+  const remove = (e) => {
+    if (e) { e.preventDefault() }
 
-  let f = args,
-  	wp = window.wp,
-  	mediaModal = {};
+    f.fileName.textContent = ''
+    f.fileInput.value = ''
+
+    show(f.noFileContainer)
+    show(f.fileContainer, false)
+  }
+
+  const closeModal = (e) => {
+    const selection = mediaModal.frame.state().get('selection')
+
+    selection.forEach((attachment, i) => {
+      const image = true
+
+      if (image) {
+        f.fileImage.setAttribute('src', attachment.attributes.url)
+        f.fileImage.setAttribute('alt', attachment.attributes.alt)
+      } else {
+        f.fileIcon.textContent = attachment.attributes.subtype
+      }
+
+      f.fileName.textContent = attachment.attributes.filename
+      f.fileInput.value = attachment.id
+
+      show(f.noFileContainer, false)
+      show(f.fileContainer)
+    })
+  }
+
+  /* Merge args with defaults */
+
+  mergeObjects({
+    selectButton: null,
+    removeButton: null,
+    fileContainer: null,
+    noFileContainer: null,
+    fileImage: null,
+    fileIcon: null,
+    fileName: null,
+    fileInput: null,
+    fileType: 'file',
+    mediaVars: {}
+  }, args)
+
+  let error = false
+
+  /* Check for empty elements */
+
+  for (const prop in args) {
+    if (!args[prop]) {
+      error = true
+      break
+    }
+  }
+
+  if (error) { return false }
+
+  const f = args
+  const wp = window.wp
+  const mediaModal = {}
 
   /* Media args */
 
-	let mediaArgs = {
-		frame: 'select',
-		title: 'Select Media',
-		multiple: false,
-		library: {}
-	};
+  const mediaArgs = {
+    frame: 'select',
+    title: 'Select Media',
+    multiple: false,
+    library: {}
+  }
 
-	if( f.mediaVars ) {
-		for( let mediaVar in f.mediaVars ) {
-			mediaArgs.library[mediaVar] = f.mediaVars[mediaVar];
-		}
-	}
+  if (f.mediaVars) {
+    for (const mediaVar in f.mediaVars) {
+      mediaArgs.library[mediaVar] = f.mediaVars[mediaVar]
+    }
+  }
 
-	/* Reset */
+  /* Media modal */
 
-	if( f.reset ) 
-		removeImage();
+  const attributes = mediaArgs
 
-	/* Media modal */
+  attributes.states = []
 
-	let attributes = mediaArgs;
-	
-	attributes.states = [];
+  attributes.states.push(
+    new wp.media.controller.Library({
+      multiple: false,
+      title: attributes.title,
+      priority: 20,
+      filterable: 'all'
+    })
+  )
 
-	attributes.states.push(
-		new wp.media.controller.Library( {
-			multiple: false,
-			title: attributes.title,
-			priority: 20,
-			filterable: 'all'
-		} )
-	);
+  mediaModal.frame = wp.media(attributes)
 
-	mediaModal.frame = wp.media( attributes );
+  /* Event listeners */
 
-	/* Event listeners */
+  f.selectButton.addEventListener('click', openModal)
+  f.removeButton.addEventListener('click', remove)
+  mediaModal.frame.on('close', closeModal)
+}
 
-	f.selectButton.addEventListener( 'click', openModal );
-	f.removeButton.addEventListener( 'click', remove );
-	mediaModal.frame.on( 'close', closeModal );
+/* Exports */
 
-};
-
-export default wpMedia;
+export default wpMedia

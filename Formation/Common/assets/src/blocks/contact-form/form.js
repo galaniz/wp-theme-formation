@@ -1,138 +1,135 @@
-
-/*
+/**
  * Contact form block
- * ------------------
  */
 
 /* Dependencies */
 
-const { 
+const {
   getNamespace,
   getNamespaceObj
-} = blockUtils;
+} = window.blockUtils
 
-const { 
+const {
   Panel,
   PanelBody,
   TextControl,
   SelectControl
-} = wp.components;
+} = window.wp.components
 
-const { 
-  select,
+const {
   withSelect
-} = wp.data;
+} = window.wp.data
 
-const { 
+const {
   InspectorControls,
   InnerBlocks,
   PlainText
-} = wp.blockEditor;
+} = window.wp.blockEditor
 
-const { Fragment } = wp.element;
-const { registerBlockType } = wp.blocks;
+const { Fragment } = window.wp.element
+const { registerBlockType } = window.wp.blocks
 
 /* Namespace */
 
-const n = getNamespace( true );
-const name = n + 'contact-form';
+const n = getNamespace(true)
+const name = n + 'contact-form'
 
 /* Attributes from serverside */
 
-const nO = getNamespaceObj( getNamespace() );
-const attr = nO.blocks[name]['attr'];
-const def = nO.blocks[name]['default'];
+const nO = getNamespaceObj(getNamespace())
+const attr = nO.blocks[name].attr
+const def = nO.blocks[name].default
 
 /* Set data */
 
-const dataSelector = withSelect( ( select, ownProps ) => {
-  let clientID = ownProps.clientId,
-      args = { clientID: clientID };
+const dataSelector = withSelect((select, ownProps) => {
+  const clientId = ownProps.clientId
+  const args = { clientId: clientId }
 
-  if( !ownProps.attributes.hasOwnProperty( 'id' ) )
-    ownProps.attributes.id = clientID;
+  if (!Object.getOwnPropertyDescriptor(ownProps, 'id')) {
+    ownProps.attributes.id = clientId
+  }
 
-  return args;
-} );
+  return args
+})
 
 /* Block */
 
-registerBlockType( name, {
+registerBlockType(name, {
   title: 'Contact Form',
   category: 'theme-blocks',
   icon: 'email',
   attributes: attr,
-  edit: dataSelector( props => {
-    const { attributes, setAttributes, clientID } = props;
+  edit: dataSelector(props => {
+    const { attributes, setAttributes } = props
 
-    let { 
-      id = clientID,
+    const {
       email = def.email,
       subject = def.subject,
-      submit_text = def.submit_text,
-      success_message = def.success_message,
+      submitText = def.submit_text,
+      successMessage = def.success_message,
       gap = def.gap
-    } = attributes;
+    } = attributes
 
-    let gapSelect = '';
+    let gapSelect = ''
 
-    if( nO.gap_options.length ) {
+    if (nO.gap_options.length) {
       gapSelect = (
         <div>
           <SelectControl
-            label="Fields Gap"
-            value={ gap }
-            options={ nO.gap_options }
-            onChange={ gap => setAttributes( { gap } ) }
+            label='Fields Gap'
+            value={gap}
+            options={nO.gap_options}
+            onChange={gap => setAttributes({ gap })}
           />
         </div>
-      );
+      )
     }
 
     return [
-      <Fragment>
+      <Fragment key='frag'>
         <InspectorControls>
-          <PanelBody title={ 'Form Options' }>
+          <PanelBody title='Form Options'>
             <TextControl
-              label="To Email"
-              value={ email }
-              onChange={ email => setAttributes( { email } ) }
+              label='To Email'
+              value={email}
+              onChange={email => setAttributes({ email })}
             />
             <TextControl
-              label="Subject"
-              value={ subject }
-              onChange={ subject => setAttributes( { subject } ) }
+              label='Subject'
+              value={subject}
+              onChange={subject => setAttributes({ subject })}
             />
             <TextControl
-              label="Submit Text"
-              value={ submit_text }
-              onChange={ submit_text => setAttributes( { submit_text } ) }
+              label='Submit Text'
+              value={submitText}
+              onChange={text => setAttributes({ submit_text: text })}
             />
-            { gapSelect }
+            {gapSelect}
           </PanelBody>
         </InspectorControls>
       </Fragment>,
-      <Panel className="o-form">
-        <PanelBody title="Fields">
-          <div className="l-section">
-            <InnerBlocks 
-              allowedBlocks={ [n + 'contact-form-field', n + 'contact-form-group'] } 
-            />  
+      <Panel className='o-form' key='panel'>
+        <PanelBody title='Fields'>
+          <div className='l-section'>
+            <InnerBlocks
+              allowedBlocks={[n + 'contact-form-field', n + 'contact-form-group']}
+            />
           </div>
-          <div className="l-section">
+          <div className='l-section'>
             <div>
               <PlainText
-                value={ success_message }
-                onChange={ success_message => setAttributes( { success_message } ) }
-                placeholder={ 'Success message...' }
+                value={successMessage}
+                onChange={text => setAttributes({ success_message: text })}
+                placeholder='Success message...'
               />
             </div>
           </div>
         </PanelBody>
-      </Panel>   
-    ];
-  } ),
-  save() {
-    return <InnerBlocks.Content />; // this block is rendered in php
+      </Panel>
+    ]
+  }),
+  save () {
+    return <InnerBlocks.Content /> // rendered in php
   }
-} );
+})
