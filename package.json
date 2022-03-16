@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/galaniz/wp-theme-foundation#readme",
   "devDependencies": {
-    "@alanizcreative/formation": "^2.1.11",
+    "@alanizcreative/formation": "^3.0.0",
     "@babel/core": "^7.15.5",
     "@babel/preset-env": "^7.15.6",
     "@release-it/bumper": "^3.0.1",
