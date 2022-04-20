@@ -35,3 +35,19 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Update to use `@use`/`@forward` instead of `@import`.
+
+## [3.0.0] - 2022-03-15
+
+### Changed
+- Update all JS files to use JavaScript Standard Style.
+- Update all SCSS files to use Stylelint Standard SCSS.
+- Update all PHP files to use WordPress Coding Standards.
+
+## [3.0.1] - 2022-04-19
+
+### Fixed
+- `Field` checkboxes not reflecting saved value.
+- `render_form` attributes causing front end issues.
+
+### Changed
+- Move `get_media_pos_class` utility method to `Utils_Optional`.

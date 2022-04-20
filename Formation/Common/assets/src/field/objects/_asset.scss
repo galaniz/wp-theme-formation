@@ -1,26 +1,21 @@
-
-/*
- * Imports
- * ------
- */
-
-@use '@alanizcreative/formation/src/config';
-@use '@alanizcreative/formation/src/utils/functions' as func;
-@use '@alanizcreative/formation/src/utils/mixins' as mix;
-
-/*
+/**
  * Asset
- * -----
  */
+
+/* Imports */
+
+@use "@alanizcreative/formation/src/config";
+@use "@alanizcreative/formation/src/utils/functions" as func;
+@use "@alanizcreative/formation/src/utils/mixins" as mix;
 
 /* Internal variables */
 
-$_gray: rgba( func.getColor( 'foreground-dark' ), 0.2 );
+$gray: rgba(func.get-color("foreground-dark"), 0.2);
 
 /* Objects */
 
 .o-asset-row {
-  margin-bottom: func.calcRem( 20px );
+  margin-bottom: func.calc-rem(20px);
 
   &:empty {
     @extend %u-display-none;
@@ -41,51 +36,54 @@ $_gray: rgba( func.getColor( 'foreground-dark' ), 0.2 );
 
 .o-asset__exists {
   @extend %u-background-color-background-base;
-  border: func.calcRem( 1px ) solid $_gray;
+
+  border: func.calc-rem(1px) solid $gray;
 
   &,
   & > div {
-    height: func.calcRem( 80px );
+    height: func.calc-rem(80px);
   }
 }
 
 .o-asset__image,
 .o-asset__icon {
-  max-width: func.calcRem( 200px );
-  max-height: func.calcRem( 80px );
+  max-width: func.calc-rem(200px);
+  max-height: func.calc-rem(80px);
 
-  @include mix.breakpointMax( 782 ) {
+  @include mix.breakpoint-max( 782 ) {
     width: 33%;
   }
 }
 
 .o-asset__icon {
-  font-size: func.calcRem( 16px );
-	font-weight: 600;
-  padding: 0 func.calcRem( 15px ) 0 func.calcRem( 25px );
-  border-radius: func.calcRem( 4px );
+  font-size: func.calc-rem(16px);
+  font-weight: 600;
+  padding: 0 func.calc-rem(15px) 0 func.calc-rem(25px);
+  border-radius: func.calc-rem(4px);
 
   &:empty {
-  	@extend %u-display-none;
+    @extend %u-display-none;
   }
 }
 
 .o-asset__image {
   @extend %u-width-100;
   @extend %u-height-100;
-  background-color: $_gray;
+
+  background-color: $gray;
   object-fit: contain;
 
   &[src=""] {
-  	@extend %u-display-none;
+    @extend %u-display-none;
   }
 }
 
 .o-asset__name {
-	@extend %u-overflow-hidden;
+  @extend %u-overflow-hidden;
+
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding: 0 func.calcRem( 15px );
+  padding: 0 func.calc-rem(15px);
   min-width: 0;
   width: 0;
   flex-shrink: 1;
@@ -100,10 +98,11 @@ $_gray: rgba( func.getColor( 'foreground-dark' ), 0.2 );
 .o-asset__remove,
 .o-asset__edit {
   @extend %u-background-color-background-base;
-	@extend %u-position-relative;
-	@extend %u-text-align-center;
-  width: func.calcRem( 50px );
-  height: func.calcRem( 50px );
+  @extend %u-position-relative;
+  @extend %u-text-align-center;
+
+  width: func.calc-rem(50px);
+  height: func.calc-rem(50px);
   padding: 0;
   border: none;
   outline: none;

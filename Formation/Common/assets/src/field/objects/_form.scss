@@ -1,0 +1,79 @@
+/**
+ * Form
+ */
+
+/* Imports */
+
+@use "@alanizcreative/formation/src/config";
+@use "@alanizcreative/formation/src/utils/functions" as func;
+@use "@alanizcreative/formation/src/utils/mixins" as mix;
+
+/* Internal variables */
+
+$gray: rgba(func.get-color("foreground-dark"), 0.2);
+
+/* Objects */
+
+.o-form-section {
+  @extend %u-display-inline-block;
+}
+
+.o-form__field {
+  margin-bottom: func.calc-rem(15px);
+
+  .o-multi & {
+    padding: func.calc-rem(10px);
+    flex-grow: 1;
+  }
+
+  .o-form-section[data-col] & {
+    margin: 0;
+    flex-grow: 0;
+  }
+
+  &[data-type="richtext"] {
+    max-width: func.calc-rem(750px);
+
+    /* MCE overrides */
+
+    .wp-editor-container,
+    .mce-top-part::before {
+      box-shadow: none !important;
+    }
+
+    .wp-editor-container,
+    .wp-switch-editor {
+      border-color: $gray !important;
+    }
+
+    .html-active .switch-html,
+    .tmce-active .switch-tmce {
+      border-bottom-color: func.get-color("background-dark") !important;
+    }
+  }
+}
+
+.o-form__label {
+  font-size: func.calc-rem(13px);
+  margin-bottom: func.calc-rem(6px);
+  font-weight: 600;
+}
+
+.o-form__text,
+.o-form__textarea,
+.o-form__select {
+  .o-multi & {
+    @extend %u-width-100;
+  }
+
+  &[data-full] {
+    width: 100%;
+    max-width: func.calc-rem(750px);
+  }
+}
+
+.o-form__checkbox {
+  @include mix.breakpoint-max( 782 ) {
+    margin: 0 func.calc-rem(4px) 0 0 !important;
+  }
+}

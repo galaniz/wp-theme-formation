@@ -1,42 +1,33 @@
-
-/*
- * Imports
- * -------
+/**
+ * Hide/show siblings based on value
  */
 
-import { closest } from 'Formation/utils';
+/* Imports */
 
-/*
- * DOM Loaded
- * ----------
- */
+import { closest } from 'Formation/utils'
+
+/* DOM loaded handler */
 
 const initialize = () => {
+  const toggle = (t) => {
+    const toggle = closest(t, 'o-toggle')
 
- /*
-	* Hide / show siblings based on value
-	* -----------------------------------
-	*/
+    if (toggle) { toggle.setAttribute('data-hide', t.checked) }
+  }
 
-	const toggle = ( t ) => {
-		let toggle = closest( t, 'o-toggle' );
+  window.toggleSiblings = (event) => {
+    toggle(event.target)
+  }
 
-		if( toggle )
-			toggle.setAttribute( 'data-hide', t.checked );
-	};
+  const toggleTriggers = [].slice.call(document.querySelectorAll('.o-toggle__trigger'))
 
-	window.toggleSiblings = ( event ) => {
-		toggle( event.target );
-	};
+  if (toggleTriggers.length) {
+    toggleTriggers.forEach((t) => {
+      toggle(t)
+    })
+  }
+}
 
-	let toggleTriggers = [].slice.call( document.querySelectorAll( '.o-toggle__trigger' ) );
+/* DOM loaded listener */
 
-	if( toggleTriggers.length ) {
-		toggleTriggers.forEach( ( t ) => {
-			toggle( t );
-		} );
-	}
-
-}; // end initialize
-
-document.addEventListener( 'DOMContentLoaded', initialize );
+document.addEventListener('DOMContentLoaded', initialize)

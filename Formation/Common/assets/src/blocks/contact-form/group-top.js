@@ -1,50 +1,45 @@
-
-/*
+/**
  * Contact form group top block
- * ----------------------------
  */
 
 /* Dependencies */
 
-const { 
-  getNamespace,
-  getNamespaceObj
-} = blockUtils;
+const { getNamespace } = window.blockUtils
 
-const { 
+const {
   Panel,
   PanelBody
-} = wp.components;
+} = window.wp.components
 
-const { InnerBlocks } = wp.blockEditor;
-const { registerBlockType } = wp.blocks;
+const { InnerBlocks } = window.wp.blockEditor
+const { registerBlockType } = window.wp.blocks
 
 /* Namespace */
 
-const n = getNamespace( true );
-const name = n + 'contact-form-group-top';
+const n = getNamespace(true)
+const name = n + 'contact-form-group-top'
 
 /* Blocks */
 
-registerBlockType( name, {
+registerBlockType(name, {
   title: 'Field Group Top',
   category: 'theme-blocks',
   icon: 'email',
   parent: [n + 'contact-form-group'],
-  edit( props ) {
-    return [
+  edit (props) {
+    return (
       <Panel>
         <PanelBody>
-          <div className="l-section">
-            <InnerBlocks 
-              allowedBlocks={ ['core/paragraph', 'core/heading', 'core/image'] } 
-            />  
+          <div className='l-section'>
+            <InnerBlocks
+              allowedBlocks={['core/paragraph', 'core/heading', 'core/image']}
+            />
           </div>
         </PanelBody>
-      </Panel>   
-    ];
+      </Panel>
+    )
   },
-  save() {
-    return <InnerBlocks.Content />; // this block is rendered in php
+  save () {
+    return <InnerBlocks.Content /> // this block is rendered in php
   }
-} );
+})

@@ -1,237 +1,243 @@
 <?php
-
-/*
+/**
  * Handle file upload
- * ------------------
+ *
+ * @package wp-theme-formation
  */
 
 namespace Formation\Common\Field;
 
-/*
+/**
  * Imports
- * -------
  */
 
-use function Formation\write_log; 
-use Formation\Formation as FRM; 
+use Formation\Formation as FRM;
+
+/**
+ * Class
+ */
 
 class File_Upload {
 
-  /*
-   * Helpers
-   * -------
-   *
-   * Change _FILES array to cleaner one.
-   *
-   * @source: https://bit.ly/2q0xxy5
-   * @param array $files
-   * @return array
-   */
+		/**
+		 * Mime types and extensions.
+		 */
 
-  private function normalize_files( &$files ) {
-    $_files = [];
-    $_files_count = count( $files['name'] );
-    $_files_keys = array_keys( $files );
+		private $mime_types = [
+			'image/jpeg'                    => 'jpg',
+			'image/png'                     => 'png',
+			'image/gif'                     => 'gif',
+			'image/x-icon'                  => 'ico',
+			'image/svg+xml'                 => 'svg',
+			'image/svg'                     => 'svg',
+			'application/pdf'               => 'pdf',
+			'application/msword'            => 'doc',
+			'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx',
+			'application/vnd.ms-powerpoint' => 'ppt',
+			'application/vnd.openxmlformats-officedocument.presentationml.presentation' => 'pptx',
+			'application/vnd.ms-excel'      => 'xls',
+			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => 'xlsx',
+			'audio/mpeg'                    => 'mp3',
+			'audio/mp4'                     => 'm4a',
+			'audio/ogg'                     => 'ogg',
+			'audio/x-wav'                   => 'wav',
+			'video/mp4'                     => 'mp4',
+			'video/quicktime'               => 'mov',
+			'video/x-ms-wmv'                => 'wmv',
+			'video/x-msvideo'               => 'avi',
+			'video/mpeg'                    => 'mpg',
+			'video/ogg'                     => 'ogv',
+			'video/3gpp'                    => '3gp',
+		];
 
-    for( $i = 0; $i < $_files_count; $i++ )
-      foreach( $_files_keys as $key )
-        $_files[$i][$key] = $files[$key][$i];
+		/**
+		 * Make more secure array from _FILES.
+		 *
+		 * Source: https://dev.to/einlinuus/how-to-upload-files-with-php-correctly-and-securely-1kng
+		 *
+		 * @param array $files
+		 * @return array
+		 */
 
-    return $_files;
-  }
+		private function normalize_files( $files ) {
+				/* Normalize to indexed array of associative arrays */
 
-  /*
-   * Check if from valid origin.
-   *
-   * @param string $origin
-   * @return boolean
-   */
+				$_files       = [];
+				$_files_count = count( $files['name'] );
+				$_files_keys  = array_keys( $files );
 
-  private function validate_origin( $origin ) {
-    if( strpos( $origin, 'localhost' ) !== false ) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+				for ( $i = 0; $i < $_files_count; $i++ ) {
+						foreach ( $_files_keys as $key ) {
+								if ( 'tmp_name' === $key || 'name' === $key ) {
+										$value = $files[ $key ][ $i ];
 
-  /*
-   * Verify file extension.
-   *
-   * @param string $ext
-   * @return boolean
-   */
+										if ( 'name' === $key ) {
+												$value = wp_strip_all_tags( $value );
+										}
 
-  private function validate_extension( $ext ) {
-    $valid_extensions = [
-      'jpg', 
-      'jpeg', 
-      'png', 
-      'gif',
-      'ico',
-      'svg',
-      'pdf',
-      'doc',
-      'docx',
-      'ppt',
-      'pptx',
-      'pps',
-      'ppsx',
-      'odt',
-      'xls',
-      'xlsx',
-      'psd',
-      'mp3',
-      'm4a',
-      'ogg',
-      'wav',
-      'mp4',
-      'm4v',
-      'mov',
-      'wmv',
-      'avi',
-      'mpg',
-      'ogv',
-      '3gp',
-      '3g2'
-    ];
+										$_files[ $i ][ $key ] = $value;
+								}
+						}
+				}
 
-    if( !in_array( strtolower( $ext ), $valid_extensions ) )
-      return false;
+				/* Secure */
 
-    return true;
-  }
+				foreach ( $_files as &$f ) {
+						$file_path = $f['tmp_name'];
+						$file_size = filesize( $file_path );
+						$file_info = finfo_open( FILEINFO_MIME_TYPE );
+						$file_type = finfo_file( $file_info, $file_path );
 
-  /*
-   * Sanitize input.
-   */
+						$f['type'] = $file_type;
+						$f['size'] = $file_size;
+						$f['ext']  = $this->mime_types[ $file_type ] ?? '';
+				}
 
-  private function validate_input() {
-    /*if( preg_match( '/([^\w\s\d\-_~,;:\[\]\(\).])|([\.]{2,})/', $image_tmp_name ) ) {
-      header( http_response_code( 400 ) );
-      exit;
-    }*/
-  }
+				return $_files;
+		}
 
-  /*
-   * Check file size.
-   *
-   * @param int $size
-   * @return boolean
-   */
+		/**
+		 * Verify file type.
+		 *
+		 * @param string $ext
+		 * @return boolean
+		 */
 
-  private function validate_file_size( $size ) {
-    if( $size > wp_max_upload_size() )
-      return false;
+		private function validate_type( $type ) {
+				if ( ! array_key_exists( $type, $this->mime_types ) ) {
+						return false;
+				}
 
-    return true;
-  }
+				return true;
+		}
 
-  /*
-   * Constructor
-   * -----------
-   *
-   * Process $_FILES and put in theme uploads directory.
-   *
-   * @param array $args
-   */
+		/**
+		 * Check file size.
+		 *
+		 * @param int $size
+		 * @return boolean
+		 */
 
-  public function __construct( $args ) {
-    try {
-      $args = array_replace_recursive( [
-        'uploads_dir' => '',
-        'uploads_url' => '',
-        'success' => false,
-        'error' => false
-      ], $args );
+		private function validate_file_size( $size ) {
+				if ( $size > wp_max_upload_size() ) {
+						return false;
+				}
 
-      extract( $args );
+				return true;
+		}
 
-      /* Check for uploads directory and url */
+		/**
+		 * Process $_FILES and put in theme uploads directory.
+		 *
+		 * @param array $args
+		 */
 
-      if( !$uploads_dir || !$uploads_url )
-        throw new \Exception( 'Upload directory and/or url not specified' );
+		public function __construct( $args ) {
+				try {
+						$args = array_replace_recursive(
+								[
+									'uploads_dir' => '',
+									'uploads_url' => '',
+									'success'     => false,
+									'error'       => false,
+								],
+								$args
+						);
 
-      if( !file_exists( $uploads_dir ) )
-        mkdir( $uploads_dir, 0755 );
+						[
+							'uploads_dir'      => $uploads_dir,
+							'uploads_url'       => $uploads_url,
+							'success'         => $success,
+							'error'          => $error,
+						] = $args;
 
-      /* Validate origin */
+						/* Check for uploads directory and url */
 
-      /*if( !$this->validate_origin( $_SERVER['HTTP_HOST'] ) ) {
-        throw new \Exception( 'Invalid origin' );
-      } else {
-        header( 'Access-Control-Allow-Origin: ' . $_SERVER['HTTP_HOST'] );
-      }*/
-      
-      /* Normalize files */
+						if ( ! $uploads_dir || ! $uploads_url ) {
+								throw new \Exception( 'Upload directory and/or url not specified' );
+						}
 
-      $files = $this->normalize_files( $_FILES['files'] );
+						if ( ! file_exists( $uploads_dir ) ) {
+								mkdir( $uploads_dir, 0755 );
+						}
 
-      /* Store successfully uploaded files data */
+						/* Normalize files */
 
-      $data = [];
+						$files = $this->normalize_files( $_FILES['files'] );
 
-      array_walk( $files, function( $file, $i ) use ( &$data, $args ) {
-        list( $type, $tmp_name, $size, $name, $ext ) = [
-          $file['type'], 
-          $file['tmp_name'], 
-          $file['size'],
-          pathinfo( $file['name'], PATHINFO_FILENAME ),
-          strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) )
-        ];
+						/* Store successfully uploaded files data */
 
-        /* Check if uploaded via HTTP POST */
+						$data = [];
 
-        if( is_uploaded_file( $tmp_name ) ) {
+						array_walk(
+								$files,
+								function( $file, $i ) use ( &$data, $args ) {
+										[
+											'type'     => $type,
+											'tmp_name' => $tmp_name,
+											'size'     => $size,
+											'name'     => $name,
+											'ext'      => $ext,
+										] = $file;
 
-          /* More validations */
+										/* Check if uploaded via HTTP POST */
 
-          if( !$this->validate_extension( $ext ) )
-            throw new \Exception( 'Invalid extension' );
+										if ( is_uploaded_file( $tmp_name ) ) {
+												/* More validations */
 
-          if( !$this->validate_file_size( $size ) )
-            throw new \Exception( 'File exceeds max upload size.' );
+												if ( ! $this->validate_type( $type ) ) {
+														throw new \Exception( 'Invalid type' );
+												}
 
-          /* Check if file exists ( append _copy if it does ) */
+												if ( ! $this->validate_file_size( $size ) ) {
+														throw new \Exception( 'File exceeds max upload size.' );
+												}
 
-          if( file_exists( $args['uploads_dir'] . $name . '.' . $ext ) )
-            $name .= '_copy';
+												/* Check if file exists (append _copy if it does) */
 
-          /* Set file path and url */
+												if ( file_exists( $args['uploads_dir'] . $name ) ) {
+														$name .= '_copy';
+												}
 
-          $abs_path = $args['uploads_dir'] . $name . '.' . $ext;
-          $url = $args['uploads_url'] . $name . '.' . $ext;
+												/* Set file path and url */
 
-          /* Put file in uploads folder */
+												$abs_path = $args['uploads_dir'] . $name;
+												$url      = $args['uploads_url'] . $name;
 
-          $moved = move_uploaded_file( $tmp_name, $abs_path );
+												/* Put file in uploads folder */
 
-          if( $moved ) {
-            $data[] = [ 
-              'title' => $name, 
-              'url' => $url,
-              'mime_type' => $type,
-              'size' => $size,
-              'ext' => $ext
-            ];
-          } else {
-            throw new \Exception( 'Error moving file' );
-          }
-        } else {
-          throw new \Exception( 'Not uploaded via post' );
-        }
-      } );
+												$moved = move_uploaded_file( $tmp_name, $abs_path );
 
-      if( $success ) {
-        if( is_callable( $success ) )
-          call_user_func_array( $args['success'], [$data] );
-      }
-    } catch( \Exception $e ) {
-      if( $error ) {
-        if( is_callable( $error ) )
-          call_user_func_array( $args['error'], [$e->getMessage()] );
-      }
-    }
-  }
+												if ( $moved ) {
+														$data[] = [
+															'title'     => $name,
+															'url'       => $url,
+															'path'      => $abs_path,
+															'mime_type' => $type,
+															'size'      => $size,
+															'ext'       => $ext,
+														];
+												} else {
+														throw new \Exception( 'Error moving file' );
+												}
+										} else {
+												throw new \Exception( 'Not uploaded via post' );
+										}
+								}
+						); // end array_walk
 
-} // end File_Upload
+						if ( $success ) {
+								if ( is_callable( $success ) ) {
+										call_user_func_array( $args['success'], [$data] );
+								}
+						}
+				} catch ( \Exception $e ) {
+						if ( $error ) {
+								if ( is_callable( $error ) ) {
+										call_user_func_array( $args['error'], [$e->getMessage()] );
+								}
+						}
+				}
+		}
+
+} // End File_Upload

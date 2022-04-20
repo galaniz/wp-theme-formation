@@ -1,30 +1,25 @@
-
-/*
- * DOM Loaded
- * ----------
+/**
+ * Move title to correct section under tabs
  */
 
+/* DOM loaded handler */
+
 const initialize = () => {
+  const sections = [].slice.call(document.querySelectorAll('.js-section'))
 
- /*
-	* Move title to correct section under tabs
-	* ----------------------------------------
-	*/
+  if (sections.length > 0) {
+    sections.forEach((section, i) => {
+      const lastChild = section.lastElementChild
 
-	let sections = [].slice.call( document.querySelectorAll( '.js-section' ) );
+      if (lastChild.tagName.toUpperCase() === 'H2') {
+        const nextSection = section.nextElementSibling
 
-	if( sections.length > 0 ) {
-		sections.forEach( ( section, i ) => {
-			let lastChild = section.lastElementChild;
+        nextSection.insertBefore(lastChild, nextSection.firstElementChild)
+      }
+    })
+  }
+} // end initialize
 
-			if( lastChild.tagName.toUpperCase() == 'H2' ) {
-				let nextSection = section.nextElementSibling;
+/* DOM loaded listener */
 
-				nextSection.insertBefore( lastChild, nextSection.firstElementChild );
-			}
-		} );
-	}
-
-}; // end initialize
-
-document.addEventListener( 'DOMContentLoaded', initialize );
+document.addEventListener('DOMContentLoaded', initialize)

@@ -1,26 +1,21 @@
-
-/*
- * Imports
- * ------
- */
-
-@use '@alanizcreative/formation/src/config';
-@use '@alanizcreative/formation/src/utils/functions' as func;
-
-/*
+/**
  * Styles
- * ------
  */
+
+/* Imports */
+
+@use "@alanizcreative/formation/src/config";
+@use "@alanizcreative/formation/src/utils/functions" as func;
 
 /* Internal variables */
 
-$_black: #1E1E1E;
-$_gray: #E0E0E0;
+$black: #1e1e1e;
+$gray: #e0e0e0;
 
 /* Base */
 
 svg {
-  fill: currentColor;
+  fill: currentcolor;
 }
 
 /* Utilities */
@@ -33,7 +28,7 @@ svg {
 
 .components-panel__header {
   & h2 {
-    font-size: func.calcRem( 20px );
+    font-size: func.calc-rem(20px);
     margin: 0;
   }
 }
@@ -53,7 +48,8 @@ svg {
 .components-panel__body-toggle {
   @extend %u-font-family-primary;
   @extend %u-color-foreground-dark;
-  font-size: func.calcRem( 20px );
+
+  font-size: func.calc-rem(20px);
 }
 
 /* Layout */
@@ -63,11 +59,11 @@ svg {
 }
 
 .l-section {
-  border-top: func.calcRem( 1px ) solid $_gray;
-  padding: func.calcRem( 16px );
+  border-top: func.calc-rem(1px) solid $gray;
+  padding: func.calc-rem(16px);
 }
 
-.o-field {
+.o-form__field {
   padding: 0;
 }
 
@@ -78,15 +74,16 @@ svg {
   @extend %u-position-absolute;
   @extend %u-top-0;
   @extend %u-right-0;
-  background-color: $_black;
-  height: func.calcRem( 40px );
-  width: func.calcRem( 40px );
+
+  background-color: $black;
+  height: func.calc-rem(40px);
+  width: func.calc-rem(40px);
   z-index: 10;
   padding: 0;
 }
 
 .o-remove-button__icon {
-  margin-top: func.calcRem( -3px );
-  font-size: func.calcRem( 25px );
+  margin-top: func.calc-rem(-3px);
+  font-size: func.calc-rem(25px);
   line-height: 1;
 }

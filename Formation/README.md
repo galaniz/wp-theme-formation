@@ -210,12 +210,6 @@ _Returns:_ `boolean|array`
 ]
 ```
 
-#### `public static function get_id_early_admin()`
-
-Get id early in admin.  
-
-_Returns:_ `int`
-
 #### `public static function get_id_outside_loop()`
 
 Get current post id outside loop.  
@@ -513,9 +507,9 @@ _Parameters:_
 
 _Returns:_ `string`
 
-#### `public static function render_svg_scale_fix( $svg_str )`
+#### `public static function render_svg_scale( $svg_str )`
 
-Output for canvas workaround to scale svg in older browsers.
+Output to scale svg particularly for older browsers.
 
 _Parameters:_
 
@@ -541,7 +535,7 @@ _Parameters:_
 | `$admin` | `boolean` | `false` | If true, only apply to admin, otherwise only frontend.
 | `$head` | `boolean` | `false` | If true, outputs in head, otherwise in footer.
 
-#### `write_log( $log )`
+#### `write_to_log( $log )`
 
 Write to debug log.  
 

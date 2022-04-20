@@ -1,31 +1,29 @@
-
-/*
- * Imports
- * ------
- */
-
-@use '@alanizcreative/formation/src/config';
-@use '@alanizcreative/formation/src/utils/functions' as func;
-
-/*
+/**
  * Button
- * ------
  */
+
+/* Imports */
+
+@use "@alanizcreative/formation/src/config";
+@use "@alanizcreative/formation/src/utils/functions" as func;
+
+/* Styles */
 
 .o-button {
   @extend %u-display-flex;
+
   align-items: center;
 
   &[data-lg] {
-    font-size: func.calcRem( 16px ) !important;
-    padding: 0 func.calcRem( 15px ) func.calcRem( 1px );
-    height: func.calcRem( 45px );
+    font-size: func.calc-rem(16px) !important;
+    padding: 0 func.calc-rem(15px) func.calc-rem(1px);
+    height: func.calc-rem(45px);
 
     & .dashicons {
-      font-size: func.calcRem( 22px ) !important;
-      width: func.calcRem( 22px );
-      height: func.calcRem( 22px );
-      padding-right: func.calcRem( 8px );
+      font-size: func.calc-rem(22px) !important;
+      width: func.calc-rem(22px);
+      height: func.calc-rem(22px);
+      padding-right: func.calc-rem(8px);
     }
   }
 }

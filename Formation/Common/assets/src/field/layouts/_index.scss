@@ -1,18 +1,15 @@
-
-/*
- * Imports
- * ------
- */
-
-@use '@alanizcreative/formation/src/utils/mixins' as mix;
-
-/*
+/**
  * Layouts
- * -------
  */
+
+/* Imports */
+
+@use "@alanizcreative/formation/src/utils/mixins" as mix;
+
+/* Styles */
 
 .l-table__cell {
-  @include mix.breakpointMax( 600 ) {
+  @include mix.breakpoint-max( 600 ) {
     width: 100%;
     display: block;
   }

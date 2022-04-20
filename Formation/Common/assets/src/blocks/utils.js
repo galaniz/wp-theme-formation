@@ -1,55 +1,61 @@
-
-/*
+/**
  * Utilites for blocks
- * -------------------
  */
 
-const getNamespace = ( slash = false ) => {
-	if( window.hasOwnProperty( 'namespace' ) )
-		return window.namespace + ( slash ? '/' : '' );
+/* Dependencies */
 
-	return '';
-};
+const { InnerBlocks } = window.wp.blockEditor
+
+/* Functions */
+
+const getNamespace = (slash = false) => {
+  if (Object.getOwnPropertyDescriptor(window, 'namespace')) {
+    return window.namespace + (slash ? '/' : '')
+  }
+
+  return ''
+}
 
 const getNamespaceObj = namespace => {
-	if( !window.hasOwnProperty( namespace ) )
-	  return false;
+  if (!Object.getOwnPropertyDescriptor(window, namespace)) {
+    return false
+  }
 
-	return window[namespace];
-};
+  return window[namespace]
+}
 
 const editInnerBlocks = allowedBlocks => {
-	return [
+  return (
     <div>
-      <InnerBlocks allowedBlocks={ allowedBlocks } /> 
-    </div>  
-  ];
-};
+      <InnerBlocks allowedBlocks={allowedBlocks} />
+    </div>
+  )
+}
 
 const saveInnerBlocks = () => {
-	return <InnerBlocks.Content />;
-};
+  return <InnerBlocks.Content />
+}
 
-const getColorSlug = ( arr = [], color = '' ) => {
-	if( !arr.length || !color )
-		return '';
+const getColorSlug = (arr = [], color = '') => {
+  if (!arr.length || !color) { return '' }
 
-  let cs = '';
+  let cs = ''
 
-  arr.forEach( ( c ) => {
-    if( c['color'] == color ) {
-      cs = c['slug'];
-      return;
+  arr.forEach((c) => {
+    if (c.color === color) {
+      cs = c.slug
     }
-  } );
+  })
 
-  return cs;
-};
+  return cs
+}
+
+/* Exports */
 
 module.exports = {
-	getNamespace,
-	getNamespaceObj,
-	editInnerBlocks,
-	saveInnerBlocks,
-	getColorSlug
-};
+  getNamespace,
+  getNamespaceObj,
+  editInnerBlocks,
+  saveInnerBlocks,
+  getColorSlug
+}

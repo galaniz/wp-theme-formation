@@ -1,26 +1,24 @@
-
-/*
+/**
  * Field
- * -----
  */
 
 /* Config */
 
-@forward 'config';
+@forward "config";
 
 /* Utility classes */
 
-@use '@alanizcreative/formation/src/utils/classes';
+@use "@alanizcreative/formation/src/utils/classes";
 
 /* Layouts */
 
-@use '@alanizcreative/formation/src/layouts';
-@use 'layouts' as l;
+@use "@alanizcreative/formation/src/layouts";
+@use "layouts" as l;
 
 /* Objects */
 
-@use 'objects/asset';
-@use 'objects/multi';
-@use 'objects/field';
-@use 'objects/loader';
-@use 'objects/button';
+@use "objects/asset";
+@use "objects/multi";
+@use "objects/form";
+@use "objects/loader";
+@use "objects/button";
