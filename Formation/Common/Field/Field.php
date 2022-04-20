@@ -562,7 +562,7 @@ class Field {
 								$v       = $val;
 
 								if ( $checkbox_radio ) {
-										if ( $data_value === $value ) {
+										if ( (string) $data_value === (string) $value ) {
 												$checked = 'checked';
 										}
 

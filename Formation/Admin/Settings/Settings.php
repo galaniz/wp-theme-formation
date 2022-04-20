@@ -12,7 +12,7 @@ namespace Formation\Admin\Settings;
  */
 
 use Formation\Formation as FRM;
-use \Formation\Common\Field\Field;
+use Formation\Common\Field\Field;
 
 /**
  * Class

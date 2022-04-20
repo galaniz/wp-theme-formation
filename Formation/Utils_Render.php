@@ -296,10 +296,6 @@ trait Utils_Render {
 						$args
 				);
 
-				/* Form attributes */
-
-				$form_attr['data-type'] = $args['form_data_type'];
-
 				/* Classes */
 
 				$static_form_class   = 'o-form js-' . static::$namespace . '-form';
@@ -326,16 +322,17 @@ trait Utils_Render {
 				$form_class      = esc_attr( $static_form_class . ( $form_class ? " $form_class" : '' ) );
 				$form_id         = esc_attr( $form_id );
 				$fields_gap      = esc_attr( $fields_gap );
-				$button_class    = esc_attr( static::$classes['button'] . ( $button_class ? " $button_class" : '' ) );
+				$button_class    = esc_attr( $static_button_class . ( $button_class ? " $button_class" : '' ) );
 				$submit_label    = esc_attr( $submit_label );
 				$result_gap      = esc_attr( $result_gap );
 				$success_message = esc_html( $success_message );
 
 				/* Attributes */
 
-				$form_attr   = static::get_attr_as_str( $form_attr );
-				$fields_attr = static::get_attr_as_str( $fields_attr );
-				$button_attr = static::get_attr_as_str( $button_attr );
+				$form_attr['data-type'] = $args['form_data_type'];
+				$form_attr              = static::get_attr_as_str( $form_attr );
+				$fields_attr            = static::get_attr_as_str( $fields_attr );
+				$button_attr            = static::get_attr_as_str( $button_attr );
 
 				if ( $form_attr ) {
 						$form_attr = " $form_attr";

@@ -414,7 +414,7 @@ trait Utils {
 						]
 				);
 
-				if ( $terms ) {
+				if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
 						$any_checked = false;
 
 						$terms = array_map(
@@ -544,29 +544,6 @@ trait Utils {
 				}
 
 				return $is_external;
-		}
-
-		/**
-		 * Get media position class.
-		 *
-		 * @param string $pos
-		 * @return string
-		 */
-
-		public static function get_media_pos_class( $pos = '', $id = 0 ) {
-				if ( ! $pos ) {
-						if ( $id ) {
-								$pos = get_post_meta( $id, static::get_namespaced_str( 'media_pos' ), true );
-						} else {
-								return '';
-						}
-				}
-
-				if ( ! $pos ) {
-						return '';
-				}
-
-				return static::$media_pos_class_pre . $pos;
 		}
 
 } // End Utils

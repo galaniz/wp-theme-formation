@@ -54,6 +54,29 @@ class Utils_Optional {
 		}
 
 		/**
+		 * Get media position class.
+		 *
+		 * @param string $pos
+		 * @return string
+		 */
+
+		public static function get_media_pos_class( $pos = '', $id = 0 ) {
+				if ( ! $pos ) {
+						if ( $id ) {
+								$pos = get_post_meta( $id, FRM::get_namespaced_str( 'media_pos' ), true );
+						} else {
+								return '';
+						}
+				}
+
+				if ( ! $pos ) {
+						return '';
+				}
+
+				return FRM::$media_pos_class_pre . $pos;
+		}
+
+		/**
 		 * Format table data into labels and rows.
 		 *
 		 * @param string $label_key
