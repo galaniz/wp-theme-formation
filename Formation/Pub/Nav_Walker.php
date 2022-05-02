@@ -66,9 +66,13 @@ class Nav_Walker extends \Walker_Nav_Menu {
 				$permalink = esc_url( $item->url );
 				$id        = $item->ID;
 
+				/* Before item output */
+
 				if ( is_callable( $this->before_output ) ) {
 						call_user_func_array( $this->before_output, [&$this, &$output, $depth, $args, $item] );
 				}
+
+				/* Item classes and element */
 
 				$classes   = empty( $item->classes ) ? [] : (array) $item->classes;
 				$classes[] = 'menu-item-' . $item->ID;
@@ -79,23 +83,61 @@ class Nav_Walker extends \Walker_Nav_Menu {
 
 				$output .= "<li class='$class_names'" . $this->li_attr . " data-depth='$depth'" . ( $args->walker->has_children ? ' data-has-children' : '' ) . '>';
 
+				/* Before link output */
+
 				if ( is_callable( $this->before_link_output ) ) {
 						call_user_func_array( $this->before_link_output, [&$this, &$output, $depth, $args, $item] );
 				}
 
-				$output .= "<a class='" . esc_attr( $this->a_class ) . "' " . $this->a_attr . "href='$permalink' data-depth='$depth'>";
+				/* Link attributes and element */
+
+				$link_attr = "href='$permalink'";
+
+				if ( ! empty( $item->target ) ) {
+						$link_attr .= ' target="' . $item->target . '"';
+				}
+
+				if ( '_blank' === $item->target && empty( $item->xfn ) ) {
+						$link_attr .= ' rel="noopener"';
+				} else {
+						$link_attr .= $item->xfn ? ' rel="' . $item->xfn . '"' : '';
+				}
+
+				if ( $item->current ) {
+						$link_attr .= ' aria-current="page"';
+				}
+
+				if ( $this->a_attr ) {
+						$link_attr .= ' ' . $this->a_attr;
+				}
+
+				if ( $this->a_class ) {
+						$link_attr .= ' class="' . esc_attr( $this->a_class ) . '"';
+				}
+
+				$output .= "<a $link_attr data-depth='$depth'>";
+
+				/* Before link text */
 
 				if ( is_callable( $this->before_link_text_output ) ) {
 						call_user_func_array( $this->before_link_text_output, [&$this, &$output, $depth, $args, $item] );
 				}
 
+				/* Link text */
+
+				$title = apply_filters( 'nav_menu_item_title', $title, $item, $args, $depth );
+
 				$output .= $title;
+
+				/* After link text */
 
 				if ( is_callable( $this->after_link_text_output ) ) {
 						call_user_func_array( $this->after_link_text_output, [&$this, &$output, $depth, $args, $item] );
 				}
 
 				$output .= '</a>';
+
+				/* After link */
 
 				if ( is_callable( $this->after_output ) ) {
 						call_user_func_array( $this->after_output, [&$this, &$output, $depth, $args, $item] );
