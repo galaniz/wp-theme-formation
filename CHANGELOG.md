@@ -47,3 +47,8 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - `Field` checkboxes not reflecting saved value.
 - `render_form` attributes causing front end issues.
+
+## [3.0.1] - 2022-05-02
+
+### Added
+- Link attributes to `start_el` method in `Nav_Walker` class.
