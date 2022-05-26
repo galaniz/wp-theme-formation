@@ -26,8 +26,14 @@ trait Utils_Render {
 		 *  @type string $links Accepts string of menu location.
 		 *  @type string $share Accepts array.
 		 *  @type string $div Accepts boolean.
-		 *  @type string $class Accepts string.
-		 *  @type string $list_class Accepts string.
+		 *  @type string $class
+		 *  @type string $list_class
+		 *  @type array $list_attr
+		 *  @type string $link_class
+		 *  @type array $link_attr
+		 *  @type string $icon_class
+		 *  @type array $icon_classes
+		 *  @type array $icon_paths
 		 * }
 		 * @return string html
 		 */
@@ -35,16 +41,17 @@ trait Utils_Render {
 		public static function render_social( $args = [] ) {
 				$args = array_merge(
 						[
-							'links'      => '',
-							'share'      => [],
-							'div'        => false,
-							'item_class' => '',
-							'list_class' => '',
-							'list_attr'  => [],
-							'link_class' => '',
-							'link_attr'  => [],
-							'icon_class' => '',
-							'icon_paths' => [],
+							'links'        => '',
+							'share'        => [],
+							'div'          => false,
+							'item_class'   => '',
+							'list_class'   => '',
+							'list_attr'    => [],
+							'link_class'   => '',
+							'link_attr'    => [],
+							'icon_class'   => '',
+							'icon_classes' => [],
+							'icon_paths'   => [],
 						],
 						$args
 				);
@@ -52,16 +59,17 @@ trait Utils_Render {
 				/* Destructure */
 
 				[
-					'links'      => $links,
-					'share'      => $share,
-					'div'        => $div,
-					'item_class' => $item_class,
-					'list_class' => $list_class,
-					'list_attr'  => $list_attr,
-					'link_class' => $link_class,
-					'link_attr'  => $link_attr,
-					'icon_class' => $icon_class,
-					'icon_paths' => $icon_paths,
+					'links'        => $links,
+					'share'        => $share,
+					'div'          => $div,
+					'item_class'   => $item_class,
+					'list_class'   => $list_class,
+					'list_attr'    => $list_attr,
+					'link_class'   => $link_class,
+					'link_attr'    => $link_attr,
+					'icon_class'   => $icon_class,
+					'icon_classes' => $icon_classes,
+					'icon_paths'   => $icon_paths,
 				] = $args;
 
 				if ( ! $links && ! $share ) {
@@ -176,9 +184,11 @@ trait Utils_Render {
 				$output = "<$tag_name class='o-social l-flex$list_class'$list_attr>";
 
 				foreach ( $data as $d ) {
-						$url     = esc_url( $d['url'] );
-						$data_id = esc_attr( $d['id'] );
-						$window  = '';
+						$url             = esc_url( $d['url'] );
+						$data_id         = esc_attr( $d['id'] );
+						$icon_path       = $icon_paths[ $data_id ] ?? false;
+						$icon_class_attr = "o-social__icon$icon_class" . ( isset( $icon_classes[ $data_id ] ) ? ' ' . $icon_classes[ $data_id ] : '' );
+						$window          = '';
 
 						if ( $share && 'email' !== $data_id ) {
 								$width  = 600;
@@ -188,11 +198,11 @@ trait Utils_Render {
 
 						$output .=
 							"<$child_tag_name class='o-social__item$item_class'>" .
-								"<a onclick='$window'class='o-social__link$link_class' href='$url'$link_attr>" .
+								"<a onclick='$window' class='o-social__link$link_class' href='$url'$link_attr>" .
 									"<span class='u-v-h'>" . ucwords( $data_id ) . '</span>' .
-									"<div class='o-social__icon$icon_class' data-type='" . strtolower( $data_id ) . "'>" .
+									"<div class='$icon_class_attr' data-type='" . strtolower( $data_id ) . "' aria-hidden='true'>" .
 										/* phpcs:ignore */
-										file_get_contents( $icon_paths[ $data_id ] ) . // Ignore: local path
+										( $icon_path ? file_get_contents( $icon_path ) : '' ) . // Ignore: local path
 									'</div>' .
 								'</a>' .
 							"</$child_tag_name>";
@@ -377,7 +387,7 @@ trait Utils_Render {
 													],
 												]
 										) .
-									"<div>$submit_label</div>" .
+									"<span>$submit_label</span>" .
 								'</button>' .
 							'</div>' .
 						'</div>' .

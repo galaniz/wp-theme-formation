@@ -95,7 +95,19 @@ class Formation {
 		 * }
 		 */
 
-		public $editor_color_palette = [];
+		public static $editor_color_palette = [];
+
+		/**
+		 * Editor font size theme support args.
+		 *
+		 * @var array $editor_font_sizes {
+		 *  @type string $name Accepts string.
+		 *  @type int $size Accepts int.
+		 *  @type string $slug Accepts string.
+		 * }
+		 */
+
+		public static $editor_font_sizes = [];
 
 		/**
 		 * Custom image sizes to register.
@@ -105,7 +117,7 @@ class Formation {
 		 * }
 		 */
 
-		public $image_sizes = [];
+		public static $image_sizes = [];
 
 		/**
 		 * Nav menus to register.
@@ -115,7 +127,7 @@ class Formation {
 		 * }
 		 */
 
-		public $nav_menus = [];
+		public static $nav_menus = [];
 
 		/**
 		 * If child theme change styles path.
@@ -131,7 +143,7 @@ class Formation {
 		 * @var string $editor_style
 		 */
 
-		public $editor_style = '';
+		public static $editor_style = '';
 
 		/**
 		 * Stylesheets to register.
@@ -144,7 +156,7 @@ class Formation {
 		 * }
 		 */
 
-		public $styles = [];
+		public static $styles = [];
 
 		/**
 		 * Scripts to register.
@@ -160,7 +172,7 @@ class Formation {
 		 * }
 		*/
 
-		public $scripts = [];
+		public static $scripts = [];
 
 		/**
 		 * Handles of scripts that should be deferred. Set in scripts callback.
@@ -170,7 +182,7 @@ class Formation {
 		 * }
 		 */
 
-		public $defer_script_handles = [];
+		public static $defer_script_handles = [];
 
 		/**
 		 * Handles and attribute strings for scripts. Set in scripts callback.
@@ -180,7 +192,7 @@ class Formation {
 		 * }
 		 */
 
-		public $script_attributes = [];
+		public static $script_attributes = [];
 
 		/**
 		 * Markup for default loader icon.
@@ -301,6 +313,22 @@ class Formation {
 		public static $enqueue_priority = 10;
 
 		/**
+		 * Enqueue scripts remove Gutenberg assets.
+		 *
+		 * @var bool $dequeue_gutenberg
+		 */
+
+		public static $dequeue_gutenberg = false;
+
+		/**
+		 * Enqueue scripts remove embed script.
+		 *
+		 * @var bool $dequeue_embed
+		 */
+
+		public static $dequeue_embed = false;
+
+		/**
 		 * Constructor
 		 */
 
@@ -310,12 +338,12 @@ class Formation {
 
 				/* Add and save field for media pos  */
 
-				if ( self::$media_pos_add ) {
-						self::$attachment_fields[] = [
+				if ( static::$media_pos_add ) {
+						static::$attachment_fields[] = [
 							'name'    => 'media_pos',
 							'label'   => 'Cover position',
 							'type'    => 'select',
-							'options' => self::$media_pos,
+							'options' => static::$media_pos,
 						];
 
 						add_filter( 'attachment_fields_to_edit', [$this, 'add_attachment_fields'], 11, 2 );
@@ -330,10 +358,15 @@ class Formation {
 		 */
 
 		private function setup_actions() {
-				add_action( 'after_setup_theme', [$this, 'init'] );
+				add_action( 'after_setup_theme', [__CLASS__, 'init'] ); // Static for minimal use cases
 				add_action( 'pre_get_posts', [$this, 'query_vars'] );
 				add_action( 'wp_head', [$this, 'head'] );
-				add_action( 'wp_enqueue_scripts', [$this, 'scripts'], static::$enqueue_priority );
+				add_action( 'wp_enqueue_scripts', [__CLASS__, 'scripts'], static::$enqueue_priority ); // Static for minimal use cases
+
+				if ( static::$dequeue_gutenberg ) {
+						remove_filter( 'render_block', 'wp_render_layout_support_flag', 10, 2 );
+						remove_filter( 'render_block', 'gutenberg_render_layout_support_flag', 10, 2 );
+				}
 
 				add_action(
 						'wp_print_head_scripts',
@@ -369,30 +402,13 @@ class Formation {
 
 				/* Remove emoji styles and scripts */
 
-				remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
-				remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
-				remove_action( 'wp_print_styles', 'print_emoji_styles' );
-				remove_action( 'admin_print_styles', 'print_emoji_styles' );
-				remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
-				remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
-				remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
-
-				add_filter(
-						'tiny_mce_plugins',
-						function( $plugins ) {
-								if ( is_array( $plugins ) ) {
-										return array_diff( $plugins, ['wpemoji'] );
-								} else {
-										return [];
-								}
-						}
-				);
+				static::clean_up_emoji();
 
 				/* Pass namespace to front end */
 
 				additional_script_data( 'namespace', static::$namespace, true, true );
 				additional_script_data( 'namespace', static::$namespace, false, true );
-				additional_script_data( static::$namespace, ['gap_options' => self::$gap_options ], true, true );
+				additional_script_data( static::$namespace, ['gap_options' => static::$gap_options ], true, true );
 
 				$ajax_url = ['ajax_url' => admin_url( 'admin-ajax.php' )];
 
@@ -400,12 +416,12 @@ class Formation {
 
 				/* Set uploads variables */
 
-				self::$uploads_dir = WP_CONTENT_DIR . '/' . static::$namespace . '_uploads/';
-				self::$uploads_url = get_site_option( 'siteurl' ) . '/wp-content/' . static::$namespace . '_uploads/';
+				static::$uploads_dir = WP_CONTENT_DIR . '/' . static::$namespace . '_uploads/';
+				static::$uploads_url = get_site_option( 'siteurl' ) . '/wp-content/' . static::$namespace . '_uploads/';
 
 				/* Set source url */
 
-				self::$src_url = ( self::$child ? get_stylesheet_directory_uri() : get_template_directory_uri() ) . self::$src_path;
+				static::$src_url = ( static::$child ? get_stylesheet_directory_uri() : get_template_directory_uri() ) . static::$src_path;
 		}
 
 		/**
@@ -431,9 +447,9 @@ class Formation {
 		 */
 
 		public function setup_pt_layout() {
-				foreach ( self::$cpt as $c => $meta ) {
+				foreach ( static::$cpt as $c => $meta ) {
 						if ( isset( $meta['layout'] ) ) {
-								self::$pt_layout[ $c ] = $meta['layout'];
+								static::$pt_layout[ $c ] = $meta['layout'];
 						}
 				}
 		}
@@ -445,16 +461,27 @@ class Formation {
 		 */
 
 		public function init() {
+				/* Let WordPress manage the document title */
+
 				add_theme_support( 'title-tag' );
+
+				/* Enable support for Post Thumbnails on posts and pages */
+
 				add_theme_support( 'post-thumbnails' );
+
+				/* Backend editor styles */
+
 				add_theme_support( 'editor-styles' );
+
+				/* Responsive block embeds */
+
 				add_theme_support( 'responsive-embeds' );
 
 				/* Add default posts and comments RSS feed links to head */
 
 				add_theme_support( 'automatic-feed-links' );
 
-				/* Disable custom some custom options in Gutenberg */
+				/* Disable custom colors + fonts in Gutenberg */
 
 				add_theme_support( 'disable-custom-colors' );
 				add_theme_support( 'disable-custom-font-sizes' );
@@ -471,31 +498,39 @@ class Formation {
 							'comment-list',
 							'gallery',
 							'caption',
+							'style',
+							'script',
 						]
 				);
 
 				/* Support for custom block editor color palette */
 
-				if ( $this->editor_color_palette ) {
-						add_theme_support( 'editor-color-palette', $this->editor_color_palette );
+				if ( static::$editor_color_palette ) {
+						add_theme_support( 'editor-color-palette', static::$editor_color_palette );
+				}
+
+				/* Support for custom block editor font sizes */
+
+				if ( static::$editor_color_palette ) {
+						add_theme_support( 'editor-font-sizes', static::$editor_font_sizes );
 				}
 
 				/* Add custom image sizes */
 
-				if ( $this->image_sizes ) {
-						foreach ( $this->image_sizes as $key => $size ) {
+				if ( static::$image_sizes ) {
+						foreach ( static::$image_sizes as $key => $size ) {
 								add_image_size( $key, $size );
 						}
 				}
 
 				/* Register navigation menus */
 
-				if ( $this->nav_menus ) {
-						register_nav_menus( $this->nav_menus );
+				if ( static::$nav_menus ) {
+						register_nav_menus( static::$nav_menus );
 				}
 
-				if ( $this->editor_style && is_admin() ) {
-						add_editor_style( $this->editor_style );
+				if ( static::$editor_style && is_admin() ) {
+						add_editor_style( static::$editor_style );
 				}
 		}
 
@@ -557,7 +592,7 @@ class Formation {
 		 * Register and enqueue scripts and styles.
 		 */
 
-		public function scripts() {
+		public static function scripts() {
 				$n  = static::$namespace . '_';
 				$nh = static::$namespace . '-';
 
@@ -572,7 +607,7 @@ class Formation {
 
 				/* Register styles */
 
-				foreach ( $this->styles as $st ) {
+				foreach ( static::$styles as $st ) {
 						$handle = $nh . $st['handle'];
 						$dep    = $st['dep'] ?? [];
 
@@ -610,7 +645,7 @@ class Formation {
 				$recaptcha_site_key   = get_option( $n . 'recaptcha_site_key', '' );
 
 				if ( $recaptcha_secret_key ) {
-						$this->scripts[] = [
+						static::$scripts[] = [
 							'handle' => 'recaptcha',
 							'url'    => 'https://www.google.com/recaptcha/api.js?render=' . $recaptcha_site_key,
 							'footer' => false,
@@ -620,7 +655,7 @@ class Formation {
 						$localize_data['recaptcha_site_key'] = $recaptcha_site_key;
 				}
 
-				foreach ( $this->scripts as $i => $sc ) {
+				foreach ( static::$scripts as $i => $sc ) {
 						$handle = $nh . $sc['handle'];
 						$defer  = $sc['defer'] ?? false;
 						$data   = $sc['data'] ?? false;
@@ -629,7 +664,7 @@ class Formation {
 						$enqueue_scripts[] = $handle;
 
 						if ( $defer ) {
-								$this->defer_script_handles[] = $handle;
+								static::$defer_script_handles[] = $handle;
 						}
 
 						if ( $data ) {
@@ -685,19 +720,51 @@ class Formation {
 						wp_enqueue_style( $st_handle );
 				}
 
-				/* Remove Gutenberg CSS */
+				/* Remove Gutenberg assets */
 
-				wp_dequeue_style( 'wp-block-library' );
+				if ( static::$dequeue_gutenberg ) {
+						wp_dequeue_style( 'wp-block-library' );
+						wp_dequeue_style( 'wp-block-library-theme' );
+						wp_dequeue_style( 'wc-block-style' ); // Removes woocommerce block css
+						wp_dequeue_style( 'global-styles' ); // Removes theme.json
+				}
 
 				/* Remove embed script */
 
-				wp_deregister_script( 'wp-embed' );
+				if ( static::$dequeue_embed ) {
+						wp_deregister_script( 'wp-embed' );
+				}
 
 				/* JS for moving comment box on reply */
 
 				if ( is_singular( 'post' ) && comments_open() && get_option( 'thread_comments' ) ) {
 						wp_enqueue_script( 'comment-reply' );
 				}
+		}
+
+		/**
+		 * Remove unnecessary emoji scripts.
+		 */
+
+		public function clean_up_emoji() {
+				remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+				remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
+				remove_action( 'wp_print_styles', 'print_emoji_styles' );
+				remove_action( 'admin_print_styles', 'print_emoji_styles' );
+				remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
+				remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
+				remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
+
+				add_filter(
+						'tiny_mce_plugins',
+						function( $plugins ) {
+								if ( is_array( $plugins ) ) {
+										return array_diff( $plugins, ['wpemoji'] );
+								} else {
+										return [];
+								}
+						}
+				);
 		}
 
 		/**
@@ -734,11 +801,11 @@ class Formation {
 		 */
 
 		public function custom_image_sizes( $sizes ) {
-				if ( ! $this->image_sizes ) {
+				if ( ! static::$image_sizes ) {
 						return $sizes;
 				}
 
-				foreach ( $this->image_sizes as $key => $size ) {
+				foreach ( static::$image_sizes as $key => $size ) {
 						$sizes[ $key ] = str_replace( '_', ' ', ucfirst( $key ) );
 				}
 
@@ -819,21 +886,28 @@ class Formation {
 		}
 
 		/**
-		 * Add attributes to $this->defer_script_handles and $this->script_attributes.
+		 * Add attributes to $defer_script_handles and $script_attributes.
 		 */
 
 		public function add_script_attributes( $tag, $handle ) {
-				foreach ( $this->defer_script_handles as $script ) {
-						if ( $script === $handle ) {
-								$tag = str_replace( ' src', ' defer="defer" async="async" src', $tag );
-						}
-				}
+				$tag = static::process_script_tag( $tag, $handle, static::$defer_script_handles, true );
+				$tag = static::process_script_tag( $tag, $handle, static::$script_attributes );
 
-				foreach ( $this->script_attributes as $script => $attr ) {
-						$s = static::$namespace . '-' . $script;
+				return $tag;
+		}
 
-						if ( $s === $handle && $attr ) {
-								$tag = str_replace( ' src', " $attr src", $tag );
+		public static function process_script_tag( $tag, $handle, $scripts, $defer = false ) {
+				foreach ( $scripts as $key => $value ) {
+						if ( $defer ) {
+								if ( $value === $handle ) {
+										$tag = str_replace( ' src', ' defer="defer" async="async" src', $tag );
+								}
+						} else {
+								$s = static::$namespace . '-' . $key;
+
+								if ( $s === $handle && $value ) {
+										$tag = str_replace( ' src', " $value src", $tag );
+								}
 						}
 				}
 
@@ -860,9 +934,9 @@ class Formation {
 		public function add_attachment_fields( $form_fields, $post ) {
 				$post_id = $post->ID;
 
-				foreach ( self::$attachment_fields as $f ) {
+				foreach ( static::$attachment_fields as $f ) {
 						$output = '';
-						$name   = self::get_namespaced_str( $f['name'] );
+						$name   = static::get_namespaced_str( $f['name'] );
 						$data   = get_post_meta( $post_id, $name, true );
 						$label  = $f['label'];
 
@@ -896,8 +970,8 @@ class Formation {
 		 */
 
 		public function save_attachment_fields( $post, $attachment ) {
-				foreach ( self::$attachment_fields as $f ) {
-						$name = self::get_namespaced_str( $f['name'] );
+				foreach ( static::$attachment_fields as $f ) {
+						$name = static::get_namespaced_str( $f['name'] );
 
 						if ( isset( $attachment[ $name ] ) ) {
 								update_post_meta( $post['ID'], $name, $attachment[ $name ] );
