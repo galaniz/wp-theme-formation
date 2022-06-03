@@ -516,6 +516,10 @@ class Field {
 						$field_class .= ( $field_class ? ' ' : '' ) . 'u-v-h';
 				}
 
+				if ( $checkbox_radio ) {
+						$field_attr['role'] = 'group';
+				}
+
 				$field_attr = Utils::get_attr_as_str( $field_attr );
 
 				/* Start output */
@@ -524,11 +528,16 @@ class Field {
 				$output .= "<div class='" . $pre . '__field' . ( $field_class ? " $field_class" : '' ) . "' data-type='" . esc_attr( $type ) . "'$hidden$field_attr>";
 
 				if ( $label && ! $label_hidden ) {
-						if ( 'checkbox-group' !== $type && 'radio-group' !== $type ) {
-								$output .= '<label>';
+						if ( $checkbox_radio ) {
+								$label = (
+									"<label for='" . esc_attr( $id ) . "'$req>" .
+										"<div class='$label_class'>$label</div>" .
+										'<span class="' . $pre . '__control" data-type="' . $type . '"></span>' .
+									'</label>'
+								);
+						} else {
+								$label = "<label class='$label_class' for='" . esc_attr( $id ) . "'$req>$label</label>";
 						}
-
-						$label = "<div class='$label_class'$req>$label</div>";
 
 						if ( $label_above ) {
 								$output .= $label;
@@ -580,10 +589,6 @@ class Field {
 										$attr,
 										esc_attr( $id )
 								);
-
-								if ( $checkbox_radio ) {
-										$output .= '<span class="' . $pre . '__control"></span>';
-								}
 
 								break;
 						case 'checkbox-group':
@@ -728,10 +733,6 @@ class Field {
 						if ( ! $label_above ) {
 								$output .= $label;
 						}
-
-						if ( 'checkbox-group' !== $type && 'radio-group' !== $type ) {
-								$output .= '</label>';
-						}
 				}
 
 				$output .= '</div>';
@@ -807,14 +808,13 @@ class Field {
 						$o_label = esc_html( $o['label'] );
 						$o_value = esc_html( $o['value'] );
 						$o_type  = esc_attr( $type );
+						$o_for   = FRM::$namespace . '_' . uniqid();
 
 						$output .=
-							'<div class="o-radio__item">' .
-								'<label>' .
-									"<input class='$class' type='$o_type' id='" . FRM::$namespace . '_' . uniqid() . "' name='$o_id' value='$o_value'$checked$operator$attr>" .
-									"<div class='$opt_button_class'$opt_button_attr>" .
-										"<div class='o-radio__label'>$o_label</div>" .
-									'</div>' .
+							'<div class="o-radio__item" role="group">' .
+								"<input class='$class' type='$o_type' id='$o_for' name='$o_id' value='$o_value'$checked$operator$attr>" .
+								"<label for='$o_for' class='$opt_button_class'$opt_button_attr>" .
+									"<div class='o-radio__label'>$o_label</div>" .
 								'</label>' .
 							'</div>';
 				}
@@ -1048,8 +1048,8 @@ class Field {
 				return (
 					'<div class="o-listbox">' .
 						"<button class='o-listbox__btn l-flex' data-align='center' data-justify='def' type='button' aria-haspopup='listbox' aria-labelledby='$id' id='$id'>" .
-							"<div class='o-listbox__text'>$selected_index_label</div>" .
-							'<div class="o-listbox__caret"></div>' .
+							"<span class='o-listbox__text'>$selected_index_label</span>" .
+							'<span class="o-listbox__caret"></span>' .
 						'</button>' .
 						'<div class="o-listbox__container">' .
 							"<ul class='$list_classes' id='$list_id' tabindex='-1' role='listbox' aria-labelledby='$id' aria-activedescendant='$selected_index_id'>" .

@@ -50,6 +50,24 @@ class Blocks {
 		public static $scripts = [];
 
 		/**
+		 * Block dependencies for scripts.
+		 */
+
+		public static $block_dep = [
+			'wp-blocks',
+			'wp-block-editor',
+			'wp-components',
+			'wp-compose',
+			'wp-data',
+			'wp-core-data',
+			'wp-dom',
+			'wp-dom-ready',
+			'wp-editor',
+			'wp-element',
+			'wp-hooks',
+		];
+
+		/**
 		 * Constructor
 		 */
 
@@ -62,7 +80,7 @@ class Blocks {
 				);
 
 				[
-					'folder_url'      => $folder_url,
+					'folder_url' => $folder_url,
 				] = $args;
 
 				self::$folder_url = $folder_url;
@@ -178,7 +196,7 @@ class Blocks {
 						wp_register_script(
 								$s['handle'],
 								$s['url'],
-								['wp-blocks', 'wp-element', 'wp-components', 'wp-data', 'wp-core-data', 'wp-block-editor', 'wp-editor'],
+								self::$block_dep,
 								FRM::$script_ver,
 								true
 						);

@@ -435,7 +435,7 @@ class Utils_Optional {
 				if ( $trigger ) {
 						$trigger =
 							"<button class='o-modal__trigger" . esc_attr( $trigger['class'] ? ' ' . $trigger['class'] : '' ) . "' type='button'>" .
-								'<div>' . esc_html( $trigger['text'] ) . '</div>' .
+								'<span>' . esc_html( $trigger['text'] ) . '</span>' .
 							'</button>';
 				} else {
 						$trigger = '';
@@ -452,7 +452,7 @@ class Utils_Optional {
 								'<div>' .
 									$content .
 									"<button class='o-modal__close'>" .
-										"<div class='u-v-h'>Close modal</div>" .
+										"<span class='u-v-h'>Close modal</span>" .
 										/* phpcs:ignore */
 										file_get_contents( $icon_path ) . // Ignore: local path
 									'</button>' .
@@ -512,10 +512,10 @@ class Utils_Optional {
 								"<input class='o-form__field__input$input_class' type='search' id='$unique_id' placeholder='Search' value='$query' name='s' />" .
 								"<button class='$button_class' type='submit'>" .
 									"<span class='u-v-h'>Submit search query</span>" .
-									"<div class='o-icon$icon_class'>" .
+									"<span class='o-icon$icon_class' aria-hidden='true'>" .
 										/* phpcs:ignore */
-										file_get_contents( $icon_path ) . // Ignore: local path
-									'</div>' .
+										( $icon_path ? file_get_contents( $icon_path ) : '' ) . // Ignore: local path
+									'</span>' .
 								'</button>' .
 							'</div>' .
 						'</div>' .
