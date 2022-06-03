@@ -52,3 +52,13 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Link attributes to `start_el` method in `Nav_Walker` class.
+
+## [3.0.2] - 2022-06-02
+
+### Changed
+- A11y updates to `Field` class.
+- Block dependencies static in `Blocks` class.
+- Make `Formation` variables static for more flexible use.
+- Update buttons in render methods to use spans instead of divs.
+- Icon path optional in `render_social` method.
+- Add option to run shortcode in `get_excerpt` method.
