@@ -54,26 +54,26 @@ $settings = new Settings( [
 ```
 ## `class Reading`
 
-Adds the following fields to WordPress' default reading settings page using formation class variable [`$cpt`](/src/#user-content-public-static-cpt). Note: if `no_reading` is set, these fields are not added for that custom post type. Additional fields can be pushed to `Reading::$additional_fields` before instantiating class.
+Adds the following fields to WordPress' default reading settings page using formation class variable [`$pt`](/src/#user-content-public-static-pt). Note: if `reading` is false, these fields are not added for that custom post type. Additional fields can be pushed to `Reading::$additional_fields` before instantiating class.
 
-#### `{$cpt}_page`
+#### `{$pt}_page`
 
 Select page to display custom post type.   
 *Type:* `int`   
 
-#### `{$cpt}_posts_per_page`
+#### `{$pt}_posts_per_page`
 
 Page displays selected number of posts.  
 *Type:* `int`   
 
-#### `{$cpt}_more_label`
+#### `{$pt}_more_label`
 
 More posts title.  
 *Type:* `string`  
 
-#### `{$cpt}_ajax_posts_per_page`
+#### `{$pt}_ajax_posts_per_page`
 
-How many posts to load with ajax. This field is added if `ajax_posts_per_page` is set in [`$cpt`](/src/#user-content-public-static-cpt).  
+How many posts to load with ajax. This field is added if `ajax_posts_per_page` is set in [`$pt`](/src/#user-content-public-static-pt).  
 *Type:* `int`
 
 ## `class Theme`

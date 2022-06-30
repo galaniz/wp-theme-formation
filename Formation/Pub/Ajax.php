@@ -315,7 +315,7 @@ trait Ajax {
 		 */
 
 		protected static function send_contact_form( $post ) {
-				$id     = $post['id'] ?? false; // id to get array of information ( email, subject... )
+				$id     = $post['id'] ?? false; // id to get array of information (email, subject...)
 				$inputs = $post['inputs'] ?? false;
 
 				if ( ! $id ) {

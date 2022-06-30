@@ -148,7 +148,7 @@ trait Utils {
 
 				if ( $content ) {
 						if ( $do_shortcode ) {
-								$content = do_shortcode( $content );
+								$content = preg_replace( '~(?:\[/?)[^/\]]+/?\]~s', '', $content );
 						}
 
 						$content = wp_strip_all_tags( $content, true );
