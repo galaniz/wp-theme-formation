@@ -16,21 +16,20 @@ Path from vendor to src folder.
 _Type:_ `string`  
 _Default:_ `'/vendor/alanizcreative/wp-theme-formation/src/'`
 
-#### `public static $cpt`
+#### `public static $pt`
 
 Store post type names and data (can add custom key => value pairs).  
 _Type:_ `associative array`  
 _Default:_ `[]`  
 _Example:_
 ```php
-self::$cpt = [
-	'custom_post_type' => [
-		'slug' => 'custom_post_type_slug',
+self::$pt = [
+	'post_type' => [
+		'slug' => 'custom_post_type_slug', // or false
 		'label' => 'Custom Post Type',
 		'layout' => 'cards',
 		/* reading settings*/
-		'no_reading' => true, // exclude from settings
-		'no_slug' => true, // do not save post page slug as custom post type slug,
+		'reading' => true, // exclude from settings
 		'ajax_posts_per_page' => true // add field to select number of posts to load with ajax
 	]
 ];
@@ -38,7 +37,7 @@ self::$cpt = [
 
 #### `public static $pt_layout`
 
-Store layouts by post type. Appends layouts from [`$cpt`](#user-content-public-static-cpt).   
+Store layouts by post type. Appends layouts from [`$pt`](#user-content-public-static-pt).   
 _Type:_ `associative array`  
 _Default:_ `[]`
 

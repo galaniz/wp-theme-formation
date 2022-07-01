@@ -49,21 +49,20 @@ class Formation {
 		public static $src_url = '';
 
 		/**
-		 * Store custom post type names and unlimited meta data.
+		 * Store post type names and meta data.
 		 *
-		 * @var array $cpt {
+		 * @var array $pt {
 		 *  @type string $post_type Accepts array {
 		 *   @type string $slug Accepts string.
 		 *   @type string $label Accepts string.
 		 *   @type string $layout Accepts string.
-		 *   @type string $no_reading Accepts boolean.
-		 *   @type string $no_slug Accepts boolean.
+		 *   @type string $reading Accepts boolean.
 		 *   @type string $ajax_posts_per_page Accepts boolean.
 		 *  }
 		 * }
 		 */
 
-		public static $cpt = [];
+		public static $pt = [];
 
 		/**
 		 * Store layouts for post types.
@@ -74,6 +73,17 @@ class Formation {
 		 */
 
 		public static $pt_layout = [];
+
+		/**
+		 * Store taxonomy post types.
+		 *
+		 * @var array $tax_pt
+		 */
+
+		public static $tax_pt = [
+			'category' => 'post',
+			'post_tag' => 'post',
+		];
 
 		/**
 		 * Number of posts to display by type/post type.
@@ -358,10 +368,10 @@ class Formation {
 		 */
 
 		private function setup_actions() {
-				add_action( 'after_setup_theme', [__CLASS__, 'init'] ); // Static for minimal use cases
-				add_action( 'pre_get_posts', [$this, 'query_vars'] );
-				add_action( 'wp_head', [$this, 'head'] );
-				add_action( 'wp_enqueue_scripts', [__CLASS__, 'scripts'], static::$enqueue_priority ); // Static for minimal use cases
+				add_action( 'after_setup_theme', [__CLASS__, 'init'] );
+				add_action( 'pre_get_posts', [__CLASS__, 'query_vars'] );
+				add_action( 'wp_enqueue_scripts', [__CLASS__, 'scripts'], static::$enqueue_priority );
+				add_action( 'wp_head', [__CLASS__, 'head'] );
 
 				if ( static::$dequeue_gutenberg ) {
 						remove_filter( 'render_block', 'wp_render_layout_support_flag', 10, 2 );
@@ -396,9 +406,9 @@ class Formation {
 
 				/* Admin customizations */
 
-				add_action( 'admin_menu', [$this, 'remove_meta_boxes'], 10, 2 );
-				add_action( 'admin_bar_menu', [$this, 'update_adminbar'], 999 );
-				add_action( 'wp_dashboard_setup', [$this, 'remove_dashboard_widgets'] );
+				add_action( 'admin_menu', [__CLASS__, 'remove_meta_boxes'], 10, 2 );
+				add_action( 'admin_bar_menu', [__CLASS__, 'update_adminbar'], 999 );
+				add_action( 'wp_dashboard_setup', [__CLASS__, 'remove_dashboard_widgets'] );
 
 				/* Remove emoji styles and scripts */
 
@@ -431,25 +441,25 @@ class Formation {
 		 */
 
 		private function setup_filters() {
-				add_filter( 'document_title_separator', [$this, 'title_separator'] );
-				add_filter( 'nav_menu_css_class', [$this, 'cpt_nav_classes'], 10, 2 );
-				add_filter( 'excerpt_more', [$this, 'excerpt_more'] );
-				add_filter( 'script_loader_tag', [$this, 'add_script_attributes'], 10, 2 );
-				add_filter( 'image_size_names_choose', [$this, 'custom_image_sizes'] );
+				add_filter( 'document_title_separator', [__CLASS__, 'title_separator'] );
+				add_filter( 'nav_menu_css_class', [__CLASS__, 'pt_nav_classes'], 10, 2 );
+				add_filter( 'excerpt_more', [__CLASS__, 'excerpt_more'] );
+				add_filter( 'script_loader_tag', [__CLASS__, 'add_script_attributes'], 10, 2 );
+				add_filter( 'image_size_names_choose', [__CLASS__, 'custom_image_sizes'] );
 
 				/* Admin customizations */
 
-				add_filter( 'tiny_mce_before_init', [$this, 'tiny_mce_remove_h1'] );
+				add_filter( 'tiny_mce_before_init', [__CLASS__, 'tiny_mce_remove_h1'] );
 		}
 
 		/**
 		 * Setup pt layout variable.
 		 */
 
-		public function setup_pt_layout() {
-				foreach ( static::$cpt as $c => $meta ) {
+		public static function setup_pt_layout() {
+				foreach ( static::$pt as $p => $meta ) {
 						if ( isset( $meta['layout'] ) ) {
-								static::$pt_layout[ $c ] = $meta['layout'];
+								static::$pt_layout[ $p ] = $meta['layout'];
 						}
 				}
 		}
@@ -460,7 +470,7 @@ class Formation {
 		 * Register nav menus, images sizes and support for various features.
 		 */
 
-		public function init() {
+		public static function init() {
 				/* Let WordPress manage the document title */
 
 				add_theme_support( 'title-tag' );
@@ -538,31 +548,39 @@ class Formation {
 		 * Alter query vars for posts when not in admin.
 		 */
 
-		public function query_vars( $query ) {
+		public static function query_vars( $query ) {
 				if ( ! is_admin() && $query->is_main_query() ) {
-						if ( is_home() || is_category() || is_archive() ) {
-								$ppp = static::get_posts_per_page();
+						$post_type = $query->get( 'post_type' );
+						$ppp       = 0;
 
-								if ( $ppp ) {
-										$query->set( 'posts_per_page', $ppp );
+						/* Update posts_per_page set in Reading settings */
+
+						if ( $query->is_home || $query->is_archive ) {
+								$ppp = static::get_posts_per_page( 'post' );
+						}
+
+						if ( $query->is_search ) {
+								$ppp = static::get_posts_per_page( 'search' );
+						}
+
+						if ( $query->is_author ) {
+								$ppp = static::get_posts_per_page( 'author' );
+						}
+
+						if ( $query->is_tax ) {
+								foreach ( static::$tax_pt as $tpt => $pt ) {
+										if ( $query->is_tax( $tpt ) ) {
+												$ppp = static::get_posts_per_page( $pt );
+										}
 								}
 						}
 
-						if ( is_tax() || is_post_type_archive() ) {
-								$post_type = $query->get( 'post_type' );
-								$ppp       = static::get_posts_per_page( $post_type );
-
-								if ( $ppp ) {
-										$query->set( 'posts_per_page', $ppp );
-								}
+						if ( $query->is_post_type_archive ) {
+								$ppp = static::get_posts_per_page( $post_type );
 						}
 
-						if ( is_search() && isset( static::$posts_per_page['search'] ) ) {
-								$query->set( 'posts_per_page', static::$posts_per_page['search'] );
-						}
-
-						if ( is_author() && isset( static::$posts_per_page['author'] ) ) {
-								$query->set( 'posts_per_page', static::$posts_per_page['author'] );
+						if ( $ppp ) {
+								$query->set( 'posts_per_page', $ppp );
 						}
 				}
 		}
@@ -571,7 +589,7 @@ class Formation {
 		 * Insert custom scripts in head.
 		 */
 
-		public function head() {
+		public static function head() {
 				$ga = get_option( static::$namespace . '_analytics_id' );
 
 				if ( $ga && ! is_admin() ) { ?>
@@ -746,7 +764,7 @@ class Formation {
 		 * Remove unnecessary emoji scripts.
 		 */
 
-		public function clean_up_emoji() {
+		public static function clean_up_emoji() {
 				remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 				remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
 				remove_action( 'wp_print_styles', 'print_emoji_styles' );
@@ -771,7 +789,7 @@ class Formation {
 		 * Remove unnecessary items from admin toolbar.
 		 */
 
-		public function update_adminbar( $wp_adminbar ) {
+		public static function update_adminbar( $wp_adminbar ) {
 				$wp_adminbar->remove_node( 'wp-logo' );
 				$wp_adminbar->remove_node( 'customize' );
 				$wp_adminbar->remove_node( 'comments' );
@@ -781,7 +799,7 @@ class Formation {
 		 * Remove wp news metabox.
 		 */
 
-		public function remove_dashboard_widgets() {
+		public static function remove_dashboard_widgets() {
 				remove_meta_box( 'dashboard_primary', 'dashboard', 'side' );
 		}
 
@@ -789,7 +807,7 @@ class Formation {
 		 * Remove meta boxes and tag link.
 		 */
 
-		public function remove_meta_boxes() {
+		public static function remove_meta_boxes() {
 				remove_meta_box( 'commentstatusdiv', 'post', 'normal' );
 				remove_meta_box( 'tagsdiv-post_tag', 'post', 'normal' );
 				remove_meta_box( 'tagsdiv-post_tag', 'post', 'advanced' );
@@ -800,7 +818,7 @@ class Formation {
 		 * Add custom image sizes for users to select.
 		 */
 
-		public function custom_image_sizes( $sizes ) {
+		public static function custom_image_sizes( $sizes ) {
 				if ( ! static::$image_sizes ) {
 						return $sizes;
 				}
@@ -842,7 +860,7 @@ class Formation {
 		 * Separator for title tag.
 		 */
 
-		public function title_separator( $sep ) {
+		public static function title_separator( $sep ) {
 				$sep = '|';
 				return $sep;
 		}
@@ -851,34 +869,50 @@ class Formation {
 		 * Change excerpt end to ellipsis.
 		 */
 
-		public function excerpt_more( $more ) {
+		public static function excerpt_more( $more ) {
 				return '&hellip;';
 		}
 
 		/**
-		 * Remove current from blog when on custom post type.
+		 * Adjust current nav item in archive or custom post type.
 		 */
 
-		public function cpt_nav_classes( $classes, $item ) {
-				foreach ( static::$cpt as $c => $meta ) {
-						if ( isset( $meta['no_slug'] ) ) {
+		public static function pt_nav_classes( $classes, $item ) {
+				$current_pt = get_queried_object()->post_type ?? false;
+
+				if ( ! $current_pt ) {
+						$current_tax = get_queried_object()->taxonomy ?? false;
+
+						if ( $current_tax ) {
+								$current_pt = static::$tax_pt[ $current_tax ] ?? false;
+						}
+				}
+
+				if ( ! $current_pt ) {
+						return $classes;
+				}
+
+				foreach ( static::$pt as $pt => $info ) {
+						if ( ! isset( $info['nav'] ) ) {
 								continue;
 						}
 
-						$c_archive = is_post_type_archive( $c );
-						$c_tax     = isset( $meta['taxonomy'] ) ? is_tax( $meta['taxonomy'] ) : false;
-						$c_single  = is_singular( $c );
+						$nav_pt = $item->object;
 
-						if ( $c_archive || $c_tax || $c_single ) {
-								/* Get slug of nav item */
+						/* Check if blog page */
 
-								$nav_object_slug = get_post_field( 'post_name', (int) $item->object_id );
-
-								/* Check if slug matches cpt or tax */
-
-								if ( $nav_object_slug === $meta['slug'] ) {
-										$classes[] = 'current-menu-item';
+						if ( 'page' === $nav_pt ) {
+								if ( (int) get_option( 'page_for_posts' ) === (int) $item->object_id ) {
+										$nav_pt = 'post';
 								}
+						}
+
+						if ( $pt !== $current_pt ) {
+								continue;
+						}
+
+						if ( $current_pt === $nav_pt ) {
+								$classes[] = 'current-menu-item';
 						}
 				}
 
@@ -889,25 +923,18 @@ class Formation {
 		 * Add attributes to $defer_script_handles and $script_attributes.
 		 */
 
-		public function add_script_attributes( $tag, $handle ) {
-				$tag = static::process_script_tag( $tag, $handle, static::$defer_script_handles, true );
-				$tag = static::process_script_tag( $tag, $handle, static::$script_attributes );
+		public static function add_script_attributes( $tag, $handle ) {
+				foreach ( static::$defer_script_handles as $value ) {
+						if ( $value === $handle ) {
+								$tag = str_replace( ' src', ' defer="defer" async="async" src', $tag );
+						}
+				}
 
-				return $tag;
-		}
+				foreach ( static::$script_attributes as $key => $value ) {
+						$s = static::$namespace . '-' . $key;
 
-		public static function process_script_tag( $tag, $handle, $scripts, $defer = false ) {
-				foreach ( $scripts as $key => $value ) {
-						if ( $defer ) {
-								if ( $value === $handle ) {
-										$tag = str_replace( ' src', ' defer="defer" async="async" src', $tag );
-								}
-						} else {
-								$s = static::$namespace . '-' . $key;
-
-								if ( $s === $handle && $value ) {
-										$tag = str_replace( ' src', " $value src", $tag );
-								}
+						if ( $s === $handle && $value ) {
+								$tag = str_replace( ' src', " $value src", $tag );
 						}
 				}
 
@@ -918,7 +945,7 @@ class Formation {
 		 * Remove h1 from heading options in admin.
 		 */
 
-		public function tiny_mce_remove_h1( $init ) {
+		public static function tiny_mce_remove_h1( $init ) {
 				$init['block_formats'] = 'Paragraph=p;Heading 2=h2;Heading 3=h3;Heading 4=h4;';
 				return $init;
 		}

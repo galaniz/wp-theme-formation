@@ -62,3 +62,10 @@ All notable changes to this project will be documented in this file.
 - Update buttons in render methods to use spans instead of divs.
 - Icon path optional in `render_social` method.
 - Add option to run shortcode in `get_excerpt` method.
+
+## [3.0.3] - 2022-07-01
+
+### Changed
+- `Reading` class fields conditionals.
+- `Formation` callback methods static for minimal use cases.
+- Update `get_excerpt` method in `Utils`.
