@@ -94,15 +94,15 @@ class Reading {
 							'ajax_posts_per_page' => $ajax_posts_per_page,
 						] = $meta;
 
+						$more_label_args = [
+							'name'    => $p . '_more_label',
+							'label'   => $label . ' more posts label',
+							'section' => 'default',
+							'type'    => 'text',
+						];
+
 						if ( 'post' === $p && $more_label ) {
-								$fields[] = [
-									[
-										'name'    => 'post_more_label',
-										'label'   => 'Post more posts label',
-										'section' => 'default',
-										'type'    => 'text',
-									],
-								];
+								$fields[] = [ $more_label_args ];
 
 								continue;
 						}
@@ -154,12 +154,7 @@ class Reading {
 						];
 
 						if ( $more_label ) {
-								$fields[] = [
-									'name'    => $p . '_more_label',
-									'label'   => $label . ' more posts label',
-									'section' => 'default',
-									'type'    => 'text',
-								];
+								$fields[] = [ $more_label_args ];
 						}
 
 						if ( $ajax_posts_per_page ) {
