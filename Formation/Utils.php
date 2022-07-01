@@ -125,11 +125,11 @@ trait Utils {
 		 */
 
 		public static function get_excerpt( $args = [] ) {
-				$post_id      = $args['post_id'] ?? get_the_ID();
-				$content      = $args['content'] ?? '';
-				$words        = $args['words'] ?? false;
-				$length       = $args['length'] ?? 55;
-				$do_shortcode = $args['do_shortcode'] ?? false;
+				$post_id          = $args['post_id'] ?? get_the_ID();
+				$content          = $args['content'] ?? '';
+				$words            = $args['words'] ?? false;
+				$length           = $args['length'] ?? 55;
+				$remove_shortcode = $args['remove_shortcode'] ?? false;
 
 				if ( has_excerpt( $post_id ) ) {
 						$content = get_the_excerpt( $post_id );
@@ -147,7 +147,7 @@ trait Utils {
 				}
 
 				if ( $content ) {
-						if ( $do_shortcode ) {
+						if ( $remove_shortcode ) {
 								$content = preg_replace( '~(?:\[/?)[^/\]]+/?\]~s', '', $content );
 						}
 
