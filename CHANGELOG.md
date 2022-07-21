@@ -69,3 +69,8 @@ All notable changes to this project will be documented in this file.
 - `Reading` class fields conditionals.
 - `Formation` callback methods static for minimal use cases.
 - Update `get_excerpt` method in `Utils`.
+
+## [3.0.4] - 2022-07-20
+
+### Fixed
+- `get_posts_per_page` utility method fix for `get_option` name.

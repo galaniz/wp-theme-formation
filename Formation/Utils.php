@@ -42,7 +42,7 @@ trait Utils {
 						return 0;
 				}
 
-				$ppp = 'post' === $post_type ? (int) get_option( 'posts_per_page' ) : (int) get_option( $post_type . '_posts_per_page' );
+				$ppp = 'post' === $post_type ? (int) get_option( 'posts_per_page' ) : (int) get_option( self::get_namespaced_str( $post_type ) . '_posts_per_page' );
 
 				if ( ! $ppp && static::$posts_per_page ) {
 						if ( isset( static::$posts_per_page[ $post_type ] ) ) {
