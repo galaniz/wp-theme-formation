@@ -74,3 +74,9 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - `get_posts_per_page` utility method fix for `get_option` name.
+
+## [3.0.5] - 2022-09-20
+
+### Changed
+- Remove all references to Google APIs.
+- Formatting tabs to be cleaner.
