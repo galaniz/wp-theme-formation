@@ -89,7 +89,6 @@ _Parameters:_
 
 | Name | Type | Default | Description
 |--|--|--|--|
-| `recaptcha` | `boolean` | `false` | Include Google Recaptcha tab and fields.  
 | `mailchimp_list_locations` | `associative array` | `[]` | Include Mailchimp tab and fields. name `str` => location `str`  
 | `sections` | `array` | `[]` | See [settings](#settings).
 | `fields` | `array` | `[]` | See [settings](#settings).
