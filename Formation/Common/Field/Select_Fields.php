@@ -20,176 +20,176 @@ use Formation\Common\Field\Field;
 
 class Select_Fields {
 
-		/**
-		 * Get fields.
-		 *
-		 * @param string $name
-		 * @return array
-		 */
+	/**
+	 * Get fields.
+	 *
+	 * @param string $name
+	 * @return array
+	 */
 
-		public static function get( $name = '' ) {
-				if ( ! $name ) {
-						return [];
+	public static function get( $name = '' ) {
+		if ( ! $name ) {
+			return [];
+		}
+
+		return [
+			[
+				'name'  => $name . '[%i][name]',
+				'label' => 'Name',
+			],
+			[
+				'name'  => $name . '[%i][label]',
+				'label' => 'Label',
+			],
+			[
+				'type'    => 'select',
+				'name'    => $name . '[%i][type]',
+				'attr'    => [
+					'onchange' => 'showHiddenFields( event )',
+				],
+				'label'   => 'Type',
+				'options' => [
+					'text'     => 'Text',
+					'checkbox' => 'Checkbox',
+					'radio'    => 'Radio',
+					'email'    => 'Email',
+					'select'   => 'Select',
+					'textarea' => 'Text Area',
+					'hidden'   => 'Hidden',
+				],
+			],
+			[
+				'type'   => 'textarea',
+				'name'   => $name . '[%i][options]',
+				'label'  => 'Options (value : label)',
+				'hidden' => true,
+				'attr'   => [
+					'rows' => 5,
+					'cols' => 40,
+				],
+			],
+			[
+				'type'  => 'text',
+				'name'  => $name . '[%i][value]',
+				'label' => 'Value',
+			],
+			[
+				'type'  => 'checkbox',
+				'label' => 'Required',
+				'name'  => $name . '[%i][required]',
+				'value' => 1,
+			],
+		];
+	}
+
+	/**
+	 * Output fields.
+	 *
+	 * @param array $fields
+	 * @return string of markup
+	 */
+
+	public static function render( $fields = [], $group = true ) {
+		if ( ! $fields ) {
+			return '';
+		}
+
+		$output = '';
+
+		if ( ! isset( $fields[0] ) ) {
+			$fields = [$fields];
+		}
+
+		$fields = array_map(
+			function( $v ) {
+				if ( ! isset( $v['name'] ) ) {
+					$v['name'] = FRM::$namespace . '_' . str_replace( ' ', '_', strtolower( $v['label'] ) );
 				}
 
-				return [
-					[
-						'name'  => $name . '[%i][name]',
-						'label' => 'Name',
-					],
-					[
-						'name'  => $name . '[%i][label]',
-						'label' => 'Label',
-					],
-					[
-						'type'    => 'select',
-						'name'    => $name . '[%i][type]',
-						'attr'    => [
-							'onchange' => 'showHiddenFields( event )',
-						],
-						'label'   => 'Type',
-						'options' => [
-							'text'     => 'Text',
-							'checkbox' => 'Checkbox',
-							'radio'    => 'Radio',
-							'email'    => 'Email',
-							'select'   => 'Select',
-							'textarea' => 'Text Area',
-							'hidden'   => 'Hidden',
-						],
-					],
-					[
-						'type'   => 'textarea',
-						'name'   => $name . '[%i][options]',
-						'label'  => 'Options (value : label)',
-						'hidden' => true,
-						'attr'   => [
-							'rows' => 5,
-							'cols' => 40,
-						],
-					],
-					[
-						'type'  => 'text',
-						'name'  => $name . '[%i][value]',
-						'label' => 'Value',
-					],
-					[
-						'type'  => 'checkbox',
-						'label' => 'Required',
-						'name'  => $name . '[%i][required]',
-						'value' => 1,
-					],
-				];
-		}
+				$type    = $v['type'];
+				$options = $v['options'] ?? '';
 
-		/**
-		 * Output fields.
-		 *
-		 * @param array $fields
-		 * @return string of markup
-		 */
-
-		public static function render( $fields = [], $group = true ) {
-				if ( ! $fields ) {
-						return '';
+				if ( ! isset( $v['attr'] ) ) {
+					$v['attr'] = [];
 				}
 
-				$output = '';
+				if ( $options ) {
+					$options     = explode( "\n", $options );
+					$options_arr = [];
+					$ff          = [];
 
-				if ( ! isset( $fields[0] ) ) {
-						$fields = [$fields];
+					foreach ( $options as $o ) {
+						$o_arr                    = explode( ' : ', $o );
+						$options_arr[ $o_arr[0] ] = $o_arr[1];
+
+						if ( 'checkbox' === $type || 'radio' === $type ) {
+							$ff[] = [
+								'name'        => FRM::$namespace . '_' . str_replace( ' ', '_', strtolower( $o_arr[1] ) ),
+								'type'        => $type,
+								'label'       => $o_arr[1],
+								'value'       => $o_arr[0],
+								'label_above' => false,
+							];
+						}
+					}
+
+					$v['options'] = $options_arr;
+
+					if ( 'checkbox' === $type || 'radio' === $type ) {
+						$v = [
+							'fields' => $ff,
+							'label'  => $v['label'] ?? '',
+						];
+					}
 				}
 
-				$fields = array_map(
-						function( $v ) {
-								if ( ! isset( $v['name'] ) ) {
-										$v['name'] = FRM::$namespace . '_' . str_replace( ' ', '_', strtolower( $v['label'] ) );
-								}
+				if ( isset( $v['required'] ) ) {
+					$v['attr']['aria-required'] = 'true';
+				}
 
-								$type    = $v['type'];
-								$options = $v['options'] ?? '';
+				return $v;
+			},
+			$fields
+		);
 
-								if ( ! isset( $v['attr'] ) ) {
-										$v['attr'] = [];
-								}
+		Field::render(
+			[
+				'fields'   => $fields,
+				'no_group' => ! $group,
+			],
+			$output
+		);
 
-								if ( $options ) {
-										$options     = explode( "\n", $options );
-										$options_arr = [];
-										$ff          = [];
+		return $output;
+	}
 
-										foreach ( $options as $o ) {
-												$o_arr                    = explode( ' : ', $o );
-												$options_arr[ $o_arr[0] ] = $o_arr[1];
+	/**
+	 * Filter value by required fields.
+	 *
+	 * @param array $value
+	 * @return array
+	 */
 
-												if ( 'checkbox' === $type || 'radio' === $type ) {
-														$ff[] = [
-															'name'        => FRM::$namespace . '_' . str_replace( ' ', '_', strtolower( $o_arr[1] ) ),
-															'type'        => $type,
-															'label'       => $o_arr[1],
-															'value'       => $o_arr[0],
-															'label_above' => false,
-														];
-												}
-										}
+	public static function filter( $value ) {
+		Field::filter_multi_fields( $value, ['type'] );
+		return $value;
+	}
 
-										$v['options'] = $options_arr;
+	/**
+	 * Scripts to enqueue.
+	 */
 
-										if ( 'checkbox' === $type || 'radio' === $type ) {
-												$v = [
-													'fields' => $ff,
-													'label'  => $v['label'] ?? '',
-												];
-										}
-								}
+	public static function scripts() {
+		$path   = FRM::$src_path . 'Common/assets/public/';
+		$handle = FRM::$namespace . '-select-fields-script';
 
-								if ( isset( $v['required'] ) ) {
-										$v['attr']['aria-required'] = 'true';
-								}
-
-								return $v;
-						},
-						$fields
-				);
-
-				Field::render(
-						[
-							'fields'   => $fields,
-							'no_group' => ! $group,
-						],
-						$output
-				);
-
-				return $output;
-		}
-
-		/**
-		 * Filter value by required fields.
-		 *
-		 * @param array $value
-		 * @return array
-		 */
-
-		public static function filter( $value ) {
-				Field::filter_multi_fields( $value, ['type'] );
-				return $value;
-		}
-
-		/*
-		 * Scripts to enqueue.
-		 */
-
-		public static function scripts() {
-				$path   = FRM::$src_path . 'Common/assets/public/';
-				$handle = FRM::$namespace . '-select-fields-script';
-
-				wp_enqueue_script(
-						$handle,
-						get_template_directory_uri() . $path . 'js/select-fields.js',
-						[],
-						FRM::$script_ver,
-						true
-				);
-		}
+		wp_enqueue_script(
+			$handle,
+			get_template_directory_uri() . $path . 'js/select-fields.js',
+			[],
+			FRM::$script_ver,
+			true
+		);
+	}
 
 } // End Select_Fields

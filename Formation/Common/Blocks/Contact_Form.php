@@ -21,373 +21,373 @@ use Formation\Common\Blocks\Blocks;
 
 class Contact_Form {
 
-		/**
-		 * Variables
-		 *
-		 * Args for contact form and field blocks.
-		 *
-		 * @var array $blocks
-		 * @see class Blocks for args breakdown.
-		 */
+	/**
+	 * Variables
+	 *
+	 * Args for contact form and field blocks.
+	 *
+	 * @var array $blocks
+	 * @see class Blocks for args breakdown.
+	 */
 
-		public static $blocks = [
-			'contact-form'              => [
-				'attr'    => [
-					'id'              => ['type' => 'string'],
-					'email'           => ['type' => 'string'],
-					'subject'         => ['type' => 'string'],
-					'submit_label'    => ['type' => 'string'],
-					'success_message' => ['type' => 'string'],
-					'gap'             => ['type' => 'string'],
-				],
-				'default' => [
-					'id'              => '',
-					'email'           => '',
-					'subject'         => '',
-					'submit_label'    => 'Send',
-					'success_message' => '',
-					'gap'             => '',
-				],
-				'render'  => [__CLASS__, 'render_contact_form'],
-				'handle'  => 'contact_form',
-				'script'  => 'contact-form/form.js',
+	public static $blocks = [
+		'contact-form'              => [
+			'attr'    => [
+				'id'              => ['type' => 'string'],
+				'email'           => ['type' => 'string'],
+				'subject'         => ['type' => 'string'],
+				'submit_label'    => ['type' => 'string'],
+				'success_message' => ['type' => 'string'],
+				'gap'             => ['type' => 'string'],
 			],
-			'contact-form-group'        => [
-				'attr'    => [
-					'email_label' => ['type' => 'string'],
-				],
-				'default' => [
-					'email_label' => '',
-				],
-				'render'  => [__CLASS__, 'render_contact_form_group'],
-				'handle'  => 'contact_form_group',
-				'script'  => 'contact-form/group.js',
+			'default' => [
+				'id'              => '',
+				'email'           => '',
+				'subject'         => '',
+				'submit_label'    => 'Send',
+				'success_message' => '',
+				'gap'             => '',
 			],
-			'contact-form-group-top'    => [
-				'render' => [__CLASS__, 'render_contact_form_group_top'],
-				'handle' => 'contact_form_group_top',
-				'script' => 'contact-form/group-top.js',
+			'render'  => [__CLASS__, 'render_contact_form'],
+			'handle'  => 'contact_form',
+			'script'  => 'contact-form/form.js',
+		],
+		'contact-form-group'        => [
+			'attr'    => [
+				'email_label' => ['type' => 'string'],
 			],
-			'contact-form-group-bottom' => [
-				'attr'    => [
-					'gap' => ['type' => 'string'],
-				],
-				'default' => [
-					'gap' => '',
-				],
-				'render'  => [__CLASS__, 'render_contact_form_group_bottom'],
-				'handle'  => 'contact_form_group_bottom',
-				'script'  => 'contact-form/group-bottom.js',
+			'default' => [
+				'email_label' => '',
 			],
-			'contact-form-field'        => [
-				'attr'    => [
-					'type'          => ['type' => 'string'],
-					'name'          => ['type' => 'string'],
-					'label'         => ['type' => 'string'],
-					'placeholder'   => ['type' => 'string'],
-					'required'      => ['type' => 'boolean'],
-					'attr'          => ['type' => 'string'],
-					'options'       => ['type' => 'string'],
-					'width'         => ['type' => 'string'],
-					'value'         => ['type' => 'string'],
-					'label_after'   => ['type' => 'boolean'],
-					'padding_small' => ['type' => 'boolean'],
-					'email_label'   => ['type' => 'string'],
-				],
-				'default' => [
-					'type'          => 'text',
-					'name'          => '',
-					'label'         => '',
-					'placeholder'   => '',
-					'required'      => false,
-					'attr'          => '',
-					'options'       => '',
-					'width'         => '100',
-					'value'         => '',
-					'label_after'   => false,
-					'padding_small' => false,
-					'email_label'   => '',
-				],
-				'render'  => [__CLASS__, 'render_contact_form_field'],
-				'handle'  => 'contact_form_field',
-				'script'  => 'contact-form/field.js',
+			'render'  => [__CLASS__, 'render_contact_form_group'],
+			'handle'  => 'contact_form_group',
+			'script'  => 'contact-form/group.js',
+		],
+		'contact-form-group-top'    => [
+			'render' => [__CLASS__, 'render_contact_form_group_top'],
+			'handle' => 'contact_form_group_top',
+			'script' => 'contact-form/group-top.js',
+		],
+		'contact-form-group-bottom' => [
+			'attr'    => [
+				'gap' => ['type' => 'string'],
 			],
-		];
+			'default' => [
+				'gap' => '',
+			],
+			'render'  => [__CLASS__, 'render_contact_form_group_bottom'],
+			'handle'  => 'contact_form_group_bottom',
+			'script'  => 'contact-form/group-bottom.js',
+		],
+		'contact-form-field'        => [
+			'attr'    => [
+				'type'          => ['type' => 'string'],
+				'name'          => ['type' => 'string'],
+				'label'         => ['type' => 'string'],
+				'placeholder'   => ['type' => 'string'],
+				'required'      => ['type' => 'boolean'],
+				'attr'          => ['type' => 'string'],
+				'options'       => ['type' => 'string'],
+				'width'         => ['type' => 'string'],
+				'value'         => ['type' => 'string'],
+				'label_after'   => ['type' => 'boolean'],
+				'padding_small' => ['type' => 'boolean'],
+				'email_label'   => ['type' => 'string'],
+			],
+			'default' => [
+				'type'          => 'text',
+				'name'          => '',
+				'label'         => '',
+				'placeholder'   => '',
+				'required'      => false,
+				'attr'          => '',
+				'options'       => '',
+				'width'         => '100',
+				'value'         => '',
+				'label_after'   => false,
+				'padding_small' => false,
+				'email_label'   => '',
+			],
+			'render'  => [__CLASS__, 'render_contact_form_field'],
+			'handle'  => 'contact_form_field',
+			'script'  => 'contact-form/field.js',
+		],
+	];
 
-		/**
-		 * Constructor
-		 */
+	/**
+	 * Constructor
+	 */
 
-		public function __construct() {
-				/* Add blocks */
+	public function __construct() {
+		/* Add blocks */
 
-				add_action( 'init', [$this, 'register_blocks'] );
+		add_action( 'init', [$this, 'register_blocks'] );
 
-				/* Register meta and routes */
+		/* Register meta and routes */
 
-				add_action(
-						'rest_api_init',
-						function() {
-								register_rest_route(
-										FRM::$namespace,
-										'/preview-contact-form',
-										[
-											'methods'             => 'GET',
-											'callback'            => [$this, 'preview_contact_form'],
-											'permission_callback' => '__return_true',
-										]
-								);
-						}
+		add_action(
+			'rest_api_init',
+			function() {
+				register_rest_route(
+					FRM::$namespace,
+					'/preview-contact-form',
+					[
+						'methods'             => 'GET',
+						'callback'            => [$this, 'preview_contact_form'],
+						'permission_callback' => '__return_true',
+					]
 				);
+			}
+		);
+	}
+
+	/**
+	 * Pass blocks to Blocks class
+	 */
+
+	public function register_blocks() {
+		foreach ( self::$blocks as $name => $b ) {
+			$b['frm']                = true;
+			Blocks::$blocks[ $name ] = $b;
+		}
+	}
+
+	/**
+	 * Helpers
+	 *
+	 * Get associative array from string of key value pairs.
+	 *
+	 * @param string $str
+	 * @param string $order of key value pairs.
+	 * @return array
+	 */
+
+	public static function get_assoc_array_from_str( $str = '', $order = 'key:value', $indexed = false ) {
+		if ( ! $str ) {
+			return [];
 		}
 
-		/**
-		 * Pass blocks to Blocks class
-		 */
+		$array = [];
 
-		public function register_blocks() {
-				foreach ( self::$blocks as $name => $b ) {
-						$b['frm']                = true;
-						Blocks::$blocks[ $name ] = $b;
-				}
-		}
+		$a = explode( "\n", $str );
 
-		/**
-		 * Helpers
-		 *
-		 * Get associative array from string of key value pairs.
-		 *
-		 * @param string $str
-		 * @param string $order of key value pairs.
-		 * @return array
-		 */
+		if ( isset( $a[0] ) ) {
+			foreach ( $a as $b ) {
+				$c = explode( ' : ', $b );
 
-		public static function get_assoc_array_from_str( $str = '', $order = 'key:value', $indexed = false ) {
-				if ( ! $str ) {
-						return [];
-				}
+				if ( isset( $c[0] ) && isset( $c[1] ) ) {
+					$key   = $c[0];
+					$value = $c[1];
 
-				$array = [];
-
-				$a = explode( "\n", $str );
-
-				if ( isset( $a[0] ) ) {
-						foreach ( $a as $b ) {
-								$c = explode( ' : ', $b );
-
-								if ( isset( $c[0] ) && isset( $c[1] ) ) {
-										$key   = $c[0];
-										$value = $c[1];
-
-										if ( $indexed ) {
-												$array[] = [
-													'label' => $key,
-													'value' => $value,
-												];
-										} else {
-												if ( 'key:value' === $order ) {
-														$array[ $key ] = $value;
-												} else {
-														$array[ $value ] = $key;
-												}
-										}
-								}
+					if ( $indexed ) {
+						$array[] = [
+							'label' => $key,
+							'value' => $value,
+						];
+					} else {
+						if ( 'key:value' === $order ) {
+							$array[ $key ] = $value;
+						} else {
+							$array[ $value ] = $key;
 						}
+					}
 				}
-
-				return $array;
+			}
 		}
 
-		/**
-		 * Render callbacks
-		 *
-		 * Output contact form.
-		 *
-		 * @param array $attributes
-		 * @param string $content
-		 * @return string of markup
-		 */
+		return $array;
+	}
 
-		public static function render_contact_form( $attributes, $content = '' ) {
-				$attr = array_replace_recursive( self::$blocks['contact-form']['default'], $attributes );
+	/**
+	 * Render callbacks
+	 *
+	 * Output contact form.
+	 *
+	 * @param array $attributes
+	 * @param string $content
+	 * @return string of markup
+	 */
 
+	public static function render_contact_form( $attributes, $content = '' ) {
+			$attr = array_replace_recursive( self::$blocks['contact-form']['default'], $attributes );
+
+			[
+				'id'              => $id,
+				'email'           => $email,
+				'subject'         => $subject,
+				'submit_label'    => $submit_label,
+				'success_message' => $success_message,
+				'gap'             => $gap,
+			] = $attr;
+
+			if ( ! $email ) {
+				$email = get_option( 'admin_email', '' );
+			}
+
+			if ( ! $subject ) {
+				$subject = get_bloginfo( 'name' ) . ' Contact Form';
+			}
+
+			if ( $id ) {
+				/* Make sure $id not greater than 64 characters */
+
+				$id = substr( $id, 0, 40 );
+
+				update_option(
+					FRM::$namespace . '_form_' . $id,
+					[
+						'email'   => $email,
+						'subject' => $subject,
+					]
+				);
+			}
+
+			return FRM::render_form(
 				[
-					'id'              => $id,
-					'email'           => $email,
-					'subject'         => $subject,
+					'form_id'         => $id,
+					'form_data_type'  => 'contact',
+					'fields'          => $content,
+					'fields_gap'      => $gap,
 					'submit_label'    => $submit_label,
 					'success_message' => $success_message,
-					'gap'             => $gap,
-				] = $attr;
+				]
+			);
+	}
 
-				if ( ! $email ) {
-						$email = get_option( 'admin_email', '' );
-				}
+	public static function render_contact_form_group( $attributes, $content ) {
+		return "<div class='" . FRM::$classes['field_prefix'] . "-group l-100'>$content</div>";
+	}
 
-				if ( ! $subject ) {
-						$subject = get_bloginfo( 'name' ) . ' Contact Form';
-				}
+	public static function render_contact_form_group_top( $attributes, $content ) {
+		return "<div class='" . FRM::$classes['field_prefix'] . "-group__top'>$content</div>";
+	}
 
-				if ( $id ) {
-						/* Make sure $id not greater than 64 characters */
+	public static function render_contact_form_group_bottom( $attributes, $content ) {
+		return "<div class='" . FRM::$classes['field_prefix'] . "-group__bottom l-flex' data-gap='$gap' data-wrap>$content</div>";
+	}
 
-						$id = substr( $id, 0, 40 );
+	public static function render_contact_form_field( $attributes ) {
+		$attr = array_replace_recursive( self::$blocks['contact-form-field']['default'], $attributes );
 
-						update_option(
-								FRM::$namespace . '_form_' . $id,
-								[
-									'email'   => $email,
-									'subject' => $subject,
-								]
-						);
-				}
+		[
+			'type'          => $type,
+			'name'          => $name,
+			'label'         => $label,
+			'placeholder'   => $placeholder,
+			'required'      => $required,
+			'attr'          => $attr,
+			'options'       => $options,
+			'width'         => $width,
+			'value'         => $value,
+			'label_after'   => $label_after,
+			'padding_small' => $padding_small,
+			'email_label'   => $email_label,
+		] = $attr;
 
-				return FRM::render_form(
-						[
-							'form_id'         => $id,
-							'form_data_type'  => 'contact',
-							'fields'          => $content,
-							'fields_gap'      => $gap,
-							'submit_label'    => $submit_label,
-							'success_message' => $success_message,
-						]
-				);
+		$output = '';
+		$prefix = FRM::$namespace . '_';
+
+		$field_class = "l-$width";
+		$field_attr  = [];
+
+		if ( $label_after ) {
+			$field_attr['data-label-after'] = '';
 		}
 
-		public static function render_contact_form_group( $attributes, $content ) {
-				return "<div class='" . FRM::$classes['field_prefix'] . "-group l-100'>$content</div>";
+		if ( $padding_small ) {
+			$field_attr['data-p-sm'] = '';
 		}
 
-		public static function render_contact_form_group_top( $attributes, $content ) {
-				return "<div class='" . FRM::$classes['field_prefix'] . "-group__top'>$content</div>";
+		$field = [
+			'name'        => FRM::$namespace . '_' . $name,
+			'label'       => $label,
+			'type'        => $type,
+			'placeholder' => $placeholder,
+			'field_class' => $field_class,
+			'field_attr'  => $field_attr,
+			'value'       => $value,
+		];
+
+		if ( 'radio' === $type || 'checkbox' === $type ) {
+			$field['class'] = 'u-h-i';
 		}
 
-		public static function render_contact_form_group_bottom( $attributes, $content ) {
-				return "<div class='" . FRM::$classes['field_prefix'] . "-group__bottom l-flex' data-gap='$gap' data-wrap>$content</div>";
+		$attr_array = self::get_assoc_array_from_str( $attr );
+
+		$order   = 'select' === $type ? 'value:key' : 'key:value';
+		$indexed = 'select' === $type ? false : true;
+
+		$options_array = self::get_assoc_array_from_str( $options, $order, $indexed );
+
+		if ( $required ) {
+			$attr_array['aria-required'] = true;
 		}
 
-		public static function render_contact_form_field( $attributes ) {
-				$attr = array_replace_recursive( self::$blocks['contact-form-field']['default'], $attributes );
-
-				[
-					'type'          => $type,
-					'name'          => $name,
-					'label'         => $label,
-					'placeholder'   => $placeholder,
-					'required'      => $required,
-					'attr'          => $attr,
-					'options'       => $options,
-					'width'         => $width,
-					'value'         => $value,
-					'label_after'   => $label_after,
-					'padding_small' => $padding_small,
-					'email_label'   => $email_label,
-				] = $attr;
-
-				$output = '';
-				$prefix = FRM::$namespace . '_';
-
-				$field_class = "l-$width";
-				$field_attr  = [];
-
-				if ( $label_after ) {
-						$field_attr['data-label-after'] = '';
-				}
-
-				if ( $padding_small ) {
-						$field_attr['data-p-sm'] = '';
-				}
-
-				$field = [
-					'name'        => FRM::$namespace . '_' . $name,
-					'label'       => $label,
-					'type'        => $type,
-					'placeholder' => $placeholder,
-					'field_class' => $field_class,
-					'field_attr'  => $field_attr,
-					'value'       => $value,
-				];
-
-				if ( 'radio' === $type || 'checkbox' === $type ) {
-						$field['class'] = 'u-h-i';
-				}
-
-				$attr_array = self::get_assoc_array_from_str( $attr );
-
-				$order   = 'select' === $type ? 'value:key' : 'key:value';
-				$indexed = 'select' === $type ? false : true;
-
-				$options_array = self::get_assoc_array_from_str( $options, $order, $indexed );
-
-				if ( $required ) {
-						$attr_array['aria-required'] = true;
-				}
-
-				if ( 'textarea' === $type && ! isset( $attr_array['rows'] ) ) {
-						$attr_array['rows'] = 8;
-				}
-
-				if ( $email_label ) {
-						$attr_array['data-email-label'] = $email_label;
-				}
-
-				$field['attr']    = $attr_array;
-				$field['options'] = $options_array;
-
-				/* Filter args */
-
-				$field = apply_filters( 'formation_contact_form_field_args', $field );
-
-				if ( 'radio' === $type || 'checkbox' === $type ) {
-						$field['class'] = 'u-h-i';
-
-						if ( $options_array ) {
-								$f     = $field;
-								$field = [];
-
-								foreach ( $options_array as $i => $opt ) {
-										$args          = $f;
-										$args['label'] = $opt['label'];
-										$args['value'] = $opt['value'];
-
-										$field[] = $args;
-								}
-						}
-				}
-
-				$render_args = [
-					'fields'   => ( isset( $field[0] ) ? $field : [$field] ),
-					'no_group' => true,
-				];
-
-				if ( $value && ( $options_array || ( 'radio' === $type || 'checkbox' === $type || 'select' === $type ) ) ) {
-						$render_args['data'] = $value;
-				}
-
-				Field::render( $render_args, $output );
-
-				return $output;
+		if ( 'textarea' === $type && ! isset( $attr_array['rows'] ) ) {
+			$attr_array['rows'] = 8;
 		}
 
-		public function preview_contact_form( $data ) {
-				$req = $data->get_param( 'required' );
-
-				if ( is_string( $req ) ) {
-						$req = 'true' === $req ? true : false;
-				}
-
-				$args = [
-					'type'        => $data->get_param( 'type' ),
-					'name'        => $data->get_param( 'name' ),
-					'label'       => $data->get_param( 'label' ),
-					'placeholder' => $data->get_param( 'placeholder' ),
-					'required'    => $req,
-					'attr'        => $data->get_param( 'attr' ),
-					'options'     => $data->get_param( 'options' ),
-					'width'       => $data->get_param( 'width' ),
-				];
-
-				return self::render_contact_form_field( $args );
+		if ( $email_label ) {
+			$attr_array['data-email-label'] = $email_label;
 		}
+
+		$field['attr']    = $attr_array;
+		$field['options'] = $options_array;
+
+		/* Filter args */
+
+		$field = apply_filters( 'formation_contact_form_field_args', $field );
+
+		if ( 'radio' === $type || 'checkbox' === $type ) {
+			$field['class'] = 'u-h-i';
+
+			if ( $options_array ) {
+				$f     = $field;
+				$field = [];
+
+				foreach ( $options_array as $i => $opt ) {
+					$args          = $f;
+					$args['label'] = $opt['label'];
+					$args['value'] = $opt['value'];
+
+					$field[] = $args;
+				}
+			}
+		}
+
+		$render_args = [
+			'fields'   => ( isset( $field[0] ) ? $field : [$field] ),
+			'no_group' => true,
+		];
+
+		if ( $value && ( $options_array || ( 'radio' === $type || 'checkbox' === $type || 'select' === $type ) ) ) {
+			$render_args['data'] = $value;
+		}
+
+		Field::render( $render_args, $output );
+
+		return $output;
+	}
+
+	public function preview_contact_form( $data ) {
+		$req = $data->get_param( 'required' );
+
+		if ( is_string( $req ) ) {
+			$req = 'true' === $req ? true : false;
+		}
+
+		$args = [
+			'type'        => $data->get_param( 'type' ),
+			'name'        => $data->get_param( 'name' ),
+			'label'       => $data->get_param( 'label' ),
+			'placeholder' => $data->get_param( 'placeholder' ),
+			'required'    => $req,
+			'attr'        => $data->get_param( 'attr' ),
+			'options'     => $data->get_param( 'options' ),
+			'width'       => $data->get_param( 'width' ),
+		];
+
+		return self::render_contact_form_field( $args );
+	}
 
 } // End Contact_Form
