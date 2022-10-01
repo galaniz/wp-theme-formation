@@ -1,12 +1,12 @@
 /**
- * Hide/show siblings based on value
+ * Display siblings based on value
  */
 
 /* Imports */
 
 import { closest } from 'Formation/utils'
 
-/* DOM loaded handler */
+/* Init */
 
 const initialize = () => {
   const toggle = (t) => {
@@ -28,6 +28,4 @@ const initialize = () => {
   }
 }
 
-/* DOM loaded listener */
-
-document.addEventListener('DOMContentLoaded', initialize)
+initialize()

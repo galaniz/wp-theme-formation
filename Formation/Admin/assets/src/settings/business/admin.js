@@ -10,7 +10,7 @@ import {
   request
 } from 'Formation/utils'
 
-/* DOM loaded handler */
+/* Init */
 
 const initialize = () => {
   /**
@@ -255,8 +255,6 @@ const initialize = () => {
       }
     })
   }
-} // end initialize
+}
 
-/* DOM loaded listener */
-
-document.addEventListener('DOMContentLoaded', initialize)
+initialize()

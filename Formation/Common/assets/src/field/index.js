@@ -13,7 +13,7 @@ import fileRemove from './objects/file/remove'
 import wpMedia from './objects/file/wp-media'
 import link from './objects/link'
 
-/* DOM loaded handler */
+/* Init */
 
 const initialize = () => {
   const namespace = window.namespace
@@ -177,8 +177,6 @@ const initialize = () => {
       window.textareaFitContent(t)
     })
   }
-} // end initialize
+}
 
-/* DOM loaded listener */
-
-document.addEventListener('DOMContentLoaded', initialize)
+initialize()

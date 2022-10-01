@@ -156,6 +156,14 @@ class Theme {
 	private $scripts = null;
 
 	/**
+	 * Scripts to defer by handle.
+	 *
+	 * @var array $defer_script_handles
+	 */
+
+	private $defer_script_handles = [];
+
+	/**
 	 * Constructor
 	 */
 
@@ -700,6 +708,10 @@ class Theme {
 
 		add_action( 'admin_enqueue_scripts', [$this, 'scripts'] );
 
+		/* Defer scripts */
+
+		add_filter( 'script_loader_tag', [$this, 'defer_scripts'], 10, 3 );
+
 		/* File actions */
 
 		Field::file_actions();
@@ -794,8 +806,12 @@ class Theme {
 				FRM::$script_ver
 			);
 
+			$handle = FRM::$namespace . '-theme-settings-script';
+
+			$this->defer_script_handles[] = $handle;
+
 			wp_enqueue_script(
-				FRM::$namespace . '-theme-settings-script',
+				$handle,
 				$uri . '/js/settings.js',
 				[],
 				FRM::$script_ver,
@@ -803,8 +819,12 @@ class Theme {
 			);
 
 			if ( $this->tab_nav ) {
+				$handle = FRM::$namespace . '-theme-settings-tab-nav-script';
+
+				$this->defer_script_handles[] = $handle;
+
 				wp_enqueue_script(
-					FRM::$namespace . '-theme-settings-tab-nav-script',
+					$handle,
 					$uri . '/js/tab-nav.js',
 					[],
 					FRM::$script_ver,
@@ -813,8 +833,12 @@ class Theme {
 			}
 
 			if ( $this->business ) {
+				$handle = FRM::$namespace . '-theme-settings-business-script';
+
+				$this->defer_script_handles[] = $handle;
+
 				wp_enqueue_script(
-					FRM::$namespace . '-theme-settings-business-script',
+					$handle,
 					$uri . '/js/business.js',
 					[],
 					FRM::$script_ver,
@@ -831,6 +855,24 @@ class Theme {
 			}
 		}
 	}
+
+	/**
+	 * Defer scripts
+	 */
+
+	public function defer_scripts( $tag, $handle, $src ) {
+		foreach ( $this->defer_script_handles as $value ) {
+			if ( $value === $handle ) {
+				$tag = str_replace( ' src', ' defer="defer" src', $tag );
+			}
+		}
+
+		return $tag;
+	}
+
+	/**
+	 * Display uploaded assets
+	 */
 
 	public function get_uploads() {
 		$dir    = scandir( FRM::$uploads_dir );

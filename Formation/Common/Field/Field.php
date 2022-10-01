@@ -111,6 +111,14 @@ class Field {
 	];
 
 	/**
+	 * Scripts to defer by handle.
+	 *
+	 * @var array $defer_script_handles
+	 */
+
+	public static $defer_script_handles = [];
+
+	/**
 	 * Get base name without keys or indexes.
 	 *
 	 * @param string $name
@@ -1089,12 +1097,31 @@ class Field {
 
 		wp_enqueue_media();
 
+		$handle = FRM::$namespace . '-field-script';
+
+		static::$defer_script_handles[] = $handle;
+
 		wp_enqueue_script(
-			FRM::$namespace . '-field-script',
+			$handle,
 			$uri . $path . 'js/field.js',
 			[],
 			FRM::$script_ver,
 			true
+		);
+
+		add_filter(
+			'script_loader_tag',
+			function( $tag, $handle, $src ) {
+				foreach ( $this->defer_script_handles as $value ) {
+					if ( $value === $handle ) {
+						$tag = str_replace( ' src', ' defer="defer" src', $tag );
+					}
+				}
+
+				return $tag;
+			},
+			10,
+			3
 		);
 	}
 

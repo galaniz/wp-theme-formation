@@ -2,7 +2,7 @@
  * Move title to correct section under tabs
  */
 
-/* DOM loaded handler */
+/* Init */
 
 const initialize = () => {
   const sections = [].slice.call(document.querySelectorAll('.js-section'))
@@ -18,8 +18,6 @@ const initialize = () => {
       }
     })
   }
-} // end initialize
+}
 
-/* DOM loaded listener */
-
-document.addEventListener('DOMContentLoaded', initialize)
+initialize()
