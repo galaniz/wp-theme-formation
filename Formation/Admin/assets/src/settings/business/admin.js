@@ -162,8 +162,6 @@ const initialize = () => {
 
         data = JSON.parse(data)
 
-        console.log(data)
-
         if (Object.getOwnPropertyDescriptor(data, 'geonames')) {
           if (data.geonames.length) {
             error = false

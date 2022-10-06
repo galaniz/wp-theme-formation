@@ -16,7 +16,6 @@ import DOMPurify from 'dompurify'
 /* Module */
 
 const fileUpload = (args) => {
-  console.log('AKSJDFLKS', args)
   /* Helpers */
 
   const disable = (disable = true) => {

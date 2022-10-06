@@ -1112,7 +1112,7 @@ class Field {
 		add_filter(
 			'script_loader_tag',
 			function( $tag, $handle, $src ) {
-				foreach ( $this->defer_script_handles as $value ) {
+				foreach ( self::$defer_script_handles as $value ) {
 					if ( $value === $handle ) {
 						$tag = str_replace( ' src', ' defer="defer" src', $tag );
 					}

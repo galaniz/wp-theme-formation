@@ -36,8 +36,6 @@ const fileRemove = (args) => {
 
     data[f.nonce.name] = f.nonce.nonce
 
-    console.log(data)
-
     request({
       method: 'POST',
       url: f.url,
