@@ -140,7 +140,6 @@ registerBlockType(name, {
     }).then(p => {
       setAttributes({ preview: p })
     }).catch(err => {
-      console.log(err)
       setAttributes({ preview: false })
     })
 

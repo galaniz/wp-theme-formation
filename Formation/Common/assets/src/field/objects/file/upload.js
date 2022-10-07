@@ -112,8 +112,6 @@ const fileUpload = (args) => {
       .then(response => {
         const data = JSON.parse(response)
 
-        console.log('DATA', data)
-
         disable(false)
 
         if (data.length > 0) {
@@ -133,7 +131,6 @@ const fileUpload = (args) => {
         }
       })
       .catch(xhr => {
-        console.log('ERROR', xhr, xhr.responseText)
         disable(false)
       })
   }

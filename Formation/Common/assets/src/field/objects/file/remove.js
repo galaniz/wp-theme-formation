@@ -43,13 +43,10 @@ const fileRemove = (args) => {
       body: urlEncode(data)
     })
       .then(response => {
-        console.log('RESPONSE', response)
-
         disable(false)
         f.parent.removeChild(f.item)
       })
       .catch(xhr => {
-        console.log('ERROR', xhr, xhr.responseText)
         disable(false)
       })
   }
