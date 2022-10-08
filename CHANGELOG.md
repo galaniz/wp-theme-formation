@@ -80,3 +80,14 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Remove all references to Google APIs.
 - Formatting tabs to be cleaner.
+
+## [3.0.6] - 2022-10-08
+
+### Fixed
+- `Settings` sanitization
+
+### Changed
+- Defer scripts instead of DOMContentLoaded and remove console messages
+- Update CSS class names for newer version of Formation and remove unnecessary classes throughout
+- `Theme` class make png logo and reusable blocks optional
+- `Utils_Render` form method simplify and update some args
