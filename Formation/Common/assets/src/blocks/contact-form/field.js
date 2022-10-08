@@ -138,10 +138,8 @@ registerBlockType(name, {
     apiFetch({
       path: `/${nn}/preview-contact-form?type=${type}&name=${name}&label=${label}&placeholder=${placeholder}&required=${required}&attr=${attr}&options=${options}&width=${width}`
     }).then(p => {
-      // console.log( p );
       setAttributes({ preview: p })
     }).catch(err => {
-      console.log(err)
       setAttributes({ preview: false })
     })
 

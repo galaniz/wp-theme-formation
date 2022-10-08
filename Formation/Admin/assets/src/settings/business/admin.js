@@ -10,7 +10,7 @@ import {
   request
 } from 'Formation/utils'
 
-/* DOM loaded handler */
+/* Init */
 
 const initialize = () => {
   /**
@@ -162,8 +162,6 @@ const initialize = () => {
 
         data = JSON.parse(data)
 
-        console.log(data)
-
         if (Object.getOwnPropertyDescriptor(data, 'geonames')) {
           if (data.geonames.length) {
             error = false
@@ -255,8 +253,6 @@ const initialize = () => {
       }
     })
   }
-} // end initialize
+}
 
-/* DOM loaded listener */
-
-document.addEventListener('DOMContentLoaded', initialize)
+initialize()

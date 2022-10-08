@@ -111,6 +111,14 @@ class Field {
 	];
 
 	/**
+	 * Scripts to defer by handle.
+	 *
+	 * @var array $defer_script_handles
+	 */
+
+	public static $defer_script_handles = [];
+
+	/**
 	 * Get base name without keys or indexes.
 	 *
 	 * @param string $name
@@ -487,12 +495,6 @@ class Field {
 		$label_class    = esc_attr( $pre . '__label' . ( $label_class ? " $label_class" : '' ) );
 		$label          = esc_html( $label );
 
-		if ( ! is_admin() ) {
-			$classes     .= esc_attr( FRM::$classes['input'] ? ' ' . FRM::$classes['input'] : '' );
-			$field_class .= esc_attr( FRM::$classes['field'] ? ' ' . FRM::$classes['field'] : '' );
-			$label_class .= esc_attr( FRM::$classes['label'] ? ' ' . FRM::$classes['label'] : '' );
-		}
-
 		if ( is_array( $data ) ) {
 			$data_value = self::get_array_value( $data, $name );
 		} else {
@@ -536,7 +538,11 @@ class Field {
 					'</label>'
 				);
 			} else {
-				$label = "<label class='$label_class' for='" . esc_attr( $id ) . "'$req>$label</label>";
+				$label = (
+					"<label id='" . uniqid() . "' class='$label_class' for='" . esc_attr( $id ) . "'$req>" .
+						"<span>$label</span>" .
+					'</label>'
+				);
 			}
 
 			if ( $label_above ) {
@@ -1089,12 +1095,31 @@ class Field {
 
 		wp_enqueue_media();
 
+		$handle = FRM::$namespace . '-field-script';
+
+		static::$defer_script_handles[] = $handle;
+
 		wp_enqueue_script(
-			FRM::$namespace . '-field-script',
+			$handle,
 			$uri . $path . 'js/field.js',
 			[],
 			FRM::$script_ver,
 			true
+		);
+
+		add_filter(
+			'script_loader_tag',
+			function( $tag, $handle, $src ) {
+				foreach ( self::$defer_script_handles as $value ) {
+					if ( $value === $handle ) {
+						$tag = str_replace( ' src', ' defer="defer" src', $tag );
+					}
+				}
+
+				return $tag;
+			},
+			10,
+			3
 		);
 	}
 

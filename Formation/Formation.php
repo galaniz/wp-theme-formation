@@ -195,6 +195,16 @@ class Formation {
 	public static $defer_script_handles = [];
 
 	/**
+	 * Handles of scripts that should be async. Set in scripts callback.
+	 *
+	 * @var array $async_script_handles {
+	 *  @type string $handle
+	 * }
+	 */
+
+	public static $async_script_handles = [];
+
+	/**
 	 * Handles and attribute strings for scripts. Set in scripts callback.
 	 *
 	 * @var array $script_attributes {
@@ -219,20 +229,6 @@ class Formation {
 	 */
 
 	public static $gap_options = [];
-
-	/**
-	 * Optional classes to add to fields, labels, buttons...
-	 *
-	 * @var array $classes
-	 */
-
-	public static $classes = [
-		'field'  => '',
-		'button' => '',
-		'label'  => '',
-		'input'  => '',
-		'icon'   => '',
-	];
 
 	/**
 	 * Svg output for error and success in forms.
@@ -285,7 +281,7 @@ class Formation {
 	 * @var string $media_pos_class_pre
 	 */
 
-	public static $media_pos_class_pre = 'u-p-';
+	public static $media_pos_class_pre = 'l-object-';
 
 	/**
 	 * Media position select options.
@@ -294,16 +290,16 @@ class Formation {
 	 */
 
 	public static $media_pos = [
-		''   => '— Select —',
-		'lt' => 'Left Top',
-		'lc' => 'Left Center',
-		'lb' => 'Left Bottom',
-		'rt' => 'Right Top',
-		'rc' => 'Right Center',
-		'rb' => 'Right Bottom',
-		'ct' => 'Center Top',
-		'cc' => 'Center Center',
-		'cb' => 'Center Bottom',
+		''              => '— Select —',
+		'left-top'      => 'Left Top',
+		'left-center'   => 'Left Center',
+		'left-bottom'   => 'Left Bottom',
+		'right-top'     => 'Right Top',
+		'right-center'  => 'Right Center',
+		'right-bottom'  => 'Right Bottom',
+		'center-top'    => 'Center Top',
+		'center-center' => 'Center Center',
+		'center-bottom' => 'Center Bottom',
 	];
 
 	/**
@@ -371,7 +367,6 @@ class Formation {
 		add_action( 'after_setup_theme', [__CLASS__, 'init'] );
 		add_action( 'pre_get_posts', [__CLASS__, 'query_vars'] );
 		add_action( 'wp_enqueue_scripts', [__CLASS__, 'scripts'], static::$enqueue_priority );
-		add_action( 'wp_head', [__CLASS__, 'head'] );
 
 		if ( static::$dequeue_gutenberg ) {
 			remove_filter( 'render_block', 'wp_render_layout_support_flag', 10, 2 );
@@ -521,7 +516,7 @@ class Formation {
 
 		/* Support for custom block editor font sizes */
 
-		if ( static::$editor_color_palette ) {
+		if ( static::$editor_font_sizes ) {
 			add_theme_support( 'editor-font-sizes', static::$editor_font_sizes );
 		}
 
@@ -710,6 +705,9 @@ class Formation {
 			wp_dequeue_style( 'wp-block-library-theme' );
 			wp_dequeue_style( 'wc-block-style' ); // Removes woocommerce block css
 			wp_dequeue_style( 'global-styles' ); // Removes theme.json
+
+			remove_action( 'wp_enqueue_scripts', 'wp_enqueue_global_styles' );
+			remove_action( 'wp_body_open', 'wp_global_styles_render_svg_filters' );
 		}
 
 		/* Remove embed script */
@@ -891,7 +889,13 @@ class Formation {
 	public static function add_script_attributes( $tag, $handle ) {
 		foreach ( static::$defer_script_handles as $value ) {
 			if ( $value === $handle ) {
-				$tag = str_replace( ' src', ' defer="defer" async="async" src', $tag );
+				$tag = str_replace( ' src', ' defer="defer" src', $tag );
+			}
+		}
+
+		foreach ( static::$async_script_handles as $value ) {
+			if ( $value === $handle ) {
+				$tag = str_replace( ' src', ' async="async" src', $tag );
 			}
 		}
 

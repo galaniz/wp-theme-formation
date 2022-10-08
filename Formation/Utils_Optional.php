@@ -452,7 +452,7 @@ class Utils_Optional {
 						'<div>' .
 							$content .
 							"<button class='o-modal__close'>" .
-								"<span class='u-v-h'>Close modal</span>" .
+								"<span class='a11y-visually-hidden'>Close modal</span>" .
 								/* phpcs:ignore */
 								file_get_contents( $icon_path ) . // Ignore: local path
 							'</button>' .
@@ -505,14 +505,14 @@ class Utils_Optional {
 		$unique_id = 'search-' . uniqid();
 
 		return (
-			"<form class='o-form$form_class' role='search' method='get' action=''>" .
-				"<div class='o-form__field'$field_class>" .
-					"<div class='u-p-r'>" .
-						"<label class='u-v-h' for='$unique_id'>Search for: </label>" .
-						"<input class='o-form__field__input$input_class' type='search' id='$unique_id' placeholder='Search' value='$query' name='s' />" .
+			"<form class='$form_class' role='search' method='get' action=''>" .
+				"<div class='$field_class'>" .
+					"<div class='l-relative'>" .
+						"<label class='a11y-visually-hidden' for='$unique_id'>Search for: </label>" .
+						"<input class='$input_class' type='search' id='$unique_id' placeholder='Search' value='$query' name='s' />" .
 						"<button class='$button_class' type='submit'>" .
-							"<span class='u-v-h'>Submit search query</span>" .
-							"<span class='o-icon$icon_class' aria-hidden='true'>" .
+							"<span class='a11y-visually-hidden'>Submit search query</span>" .
+							"<span class='$icon_class' aria-hidden='true'>" .
 								/* phpcs:ignore */
 								( $icon_path ? file_get_contents( $icon_path ) : '' ) . // Ignore: local path
 							'</span>' .

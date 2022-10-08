@@ -154,17 +154,10 @@ trait Utils_Render {
 
 		/* Classes */
 
-		$list_class = $list_class ? " $list_class" : '';
-		$item_class = $item_class ? " $item_class" : '';
-		$link_class = $link_class ? " $link_class" : '';
-		$icon_class = $icon_class ? " $icon_class" : '';
-
-		/* Escape */
-
-		$list_class = esc_attr( $list_class );
-		$item_class = esc_attr( $item_class );
-		$link_class = esc_attr( $link_class );
-		$icon_class = esc_attr( $icon_class );
+		$list_class = $list_class ? ' class="' . esc_attr( $list_class ) . '"' : '';
+		$item_class = $item_class ? ' class="' . esc_attr( $item_class ) . '"' : '';
+		$link_class = $link_class ? ' class="' . esc_attr( $link_class ) . '"' : '';
+		$icon_class = $icon_class ? ' class="' . esc_attr( $icon_class ) . '"' : '';
 
 		/* Attributes */
 
@@ -181,26 +174,28 @@ trait Utils_Render {
 
 		/* Output */
 
-		$output = "<$tag_name class='o-social l-flex$list_class'$list_attr>";
+		$output = "<$tag_name$list_class$list_attr>";
 
 		foreach ( $data as $d ) {
 			$url             = esc_url( $d['url'] );
 			$data_id         = esc_attr( $d['id'] );
 			$icon_path       = $icon_paths[ $data_id ] ?? false;
-			$icon_class_attr = "o-social__icon$icon_class" . ( isset( $icon_classes[ $data_id ] ) ? ' ' . $icon_classes[ $data_id ] : '' );
+			$icon_class_attr = "$icon_class" . ( isset( $icon_classes[ $data_id ] ) ? ' ' . $icon_classes[ $data_id ] : '' );
 			$window          = '';
 
 			if ( $share && 'email' !== $data_id ) {
 				$width  = 600;
 				$height = 500;
 				$window = esc_js( "window.open( '$url', 'newwindow', 'width=$width, height=$height' ); return false;" );
+
+				$link_attr += " onclick='$window'";
 			}
 
 			$output .=
-				"<$child_tag_name class='o-social__item$item_class'>" .
-					"<a onclick='$window' class='o-social__link$link_class' href='$url'$link_attr>" .
-						"<span class='u-v-h'>" . ucwords( $data_id ) . '</span>' .
-						"<div class='$icon_class_attr' data-type='" . strtolower( $data_id ) . "' aria-hidden='true'>" .
+				"<$child_tag_name$item_class>" .
+					"<a href='$url'$link_class$link_attr>" .
+						"<span class='a11y-visually-hidden'>" . ucwords( $data_id ) . '</span>' .
+						"<div$icon_class_attr data-type='" . strtolower( $data_id ) . "' aria-hidden='true'>" .
 							/* phpcs:ignore */
 							( $icon_path ? file_get_contents( $icon_path ) : '' ) . // Ignore: local path
 						'</div>' .
@@ -273,7 +268,7 @@ trait Utils_Render {
 
 		return (
 			"<div class='o-loader$loader_class'$loader_attr>" .
-				"<div class='o-loader__icon u-p-c l-flex$icon_class' data-justify='center' data-align='center'$icon_attr>" .
+				"<div class='o-loader__icon l-flex$icon_class' data-justify='center' data-align='center'$icon_attr>" .
 					$html .
 				'</div>' .
 			'</div>'
@@ -290,52 +285,65 @@ trait Utils_Render {
 	public static function render_form( $args = [] ) {
 		$args = array_merge(
 			[
-				'form_class'      => '',
-				'form_attr'       => [],
-				'form_id'         => uniqid(),
-				'form_data_type'  => 'default',
-				'fields'          => '',
-				'fields_gap'      => 's',
-				'fields_attr'     => [],
-				'button_class'    => '',
-				'button_attr'     => [],
-				'submit_label'    => 'Send',
-				'result_gap'      => 'xs',
-				'success_message' => '',
+				'form_class'          => '',
+				'form_attr'           => [],
+				'form_id'             => uniqid(),
+				'form_data_type'      => 'default',
+				'fields'              => '',
+				'fields_class'        => '',
+				'fields_attr'         => [],
+				'button_field_class'  => '',
+				'button_class'        => '',
+				'button_attr'         => [],
+				'error_summary_title' => 'There is a problem',
+				'error_summary_class' => '',
+				'submit_label'        => 'Send',
+				'success_message'     => '',
 			],
 			$args
 		);
 
 		/* Classes */
 
-		$static_form_class   = 'o-form js-' . static::$namespace . '-form';
-		$static_button_class = 'o-button js-submit' . ( static::$classes['button'] ? ' ' . static::$classes['button'] : '' );
+		$default_form_class   = 'js-' . static::$namespace . '-form';
+		$default_button_class = 'js-submit';
 
 		/* Destructure */
 
 		[
-			'form_class'      => $form_class,
-			'form_attr'       => $form_attr,
-			'form_id'         => $form_id,
-			'fields'          => $fields,
-			'fields_gap'      => $fields_gap,
-			'fields_attr'     => $fields_attr,
-			'button_class'    => $button_class,
-			'button_attr'     => $button_attr,
-			'submit_label'    => $submit_label,
-			'result_gap'      => $result_gap,
-			'success_message' => $success_message,
+			'form_class'          => $form_class,
+			'form_attr'           => $form_attr,
+			'form_id'             => $form_id,
+			'form_data_type'      => $form_data_type,
+			'fields'              => $fields,
+			'fields_class'        => $fields_class,
+			'fields_attr'         => $fields_attr,
+			'button_field_class'  => $button_field_class,
+			'button_class'        => $button_class,
+			'button_attr'         => $button_attr,
+			'error_summary_title' => $error_summary_title,
+			'error_summary_class' => $error_summary_class,
+			'submit_label'        => $submit_label,
+			'success_message'     => $success_message,
 		] = $args;
 
 		/* Escape */
 
-		$form_class      = esc_attr( $static_form_class . ( $form_class ? " $form_class" : '' ) );
-		$form_id         = esc_attr( $form_id );
-		$fields_gap      = esc_attr( $fields_gap );
-		$button_class    = esc_attr( $static_button_class . ( $button_class ? " $button_class" : '' ) );
-		$submit_label    = esc_attr( $submit_label );
-		$result_gap      = esc_attr( $result_gap );
-		$success_message = esc_html( $success_message );
+		$form_class         = esc_attr( $default_form_class . ( $form_class ? " $form_class" : '' ) );
+		$form_id            = esc_attr( $form_id );
+		$fields_class       = esc_attr( $fields_class );
+		$button_field_class = esc_attr( $button_field_class );
+		$button_class       = esc_attr( $default_button_class . ( $button_class ? " $button_class" : '' ) );
+		$submit_label       = esc_attr( $submit_label );
+		$success_message    = esc_html( $success_message );
+
+		if ( $fields_class ) {
+			$fields_class = " class='$fields_class'";
+		}
+
+		if ( $button_field_class ) {
+			$button_field_class = " class='$button_field_class'";
+		}
 
 		/* Attributes */
 
@@ -356,6 +364,17 @@ trait Utils_Render {
 			$button_attr = " $button_attr";
 		}
 
+		/* Error summary */
+
+		$error_summary_title_id = uniqid();
+
+		$error_summary = (
+			"<div class='$error_summary_class' aria-labelledby='$error_summary_title_id'>" .
+				"<h2>$error_summary_title</h2>" .
+				'<ul></ul>' .
+			'</div>'
+		);
+
 		/* Success message */
 
 		if ( $success_message ) {
@@ -375,13 +394,13 @@ trait Utils_Render {
 
 		return (
 			"<form class='$form_class' id='$form_id'$form_attr novalidate>" .
-				"<div class='u-p-r l-flex' data-gap='$fields_gap'$fields_attr data-wrap>" .
+				"<div$fields_class$fields_attr>" .
 					$fields .
-					"<div class='o-form__field' data-type='submit'>" .
+					$error_summary .
+					"<div$button_field_class data-type='submit'>" .
 						"<button class='$button_class' type='submit'$button_attr>" .
 							static::render_loader(
 								[
-									'icon_class'  => static::$classes['icon'],
 									'loader_attr' => [
 										'data-hide' => true,
 									],
@@ -393,11 +412,11 @@ trait Utils_Render {
 				'</div>' .
 				"<div class='o-result'>" .
 					"<div class='o-result__message'>" .
-						"<div class='l-flex' data-gap='$result_gap' data-align='center' aria-live='polite'>" .
+						"<div class='l-flex' aria-live='polite'>" .
 							'<div>' .
-								"<div class='o-result__icon u-p-r'>" .
-									"<div class='o-result__error u-p-c'>" . static::$form_svg['error'] . '</div>' .
-									"<div class='o-result__success u-p-c'>" . static::$form_svg['success'] . '</div>' .
+								"<div class='o-result__icon l-relative'>" .
+									"<div class='o-result__error'>" . static::$form_svg['error'] . '</div>' .
+									"<div class='o-result__success'>" . static::$form_svg['success'] . '</div>' .
 								'</div>' .
 							'</div>' .
 							'<div>' .

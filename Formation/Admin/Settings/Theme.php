@@ -109,34 +109,6 @@ class Theme {
 			'section' => 'logo',
 			'tab'     => 'General',
 		],
-		[
-			'name'      => 'logo',
-			'label'     => 'PNG',
-			'type'      => 'file',
-			'file_type' => 'image',
-			'accept'    => 'image/png',
-			'section'   => 'logo',
-			'wp'        => true,
-			'tab'       => 'General',
-		],
-		[
-			'name'             => '_blocks',
-			'label'            => 'Reusable Blocks',
-			'type'             => 'hidden',
-			'hidden_type_show' => true,
-			'section'          => 'blocks',
-			'tab'              => 'General',
-			'after'            => '<a class="button" href="/wp-admin/edit.php?post_type=wp_block">Manage All Reusable Blocks</a>',
-		],
-		[
-			'name'    => 'footer_text',
-			'label'   => 'Text',
-			'type'    => 'richtext',
-			'toolbar' => 'bold,italic,link',
-			'wpautop' => true,
-			'section' => 'footer',
-			'tab'     => 'General',
-		],
 	];
 
 	/**
@@ -156,24 +128,24 @@ class Theme {
 	private $scripts = null;
 
 	/**
+	 * Scripts to defer by handle.
+	 *
+	 * @var array $defer_script_handles
+	 */
+
+	private $defer_script_handles = [];
+
+	/**
 	 * Constructor
 	 */
 
 	public function __construct( $args = [] ) {
-		/* Add callbacks to some fields */
-
-		$this->fields[3]['on_save'] = function( $value ) {
-			return $value;
-		};
-
-		$this->fields[4]['on_save'] = function( $value ) {
-			return wp_kses( $value, 'post' );
-		};
-
 		/* Default args */
 
 		$args = array_replace_recursive(
 			[
+				'logo_png'                 => false,
+				'reusable_blocks'          => false,
 				'business'                 => false,
 				'mailchimp_list_locations' => [],
 				'sections'                 => [],
@@ -184,12 +156,60 @@ class Theme {
 		);
 
 		[
+			'logo_png'                 => $logo_png,
+			'reusable_blocks'          => $reusable_blocks,
 			'business'                 => $business,
 			'mailchimp_list_locations' => $mailchimp_list_locations,
 			'sections'                 => $sections,
 			'fields'                   => $fields,
 			'scripts'                  => $scripts,
 		] = $args;
+
+		/* PNG logo */
+
+		if ( $logo_png ) {
+			$this->fields[] = [
+				'name'      => 'logo',
+				'label'     => 'PNG',
+				'type'      => 'file',
+				'file_type' => 'image',
+				'accept'    => 'image/png',
+				'section'   => 'logo',
+				'wp'        => true,
+				'tab'       => 'General',
+			];
+		}
+
+		/* Reusable blocks */
+
+		if ( $reusable_blocks ) {
+			$this->fields[] = [
+				'name'             => '_blocks',
+				'label'            => 'Reusable Blocks',
+				'type'             => 'hidden',
+				'hidden_type_show' => true,
+				'section'          => 'blocks',
+				'tab'              => 'General',
+				'after'            => '<a class="button" href="/wp-admin/edit.php?post_type=wp_block">Manage All Reusable Blocks</a>',
+				'on_save'          => function( $value ) {
+					return $value;
+				},
+			];
+		}
+
+		/* Copyright */
+
+		$this->fields[] = [
+			'name'    => 'copyright',
+			'label'   => 'Copyright Text',
+			'type'    => 'textarea',
+			'section' => 'footer',
+			'tab'     => 'General',
+			'attr'    => [
+				'rows'      => 3,
+				'data-full' => '',
+			],
+		];
 
 		/* Head scripts */
 
@@ -315,14 +335,13 @@ class Theme {
 				$this->fields[] = [
 					'name'    => $name . '_text',
 					'label'   => 'Text',
-					'type'    => 'richtext',
-					'toolbar' => 'bold,italic,link',
-					'wpautop' => true,
+					'type'    => 'textarea',
 					'section' => $section_id,
 					'tab'     => 'Mailchimp',
-					'on_save' => function( $value ) {
-						return wp_kses( $value, 'post' );
-					},
+					'attr'    => [
+						'rows'      => 5,
+						'data-full' => '',
+					],
 				];
 
 				$this->fields[] = [
@@ -700,6 +719,10 @@ class Theme {
 
 		add_action( 'admin_enqueue_scripts', [$this, 'scripts'] );
 
+		/* Defer scripts */
+
+		add_filter( 'script_loader_tag', [$this, 'defer_scripts'], 10, 3 );
+
 		/* File actions */
 
 		Field::file_actions();
@@ -794,8 +817,12 @@ class Theme {
 				FRM::$script_ver
 			);
 
+			$handle = FRM::$namespace . '-theme-settings-script';
+
+			$this->defer_script_handles[] = $handle;
+
 			wp_enqueue_script(
-				FRM::$namespace . '-theme-settings-script',
+				$handle,
 				$uri . '/js/settings.js',
 				[],
 				FRM::$script_ver,
@@ -803,8 +830,12 @@ class Theme {
 			);
 
 			if ( $this->tab_nav ) {
+				$handle = FRM::$namespace . '-theme-settings-tab-nav-script';
+
+				$this->defer_script_handles[] = $handle;
+
 				wp_enqueue_script(
-					FRM::$namespace . '-theme-settings-tab-nav-script',
+					$handle,
 					$uri . '/js/tab-nav.js',
 					[],
 					FRM::$script_ver,
@@ -813,8 +844,12 @@ class Theme {
 			}
 
 			if ( $this->business ) {
+				$handle = FRM::$namespace . '-theme-settings-business-script';
+
+				$this->defer_script_handles[] = $handle;
+
 				wp_enqueue_script(
-					FRM::$namespace . '-theme-settings-business-script',
+					$handle,
 					$uri . '/js/business.js',
 					[],
 					FRM::$script_ver,
@@ -831,6 +866,24 @@ class Theme {
 			}
 		}
 	}
+
+	/**
+	 * Defer scripts
+	 */
+
+	public function defer_scripts( $tag, $handle, $src ) {
+		foreach ( $this->defer_script_handles as $value ) {
+			if ( $value === $handle ) {
+				$tag = str_replace( ' src', ' defer="defer" src', $tag );
+			}
+		}
+
+		return $tag;
+	}
+
+	/**
+	 * Display uploaded assets
+	 */
 
 	public function get_uploads() {
 		$dir    = scandir( FRM::$uploads_dir );

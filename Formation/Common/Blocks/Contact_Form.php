@@ -309,7 +309,7 @@ class Contact_Form {
 		];
 
 		if ( 'radio' === $type || 'checkbox' === $type ) {
-			$field['class'] = 'u-h-i';
+			$field['class'] = 'a11y-hide-input';
 		}
 
 		$attr_array = self::get_assoc_array_from_str( $attr );
@@ -339,7 +339,7 @@ class Contact_Form {
 		$field = apply_filters( 'formation_contact_form_field_args', $field );
 
 		if ( 'radio' === $type || 'checkbox' === $type ) {
-			$field['class'] = 'u-h-i';
+			$field['class'] = 'a11y-hide-input';
 
 			if ( $options_array ) {
 				$f     = $field;
