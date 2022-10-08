@@ -231,20 +231,6 @@ class Formation {
 	public static $gap_options = [];
 
 	/**
-	 * Optional classes to add to fields, labels, buttons...
-	 *
-	 * @var array $classes
-	 */
-
-	public static $classes = [
-		'field'  => '',
-		'button' => '',
-		'label'  => '',
-		'input'  => '',
-		'icon'   => '',
-	];
-
-	/**
 	 * Svg output for error and success in forms.
 	 *
 	 * @var array $form_svg

@@ -335,14 +335,13 @@ class Theme {
 				$this->fields[] = [
 					'name'    => $name . '_text',
 					'label'   => 'Text',
-					'type'    => 'richtext',
-					'toolbar' => 'bold,italic,link',
-					'wpautop' => true,
+					'type'    => 'textarea',
 					'section' => $section_id,
 					'tab'     => 'Mailchimp',
-					'on_save' => function( $value ) {
-						return wp_kses( $value, 'post' );
-					},
+					'attr'    => [
+						'rows'      => 5,
+						'data-full' => '',
+					],
 				];
 
 				$this->fields[] = [

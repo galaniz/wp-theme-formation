@@ -495,12 +495,6 @@ class Field {
 		$label_class    = esc_attr( $pre . '__label' . ( $label_class ? " $label_class" : '' ) );
 		$label          = esc_html( $label );
 
-		if ( ! is_admin() ) {
-			$classes     .= esc_attr( FRM::$classes['input'] ? ' ' . FRM::$classes['input'] : '' );
-			$field_class .= esc_attr( FRM::$classes['field'] ? ' ' . FRM::$classes['field'] : '' );
-			$label_class .= esc_attr( FRM::$classes['label'] ? ' ' . FRM::$classes['label'] : '' );
-		}
-
 		if ( is_array( $data ) ) {
 			$data_value = self::get_array_value( $data, $name );
 		} else {
@@ -544,7 +538,11 @@ class Field {
 					'</label>'
 				);
 			} else {
-				$label = "<label class='$label_class' for='" . esc_attr( $id ) . "'$req>$label</label>";
+				$label = (
+					"<label id='" . uniqid() . "' class='$label_class' for='" . esc_attr( $id ) . "'$req>" .
+						"<span>$label</span>" .
+					'</label>'
+				);
 			}
 
 			if ( $label_above ) {

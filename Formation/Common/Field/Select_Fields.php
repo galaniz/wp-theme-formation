@@ -100,11 +100,15 @@ class Select_Fields {
 			$fields = [$fields];
 		}
 
+		$id = uniqid();
+
 		$fields = array_map(
-			function( $v ) {
+			function( $v ) use ( $id ) {
 				if ( ! isset( $v['name'] ) ) {
 					$v['name'] = FRM::$namespace . '_' . str_replace( ' ', '_', strtolower( $v['label'] ) );
 				}
+
+				$v['name'] .= "_$id";
 
 				$type    = $v['type'];
 				$options = $v['options'] ?? '';

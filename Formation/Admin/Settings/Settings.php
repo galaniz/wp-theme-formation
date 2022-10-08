@@ -228,11 +228,11 @@ class Settings {
 			} else {
 				if ( 'file' !== $type ) {
 					if ( 'email' === $type ) {
-						$field['on_save'] = function( $value ) {
+						$register_args['sanitize_callback'] = function( $value ) {
 							return sanitize_email( $value );
 						};
 					} else {
-						$field['on_save'] = function( $value ) {
+						$register_args['sanitize_callback'] = function( $value ) {
 							return sanitize_text_field( $value );
 						};
 					}
