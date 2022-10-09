@@ -194,7 +194,7 @@ trait Utils_Render {
 			$output .=
 				"<$child_tag_name$item_class>" .
 					"<a href='$url'$link_class$link_attr>" .
-						"<span class='a11y-visually-hidden'>" . ucwords( $data_id ) . '</span>' .
+						"<span class='" . FRM::$a11y_class['visually_hide'] . "'>" . ucwords( $data_id ) . '</span>' .
 						"<div$icon_class_attr data-type='" . strtolower( $data_id ) . "' aria-hidden='true'>" .
 							/* phpcs:ignore */
 							( $icon_path ? file_get_contents( $icon_path ) : '' ) . // Ignore: local path
@@ -206,73 +206,6 @@ trait Utils_Render {
 		$output .= "</$tag_name>";
 
 		return $output;
-	}
-
-	/**
-	 * Output for loader animation.
-	 *
-	 * @param array $args
-	 * @return string html
-	 */
-
-	public static function render_loader( $args = [] ) {
-		$args = array_merge(
-			[
-				'loader_class' => '',
-				'loader_attr'  => [],
-				'icon_class'   => '',
-				'icon_attr'    => [],
-				'html'         => '',
-			],
-			$args
-		);
-
-		/* Destructure */
-
-		[
-			'loader_class' => $loader_class,
-			'loader_attr'  => $loader_attr,
-			'icon_class'   => $icon_class,
-			'icon_attr'    => $icon_attr,
-			'html'         => $html,
-		] = $args;
-
-		/* Html */
-
-		$html = $html ? $html : static::$loader_icon;
-
-		/* Classes */
-
-		$loader_class = $loader_class ? " $loader_class" : '';
-		$icon_class   = $icon_class ? " $icon_class" : '';
-
-		/* Escape */
-
-		$loader_class = esc_attr( $loader_class );
-		$icon_class   = esc_attr( $icon_class );
-
-		/* Attributes */
-
-		$loader_attr = static::get_attr_as_str( $loader_attr );
-		$icon_attr   = static::get_attr_as_str( $icon_attr );
-
-		if ( $loader_attr ) {
-			$loader_attr = " $loader_attr";
-		}
-
-		if ( $icon_attr ) {
-			$icon_attr = " $icon_attr";
-		}
-
-		/* Output */
-
-		return (
-			"<div class='o-loader$loader_class'$loader_attr>" .
-				"<div class='o-loader__icon l-flex$icon_class' data-justify='center' data-align='center'$icon_attr>" .
-					$html .
-				'</div>' .
-			'</div>'
-		);
 	}
 
 	/**
@@ -369,7 +302,7 @@ trait Utils_Render {
 		$error_summary_title_id = uniqid();
 
 		$error_summary = (
-			"<div class='$error_summary_class' aria-labelledby='$error_summary_title_id'>" .
+			"<div class='$error_summary_class' aria-labelledby='$error_summary_title_id' tabindex='-1'>" .
 				"<h2>$error_summary_title</h2>" .
 				'<ul></ul>' .
 			'</div>'
@@ -399,32 +332,12 @@ trait Utils_Render {
 					$error_summary .
 					"<div$button_field_class data-type='submit'>" .
 						"<button class='$button_class' type='submit'$button_attr>" .
-							static::render_loader(
-								[
-									'loader_attr' => [
-										'data-hide' => true,
-									],
-								]
-							) .
+							FRM::$html['loader']['button'] .
 							"<span>$submit_label</span>" .
 						'</button>' .
 					'</div>' .
 				'</div>' .
-				"<div class='o-result'>" .
-					"<div class='o-result__message'>" .
-						"<div class='l-flex' aria-live='polite'>" .
-							'<div>' .
-								"<div class='o-result__icon l-relative'>" .
-									"<div class='o-result__error'>" . static::$form_svg['error'] . '</div>' .
-									"<div class='o-result__success'>" . static::$form_svg['success'] . '</div>' .
-								'</div>' .
-							'</div>' .
-							'<div>' .
-								"<div class='o-result__text'></div>" .
-							'</div>' .
-						'</div>' .
-					'</div>' .
-				'</div>' .
+				FRM::$html['result'] .
 			'</form>'
 		);
 	}

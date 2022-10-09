@@ -316,29 +316,52 @@ class Utils_Optional {
 	public static function render_table( $args = [] ) {
 		$args = array_merge(
 			[
-				'labels'    => [],
-				'rows'      => [],
-				'row_class' => '',
-				'row'       => false,
-				'class'     => '',
-				'attr'      => [],
+				'labels'      => [],
+				'label_class' => '',
+				'rows'        => [],
+				'row_class'   => '',
+				'row'         => false,
+				'class'       => '',
+				'attr'        => [],
 			],
 			$args
 		);
+
+		/* Destructure */
+
+		[
+			'labels'      => $labels,
+			'label_class' => $label_class,
+			'rows'        => $rows,
+			'row_class'   => $row_class,
+			'row'         => $row,
+			'class'       => $class,
+			'attr'        => $attr,
+		] = $args;
+
+		/* Required */
 
 		if ( ! $rows ) {
 			return;
 		}
 
-		/* Classes */
-
-		$class     = $class ? " $class" : '';
-		$row_class = $row_class ? " $row_class" : '';
-
 		/* Escape */
 
-		$class     = esc_attr( $class );
-		$row_class = esc_attr( $row_class );
+		$class       = esc_attr( $class );
+		$row_class   = esc_attr( $row_class );
+		$label_class = esc_attr( $label_class );
+
+		if ( $class ) {
+			$class = " class='$class'";
+		}
+
+		if ( $row_class ) {
+			$row_class = " class='$row_class'";
+		}
+
+		if ( $label_class ) {
+			$label_class = " class='$label_class'";
+		}
 
 		/* Attributes */
 
@@ -350,7 +373,7 @@ class Utils_Optional {
 
 		/* Output */
 
-		$output = ! $row ? "<table role='table' class='o-table$class'$attr>" : '';
+		$output = ! $row ? "<table role='table'$class$attr>" : '';
 
 		if ( $labels && ! $row ) {
 			$lr = '';
@@ -361,7 +384,7 @@ class Utils_Optional {
 
 			$output .=
 				"<thead role='rowgroup'>" .
-					"<tr role='row' class='o-table__row$row_class'>" .
+					"<tr role='row'$row_class>" .
 						$lr .
 					'</tr>' .
 				'</thead>';
@@ -371,10 +394,10 @@ class Utils_Optional {
 			$output .= ! $row ? "<tbody role='rowgroup'>" : '';
 
 			foreach ( $rows as $r ) {
-				$output .= "<tr role='row' class='o-table__row$row_class'>";
+				$output .= "<tr role='row'$row_class>";
 
 				foreach ( $r as $i => $d ) {
-					$data_label = $labels[ $i ] ? ' data-label="' . esc_attr( $labels[ $i ] ) . '" class="o-table__label"' : '';
+					$data_label = $labels[ $i ] ? ' data-label="' . esc_attr( $labels[ $i ] ) . '"' . $label_class : '';
 					$output    .= "<td role='cell'$data_label><div>" . esc_html( $d ) . '</div></td>';
 				}
 
@@ -399,23 +422,62 @@ class Utils_Optional {
 	public static function render_modal( $args = [] ) {
 		$args = array_merge(
 			[
-				'class'       => '',
-				'attr'        => [],
-				'trigger'     => [],
-				'dialog_attr' => [],
-				'content'     => [],
-				'icon_path'   => '',
+				'class'         => '',
+				'attr'          => [],
+				'trigger'       => '',
+				'dialog_class'  => '',
+				'dialog_attr'   => [],
+				'overlay_class' => '',
+				'content'       => [],
+				'content_class' => '',
+				'close_class'   => '',
+				'icon_path'     => '',
 			],
 			$args
 		);
 
-		/* Classes */
+		/* Destructure */
 
-		$class = $class ? " $class" : '';
+		[
+			'class'         => $class,
+			'attr'          => $attr,
+			'trigger'       => $trigger,
+			'dialog_class'  => $dialog_class,
+			'dialog_attr'   => $dialog_attr,
+			'overlay_class' => $overlay_class,
+			'content'       => $content,
+			'content_class' => $content_class,
+			'close_class'   => $close_class,
+			'icon_path'     => $icon_path,
+		] = $args;
 
 		/* Escape */
 
-		$class = esc_attr( $class );
+		$class         = esc_attr( $class );
+		$dialog_class  = esc_attr( $dialog_class );
+		$overlay_class = esc_attr( $overlay_class );
+		$content_class = esc_attr( $content_class );
+		$close_class   = esc_attr( $close_class );
+
+		if ( $class ) {
+			$class = " class='$class'";
+		}
+
+		if ( $dialog_class ) {
+			$dialog_class = " class='$dialog_class'";
+		}
+
+		if ( $overlay_class ) {
+			$overlay_class = " class='$overlay_class'";
+		}
+
+		if ( $content_class ) {
+			$content_class = " class='$content_class'";
+		}
+
+		if ( $close_class ) {
+			$close_class = " class='$close_class'";
+		}
 
 		/* Attributes */
 
@@ -430,29 +492,18 @@ class Utils_Optional {
 			$dialog_attr = " $dialog_attr";
 		}
 
-		/* Trigger */
-
-		if ( $trigger ) {
-			$trigger =
-				"<button class='o-modal__trigger" . esc_attr( $trigger['class'] ? ' ' . $trigger['class'] : '' ) . "' type='button'>" .
-					'<span>' . esc_html( $trigger['text'] ) . '</span>' .
-				'</button>';
-		} else {
-			$trigger = '';
-		}
-
 		/* Output */
 
 		return (
-			"<div class='o-modal$class'$attr>" .
+			"<div$class$attr>" .
 				$trigger .
-				"<div class='o-modal__main' role='dialog'$dialog_attr>" .
-					"<div class='o-modal__overlay'></div>" .
-					"<div class='o-modal__content'>" .
+				"<div role='dialog'$dialog_class$dialog_attr>" .
+					"<div$overlay_class></div>" .
+					"<div$content_class>" .
 						'<div>' .
 							$content .
-							"<button class='o-modal__close'>" .
-								"<span class='a11y-visually-hidden'>Close modal</span>" .
+							"<button$close_class>" .
+								"<span class='" . FRM::$a11y_class['visually_hide'] . "'>Close modal</span>" .
 								/* phpcs:ignore */
 								file_get_contents( $icon_path ) . // Ignore: local path
 							'</button>' .
@@ -483,12 +534,16 @@ class Utils_Optional {
 			$args
 		);
 
-		/* Classes */
+		/* Destructure */
 
-		$form_class  = $form_class ? " $form_class" : '';
-		$field_class = $field_class ? " $field_class" : '';
-		$input_class = $input_class ? " $input_class" : '';
-		$icon_class  = $icon_class ? " $icon_class" : '';
+		[
+			'form_class'   => $form_class,
+			'field_class'  => $field_class,
+			'input_class'  => $input_class,
+			'button_class' => $button_class,
+			'icon_class'   => $icon_class,
+			'icon_path'    => $icon_path,
+		] = $args;
 
 		/* Escape */
 
@@ -500,24 +555,42 @@ class Utils_Optional {
 		$action       = esc_url( home_url( '/' ) );
 		$query        = esc_attr( get_search_query() );
 
+		if ( $form_class ) {
+			$form_class = " class='$form_class'";
+		}
+
+		if ( $field_class ) {
+			$field_class = " class='$field_class'";
+		}
+
+		if ( $input_class ) {
+			$input_class = " class='$input_class'";
+		}
+
+		if ( $button_class ) {
+			$button_class = " class='$button_class'";
+		}
+
+		if ( $icon_class ) {
+			$icon_class = " class='$icon_class'";
+		}
+
 		/* Label ID */
 
 		$unique_id = 'search-' . uniqid();
 
 		return (
-			"<form class='$form_class' role='search' method='get' action=''>" .
-				"<div class='$field_class'>" .
-					"<div class='l-relative'>" .
-						"<label class='a11y-visually-hidden' for='$unique_id'>Search for: </label>" .
-						"<input class='$input_class' type='search' id='$unique_id' placeholder='Search' value='$query' name='s' />" .
-						"<button class='$button_class' type='submit'>" .
-							"<span class='a11y-visually-hidden'>Submit search query</span>" .
-							"<span class='$icon_class' aria-hidden='true'>" .
-								/* phpcs:ignore */
-								( $icon_path ? file_get_contents( $icon_path ) : '' ) . // Ignore: local path
-							'</span>' .
-						'</button>' .
-					'</div>' .
+			"<form$form_class role='search' method='get' action='$action'>" .
+				"<div$field_class>" .
+					"<label class='" . FRM::$a11y_class['visually_hide'] . "' for='$unique_id'>Search for: </label>" .
+					"<input$input_class type='search' id='$unique_id' placeholder='Search' value='$query' name='s' />" .
+					"<button$button_class type='submit'>" .
+						"<span class='" . FRM::$a11y_class['visually_hide'] . "'>Submit search query</span>" .
+						"<span$icon_class aria-hidden='true'>" .
+							/* phpcs:ignore */
+							( $icon_path ? file_get_contents( $icon_path ) : '' ) . // Ignore: local path
+						'</span>' .
+					'</button>' .
 				'</div>' .
 			'</form>'
 		);

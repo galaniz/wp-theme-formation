@@ -96,6 +96,26 @@ class Formation {
 	public static $posts_per_page = [];
 
 	/**
+	 * Custom image sizes to register.
+	 *
+	 * @var array $image_sizes {
+	 *  @type string $name Accepts int for size.
+	 * }
+	 */
+
+	public static $image_sizes = [];
+
+	/**
+	 * Nav menus to register.
+	 *
+	 * @var array $nav_menus {
+	 *  @type string $slug Accepts string for label.
+	 * }
+	 */
+
+	public static $nav_menus = [];
+
+	/**
 	 * Editor color palette theme support args.
 	 *
 	 * @var array $editor_color_palette {
@@ -120,24 +140,12 @@ class Formation {
 	public static $editor_font_sizes = [];
 
 	/**
-	 * Custom image sizes to register.
+	 * Options for gap in flex layouts.
 	 *
-	 * @var array $image_sizes {
-	 *  @type string $name Accepts int for size.
-	 * }
+	 * @var array $gap_options
 	 */
 
-	public static $image_sizes = [];
-
-	/**
-	 * Nav menus to register.
-	 *
-	 * @var array $nav_menus {
-	 *  @type string $slug Accepts string for label.
-	 * }
-	 */
-
-	public static $nav_menus = [];
+	public static $gap_options = [];
 
 	/**
 	 * If child theme change styles path.
@@ -215,30 +223,39 @@ class Formation {
 	public static $script_attributes = [];
 
 	/**
-	 * Markup for default loader icon.
+	 * Classes for a11y.
 	 *
-	 * @var string $loader_icon
+	 * @var array $a11y_class
 	 */
 
-	public static $loader_icon = '';
+	public static $a11y_class = [
+		'visually_hide' => 'a11y-visually-hidden',
+		'hide'          => 'a11y-hide-input',
+	];
 
 	/**
-	 * Options for gap in flex layouts.
+	 * Static markup for use in output methods.
 	 *
-	 * @var array $loader_icon
+	 * @var array $html
 	 */
 
-	public static $gap_options = [];
-
-	/**
-	 * Svg output for error and success in forms.
-	 *
-	 * @var array $form_svg
-	 */
-
-	public static $form_svg = [
-		'error'   => '',
-		'success' => '',
+	public static $html = [
+		'loader' => [
+			'button' => '<div></div>',
+		],
+		'result' => (
+			"<div class='o-result' aria-live='polite'>" .
+				'<div>' .
+					'<div class="o-result__icon">' .
+						'<div class="o-result__error"></div>' .
+						'<div class="o-result__success"></div>' .
+					'</div>' .
+				'</div>' .
+				'<div>' .
+					'<div class="o-result__text"></div>' .
+				'</div>' .
+			'</div>'
+		),
 	];
 
 	/**

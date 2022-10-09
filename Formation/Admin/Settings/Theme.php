@@ -509,7 +509,7 @@ class Theme {
 					'label'        => 'Day',
 					'value'        => $w,
 					'attr'         => ['readonly' => true],
-					'before_field' => '<div class="o-multi__row o-toggle l-flex" data-wrap>',
+					'before_field' => '<div class="o-multi__row o-toggle l-flex l-flex-wrap">',
 				];
 
 				$hours_fields[] = [

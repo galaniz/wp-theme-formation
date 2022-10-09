@@ -81,7 +81,7 @@ class Nav_Walker extends \Walker_Nav_Menu {
 		/* phpcs:ignore */
 		$class_names = esc_attr( join( ' ', apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item, $args, $depth ) ) );
 
-		$output .= "<li class='$class_names'" . $this->li_attr . " data-depth='$depth'" . ( $args->walker->has_children ? ' data-has-children' : '' ) . '>';
+		$output .= "<li class='$class_names'" . $this->li_attr . " data-depth='$depth'" . ( $args->walker->has_children ? ' data-children' : '' ) . '>';
 
 		/* Before link output */
 
