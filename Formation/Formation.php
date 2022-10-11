@@ -140,12 +140,20 @@ class Formation {
 	public static $editor_font_sizes = [];
 
 	/**
-	 * Options for gap in flex layouts.
+	 * Options for gap in block options.
 	 *
 	 * @var array $gap_options
 	 */
 
 	public static $gap_options = [];
+
+	/**
+	 * Options for width in block options.
+	 *
+	 * @var array $width_options
+	 */
+
+	public static $width_options = [];
 
 	/**
 	 * If child theme change styles path.
@@ -223,40 +231,12 @@ class Formation {
 	public static $script_attributes = [];
 
 	/**
-	 * Classes for a11y.
+	 * Class prefix for fields.
 	 *
-	 * @var array $a11y_class
+	 * @var string $field_class_prefix
 	 */
 
-	public static $a11y_class = [
-		'visually_hide' => 'a11y-visually-hidden',
-		'hide'          => 'a11y-hide-input',
-	];
-
-	/**
-	 * Static markup for use in output methods.
-	 *
-	 * @var array $html
-	 */
-
-	public static $html = [
-		'loader' => [
-			'button' => '<div></div>',
-		],
-		'result' => (
-			"<div class='o-result' aria-live='polite'>" .
-				'<div>' .
-					'<div class="o-result__icon">' .
-						'<div class="o-result__error"></div>' .
-						'<div class="o-result__success"></div>' .
-					'</div>' .
-				'</div>' .
-				'<div>' .
-					'<div class="o-result__text"></div>' .
-				'</div>' .
-			'</div>'
-		),
-	];
+	public static $field_class_prefix = 'o-form';
 
 	/**
 	 * Upload directory path.
@@ -430,7 +410,9 @@ class Formation {
 
 		additional_script_data( 'namespace', static::$namespace, true, true );
 		additional_script_data( 'namespace', static::$namespace, false, true );
+		additional_script_data( static::$namespace, ['color_options' => static::$editor_color_palette ], true, true );
 		additional_script_data( static::$namespace, ['gap_options' => static::$gap_options ], true, true );
+		additional_script_data( static::$namespace, ['width_options' => static::$width_options ], true, true );
 
 		$ajax_url = ['ajax_url' => admin_url( 'admin-ajax.php' )];
 

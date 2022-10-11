@@ -25,7 +25,6 @@ _Parameters:_
 | `multi` | `boolean` | `false` | Add or remove multiple field(s).
 | `hidden` | `boolean` | `false` | In admin and if true, set section to display none.
 | `multi_col` | `boolean` | `false` | If multi, display as columns instead of rows.
-| `no_group` | `boolean` | `false` | In frontend and if true, don't wrap in group div.
 
 * `$output`  
 _Type:_ `string`  

@@ -52,6 +52,7 @@ trait Utils_Render {
 				'icon_class'   => '',
 				'icon_classes' => [],
 				'icon_paths'   => [],
+				'a11y_class'   => '',
 			],
 			$args
 		);
@@ -70,6 +71,7 @@ trait Utils_Render {
 			'icon_class'   => $icon_class,
 			'icon_classes' => $icon_classes,
 			'icon_paths'   => $icon_paths,
+			'a11y_class'   => $a11y_class,
 		] = $args;
 
 		if ( ! $links && ! $share ) {
@@ -158,6 +160,7 @@ trait Utils_Render {
 		$item_class = $item_class ? ' class="' . esc_attr( $item_class ) . '"' : '';
 		$link_class = $link_class ? ' class="' . esc_attr( $link_class ) . '"' : '';
 		$icon_class = $icon_class ? ' class="' . esc_attr( $icon_class ) . '"' : '';
+		$a11y_class = $a11y_class ? ' class="' . esc_attr( $a11y_class ) . '"' : '';
 
 		/* Attributes */
 
@@ -194,8 +197,8 @@ trait Utils_Render {
 			$output .=
 				"<$child_tag_name$item_class>" .
 					"<a href='$url'$link_class$link_attr>" .
-						"<span class='" . FRM::$a11y_class['visually_hide'] . "'>" . ucwords( $data_id ) . '</span>' .
-						"<div$icon_class_attr data-type='" . strtolower( $data_id ) . "' aria-hidden='true'>" .
+						"<span$a11y_class>" . ucwords( $data_id ) . '</span>' .
+						"<div$icon_class_attr data-type='" . strtolower( $data_id ) . "'>" .
 							/* phpcs:ignore */
 							( $icon_path ? file_get_contents( $icon_path ) : '' ) . // Ignore: local path
 						'</div>' .
@@ -218,20 +221,23 @@ trait Utils_Render {
 	public static function render_form( $args = [] ) {
 		$args = array_merge(
 			[
-				'form_class'          => '',
-				'form_attr'           => [],
-				'form_id'             => uniqid(),
-				'form_data_type'      => 'default',
-				'fields'              => '',
-				'fields_class'        => '',
-				'fields_attr'         => [],
-				'button_field_class'  => '',
-				'button_class'        => '',
-				'button_attr'         => [],
-				'error_summary_title' => 'There is a problem',
-				'error_summary_class' => '',
-				'submit_label'        => 'Send',
-				'success_message'     => '',
+				'form_class'         => '',
+				'form_attr'          => [],
+				'form_id'            => uniqid(),
+				'form_data_type'     => 'default',
+				'fields'             => '',
+				'fields_class'       => '',
+				'fields_attr'        => [],
+				'button_field_class' => '',
+				'button_class'       => '',
+				'button_attr'        => [],
+				'button_label'       => 'Send',
+				'button_loader'      => '',
+				'error_summary'      => '',
+				'error_result'       => '',
+				'error_message'      => [],
+				'success_result'     => '',
+				'success_message'    => [],
 			],
 			$args
 		);
@@ -244,20 +250,23 @@ trait Utils_Render {
 		/* Destructure */
 
 		[
-			'form_class'          => $form_class,
-			'form_attr'           => $form_attr,
-			'form_id'             => $form_id,
-			'form_data_type'      => $form_data_type,
-			'fields'              => $fields,
-			'fields_class'        => $fields_class,
-			'fields_attr'         => $fields_attr,
-			'button_field_class'  => $button_field_class,
-			'button_class'        => $button_class,
-			'button_attr'         => $button_attr,
-			'error_summary_title' => $error_summary_title,
-			'error_summary_class' => $error_summary_class,
-			'submit_label'        => $submit_label,
-			'success_message'     => $success_message,
+			'form_class'         => $form_class,
+			'form_attr'          => $form_attr,
+			'form_id'            => $form_id,
+			'form_data_type'     => $form_data_type,
+			'fields'             => $fields,
+			'fields_class'       => $fields_class,
+			'fields_attr'        => $fields_attr,
+			'button_field_class' => $button_field_class,
+			'button_class'       => $button_class,
+			'button_attr'        => $button_attr,
+			'button_label'       => $button_label,
+			'button_loader'      => $button_loader,
+			'error_summary'      => $error_summary,
+			'error_result'       => $error_result,
+			'error_message'      => $error_message,
+			'success_result'     => $success_result,
+			'success_message'    => $success_message,
 		] = $args;
 
 		/* Escape */
@@ -267,8 +276,7 @@ trait Utils_Render {
 		$fields_class       = esc_attr( $fields_class );
 		$button_field_class = esc_attr( $button_field_class );
 		$button_class       = esc_attr( $default_button_class . ( $button_class ? " $button_class" : '' ) );
-		$submit_label       = esc_attr( $submit_label );
-		$success_message    = esc_html( $success_message );
+		$button_label       = esc_attr( $button_label );
 
 		if ( $fields_class ) {
 			$fields_class = " class='$fields_class'";
@@ -297,31 +305,38 @@ trait Utils_Render {
 			$button_attr = " $button_attr";
 		}
 
-		/* Error summary */
-
-		$error_summary_title_id = uniqid();
-
-		$error_summary = (
-			"<div class='$error_summary_class' aria-labelledby='$error_summary_title_id' tabindex='-1'>" .
-				"<h2>$error_summary_title</h2>" .
-				'<ul></ul>' .
-			'</div>'
-		);
-
-		/* Success message */
+		/* Result messages */
 
 		if ( $success_message ) {
 			additional_script_data(
 				static::$namespace,
 				[
 					"form_$form_id" => [
-						'success_message' => $success_message,
+						'success_message' => [
+							'primary'   => $success_message['primary'] ?? '',
+							'secondary' => $success_message['secondary'] ?? '',
+						],
+						'error_message'   => [
+							'primary'   => $error_message['primary'] ?? '',
+							'secondary' => $error_message['secondary'] ?? '',
+						],
 					],
 				],
 				false,
 				false,
 			);
 		}
+
+		/* Result markup */
+
+		$error_summary_id = $form_id . '_error_summary';
+		$error_summary    = sprintf( $error_summary, $error_summary_id, $error_summary_id );
+
+		$error_result_id = $form_id . '_error_result';
+		$error_result    = sprintf( $error_result, $error_result_id, $error_result_id );
+
+		$success_result_id = $form_id . '_success_result';
+		$success_result    = sprintf( $success_result, $success_result_id, $success_result_id );
 
 		/* Output */
 
@@ -330,14 +345,15 @@ trait Utils_Render {
 				"<div$fields_class$fields_attr>" .
 					$fields .
 					$error_summary .
+					$error_result .
 					"<div$button_field_class data-type='submit'>" .
 						"<button class='$button_class' type='submit'$button_attr>" .
-							FRM::$html['loader']['button'] .
-							"<span>$submit_label</span>" .
+							$button_loader .
+							"<span>$button_label</span>" .
 						'</button>' .
 					'</div>' .
+					$success_result .
 				'</div>' .
-				FRM::$html['result'] .
 			'</form>'
 		);
 	}

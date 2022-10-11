@@ -14,7 +14,6 @@ namespace Formation\Admin\Settings;
 use Formation\Formation as FRM;
 use Formation\Utils_Optional;
 use Formation\Common\Field\Field;
-use Formation\Common\Field\Select_Fields;
 use Formation\Admin\Settings\Settings;
 use function Formation\additional_script_data;
 
@@ -144,25 +143,25 @@ class Theme {
 
 		$args = array_replace_recursive(
 			[
-				'logo_png'                 => false,
-				'reusable_blocks'          => false,
-				'business'                 => false,
-				'mailchimp_list_locations' => [],
-				'sections'                 => [],
-				'fields'                   => [],
-				'scripts'                  => null,
+				'logo_png'        => false,
+				'reusable_blocks' => false,
+				'mailchimp'       => false,
+				'business'        => false,
+				'sections'        => [],
+				'fields'          => [],
+				'scripts'         => null,
 			],
 			$args
 		);
 
 		[
-			'logo_png'                 => $logo_png,
-			'reusable_blocks'          => $reusable_blocks,
-			'business'                 => $business,
-			'mailchimp_list_locations' => $mailchimp_list_locations,
-			'sections'                 => $sections,
-			'fields'                   => $fields,
-			'scripts'                  => $scripts,
+			'logo_png'         => $logo_png,
+			'reusable_blocks'  => $reusable_blocks,
+			'mailchimp'        => $mailchimp,
+			'business'         => $business,
+			'sections'         => $sections,
+			'fields'           => $fields,
+			'scripts'          => $scripts,
 		] = $args;
 
 		/* PNG logo */
@@ -194,6 +193,20 @@ class Theme {
 				'on_save'          => function( $value ) {
 					return $value;
 				},
+			];
+		}
+
+		if ( $mailchimp ) {
+			$this->sections[] = [
+				'id'    => 'mailchimp',
+				'title' => 'Mailchimp',
+			];
+
+			$this->fields[] = [
+				'name'    => 'mailchimp_api_key',
+				'label'   => 'API Key',
+				'section' => 'mailchimp',
+				'tab'     => 'Credentials',
 			];
 		}
 
@@ -276,139 +289,6 @@ class Theme {
 				);
 			},
 		];
-
-		/* Mailchimp */
-
-		if ( $mailchimp_list_locations ) {
-			$this->sections[] = [
-				'id'    => 'mailchimp-credentials',
-				'title' => 'Credentials',
-			];
-
-			$this->fields[] = [
-				'name'    => 'mailchimp_api_key',
-				'label'   => 'API Key',
-				'section' => 'mailchimp-credentials',
-				'tab'     => 'Mailchimp',
-			];
-
-			foreach ( $mailchimp_list_locations as $name => $location ) {
-				$cap_location = ucfirst( $location );
-				$section_id   = 'mailchimp_' . $location;
-				$name_fields  = $name . '_fields';
-
-				$f = Select_Fields::get( $name_fields );
-
-				$f[] = [
-					'type'  => 'checkbox',
-					'label' => 'Tag',
-					'name'  => $name_fields . '[%i][tag]',
-					'value' => 1,
-				];
-
-				$f[] = [
-					'type'  => 'checkbox',
-					'label' => 'Merge Field',
-					'name'  => $name_fields . '[%i][merge_field]',
-					'value' => 1,
-				];
-
-				$this->sections[] = [
-					'id'    => $section_id,
-					'title' => "$cap_location Form",
-				];
-
-				$this->fields[] = [
-					'name'    => $name . '_list_id',
-					'label'   => 'List ID',
-					'section' => $section_id,
-					'tab'     => 'Mailchimp',
-				];
-
-				$this->fields[] = [
-					'name'    => $name . '_title',
-					'label'   => 'Title',
-					'section' => $section_id,
-					'tab'     => 'Mailchimp',
-				];
-
-				$this->fields[] = [
-					'name'    => $name . '_text',
-					'label'   => 'Text',
-					'type'    => 'textarea',
-					'section' => $section_id,
-					'tab'     => 'Mailchimp',
-					'attr'    => [
-						'rows'      => 5,
-						'data-full' => '',
-					],
-				];
-
-				$this->fields[] = [
-					'name'    => $name . '_submit_label',
-					'label'   => 'Submit Label',
-					'section' => $section_id,
-					'tab'     => 'Mailchimp',
-				];
-
-				$this->fields[] = [
-					'name'    => $name . '_success_message',
-					'type'    => 'textarea',
-					'label'   => 'Success Message',
-					'section' => $section_id,
-					'tab'     => 'Mailchimp',
-					'attr'    => [
-						'rows'      => 5,
-						'data-full' => '',
-					],
-				];
-
-				$this->fields[] = [
-					'name'         => $name_fields,
-					'label'        => 'Fields',
-					'label_hidden' => true,
-					'multi'        => true,
-					'fields'       => $f,
-					'section'      => $section_id,
-					'tab'          => 'Mailchimp',
-					'on_save'      => function( $value ) {
-						foreach ( $value as &$v ) {
-							$tag         = $v['tag'] ?? false;
-							$merge_field = $v['merge_field'] ?? false;
-
-							if ( $tag || $merge_field ) {
-								if ( ! isset( $v['attr'] ) ) {
-									$v['attr'] = [];
-								}
-
-								if ( $tag ) {
-									$v['attr']['data-tag'] = 'true';
-								}
-
-								if ( $merge_field ) {
-									$v['attr']['data-merge-field'] = 'true';
-								}
-							}
-						}
-
-						$filter_value = Select_Fields::filter( $value );
-
-						/* Sanitize */
-
-						array_walk_recursive(
-							$filter_value,
-							function( &$v, $key ) {
-								if ( ! is_array( $v ) ) {
-									$v = sanitize_text_field( $v );
-								}
-							}
-						);
-
-						return $filter_value;
-					},
-				];
-			}
-		}
 
 		/* Business */
 
@@ -652,7 +532,7 @@ class Theme {
 				'name'    => 'geonames_username',
 				'label'   => 'Username',
 				'section' => 'geonames',
-				'tab'     => 'Geonames',
+				'tab'     => 'Credentials',
 				'helper'  => 'Used in Business tab to fetch countries and states.',
 			];
 
@@ -660,7 +540,7 @@ class Theme {
 				'name'    => 'geocode_key',
 				'label'   => 'Mapbox API Token',
 				'section' => 'mapbox',
-				'tab'     => 'Mapbox',
+				'tab'     => 'Credentials',
 				'helper'  => 'Used in Business tab to fetch lat/lng coordinates.',
 			];
 		}
@@ -802,7 +682,6 @@ class Theme {
 	public function scripts( $hook ) {
 		if ( $hook === $this->page_hook ) {
 			Field::scripts();
-			Select_Fields::scripts();
 
 			if ( is_callable( $this->scripts ) ) {
 				call_user_func( $this->scripts );

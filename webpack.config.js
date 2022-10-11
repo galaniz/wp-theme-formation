@@ -1,3 +1,6 @@
+/**
+ * Webpack config
+ */
 
 /* Imports */
 
@@ -124,8 +127,6 @@ const blocks = [
   'contact-form/field',
   'contact-form/form',
   'contact-form/group',
-  'contact-form/group-top',
-  'contact-form/group-bottom',
   'embed-variations',
   'insert-block'
 ]
@@ -220,7 +221,6 @@ module.exports = [
   {
     mode: 'production',
     entry: {
-      blocks: './Formation/Common/assets/src/blocks/index.scss',
       field: [
         './Formation/Common/assets/src/field/index.js',
         './Formation/Common/assets/src/field/index.scss'

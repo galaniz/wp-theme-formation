@@ -38,10 +38,10 @@ class Field {
 			'multi_item_class' => '',
 			'copy'             => false,
 			'hidden'           => false,
-			'no_group'         => false,
 			'section_class'    => '',
 		],
 		'field'  => [
+			'id'                => false,
 			'name'              => false,
 			'type'              => 'text',
 			'label'             => false,
@@ -271,7 +271,7 @@ class Field {
 		$count          = 1;
 		$top_level_name = '';
 		$copy_output    = '';
-		$pre            = 'o-form';
+		$pre            = FRM::$field_class_prefix;
 
 		/* Destructure */
 
@@ -284,7 +284,6 @@ class Field {
 			'multi_item_class' => $multi_item_class,
 			'copy'             => $copy,
 			'hidden'           => $hidden,
-			'no_group'         => $no_group,
 			'section_class'    => $section_class,
 		] = $args;
 
@@ -318,14 +317,6 @@ class Field {
 
 				$output .= "<div class='" . $pre . "-section$section_class' data-name='$top_level_name'$hide$col>";
 			}
-		} else {
-			if ( ! $no_group ) {
-				$output .= '<div class="' . $pre . '-group l-100 l-flex" data-wrap data-align="center">';
-			}
-		}
-
-		if ( isset( $args['label'] ) && ! isset( $args['label_hidden'] ) && ! $no_group ) {
-			$output .= '<div class="' . $pre . '-group__label">' . $args['label'] . '</div>';
 		}
 
 		if ( $multi ) {
@@ -420,10 +411,6 @@ class Field {
 
 		if ( is_admin() ) {
 			$output .= '</div>';
-		} else {
-			if ( ! $no_group ) {
-				$output .= '</div>';
-			}
 		}
 
 		additional_script_data( FRM::$namespace, self::$localize_data, true );
@@ -444,6 +431,7 @@ class Field {
 		/* Destructure */
 
 		[
+			'id'                => $id,
 			'name'              => $name,
 			'type'              => $type,
 			'label'             => $label,
@@ -487,13 +475,14 @@ class Field {
 		}
 
 		$name           = $multi && ! $copy ? self::index_name( $name, $index ) : $name;
-		$id             = self::format_id( $name );
-		$pre            = 'o-form';
-		$checkbox_radio = 'checkbox' === $type || 'radio' === $type;
+		$id             = $id ? $id : self::format_id( $name );
+		$pre            = FRM::$field_class_prefix;
+		$checkbox_radio = 'checkbox' === $type || 'radio' === $type || 'radio-select' === $type || 'radio-text' === $type;
 		$placeholder    = $placeholder ? 'placeholder="' . esc_attr( $placeholder ) . '"' : '';
 		$classes        = esc_attr( $pre . '__' . $type . ' js-input' . ( $class ? " $class" : '' ) );
 		$label_class    = esc_attr( $pre . '__label' . ( $label_class ? " $label_class" : '' ) );
 		$label          = esc_html( $label );
+		$label_text     = $label;
 
 		if ( is_array( $data ) ) {
 			$data_value = self::get_array_value( $data, $name );
@@ -518,7 +507,7 @@ class Field {
 			$field_class .= ( $field_class ? ' ' : '' ) . 'u-v-h';
 		}
 
-		if ( $checkbox_radio ) {
+		if ( 'radio-select' === $type || 'radio-text' === $type ) {
 			$field_attr['role'] = 'group';
 		}
 
@@ -533,8 +522,8 @@ class Field {
 			if ( $checkbox_radio ) {
 				$label = (
 					"<label for='" . esc_attr( $id ) . "'$req>" .
-						"<div class='$label_class'>$label</div>" .
 						'<span class="' . $pre . '__control" data-type="' . $type . '"></span>' .
+						"<span class='$label_class'>$label</span>" .
 					'</label>'
 				);
 			} else {
@@ -557,7 +546,10 @@ class Field {
 			case 'email':
 			case 'checkbox':
 			case 'radio':
+			case 'radio-select':
+			case 'radio-text':
 			case 'number':
+			case 'tel':
 			case 'hidden':
 				if ( is_admin() ) {
 					if ( 'checkbox' !== $type && 'number' !== $type ) {
@@ -584,10 +576,16 @@ class Field {
 					$v = $value;
 				}
 
+				$t = $type;
+
+				if ( 'radio-text' === $type || 'radio-select' === $type ) {
+					$t = 'radio';
+				}
+
 				$output .= sprintf(
 					'<input name="%1$s" id="%8$s" type="%2$s" value="%4$s" class="%5$s" %6$s %7$s %3$s>',
 					esc_attr( $name ),
-					esc_attr( $type ),
+					esc_attr( $t ),
 					$placeholder,
 					esc_html( $v ),
 					esc_attr( $classes ),
@@ -741,6 +739,35 @@ class Field {
 			}
 		}
 
+		if ( 'radio-select' === $type && $options ) {
+			$output .= self::render_field(
+				[
+					'id'      => uniqid(),
+					'name'    => $name . '_select',
+					'type'    => 'select',
+					'options' => $options,
+					'attr'    => [
+						'aria-label' => $label_text,
+					],
+				],
+				$output
+			);
+		}
+
+		if ( 'radio-text' === $type ) {
+			$output .= self::render_field(
+				[
+					'id'   => uniqid(),
+					'name' => $name . '_text',
+					'type' => 'text',
+					'attr' => [
+						'aria-label' => $label_text,
+					],
+				],
+				$output
+			);
+		}
+
 		$output .= '</div>';
 
 		$output .= $after_field;
@@ -820,7 +847,7 @@ class Field {
 				'<div class="o-radio__item" role="group">' .
 					"<input class='$class' type='$o_type' id='$o_for' name='$o_id' value='$o_value'$checked$operator$attr>" .
 					"<label for='$o_for' class='$opt_button_class'$opt_button_attr>" .
-						"<div class='o-radio__label'>$o_label</div>" .
+						"<span class='o-radio__label'>$o_label</span>" .
 					'</label>' .
 				'</div>';
 		}
@@ -986,82 +1013,6 @@ class Field {
 				''
 			) .
 			"<input class='o-asset__input' name='$name' id='$id' type='hidden' value='$input_value'>" .
-			'</div>'
-		);
-	}
-
-	/**
-	 * Output listbox (substitute for select).
-	 *
-	 * @param array $args {
-	 *  @type string $options Accepts array {
-	 *   @type string $value Accepts string.
-	 *   @type string $label Accepts string.
-	 *   @type string $selected Accepts boolean.
-	 * }
-	 *  @type string $id Accepts string.
-	 *  @type string $list_class Accepts string.
-	 * }
-	 * @return string of markup
-	 */
-
-	public static function render_listbox( $args = [] ) {
-		$options    = $args['options'] ?? [];
-		$id         = $args['id'] ?? FRM::$namespace . '_' . uniqid();
-		$list_id    = esc_attr( $id . '_list' );
-		$list_class = $args['list_class'] ?? '';
-
-		/* Classes for list */
-
-		$list_classes = 'o-listbox__list js-input';
-
-		if ( $list_class ) {
-			$list_classes .= " $list_class";
-		}
-
-		$list_classes = esc_attr( $list_classes );
-
-		if ( count( $options ) === 0 ) {
-			return '';
-		}
-
-		/* For list attributes  */
-
-		$selected_index_label = '';
-		$selected_index_id    = '';
-		$selected_index       = 0;
-		$options_output       = '';
-
-		foreach ( $options as $index => $o ) {
-			$v        = esc_html( $o['value'] );
-			$l        = esc_html( $o['label'] );
-			$s        = $o['selected'] ?? false;
-			$o_id     = esc_attr( $id . '_' . $v );
-			$selected = '';
-
-			if ( $s ) {
-				$selected_index       = $index;
-				$selected_index_id    = $o_id;
-				$selected_index_label = $l;
-				$selected             = ' aria-selected="true"';
-			}
-
-			$o_id = esc_attr( $o_id );
-
-			$options_output .= "<li class='o-listbox__item' id='$o_id' data-value='$v' role='option'$selected>$l</li>";
-		}
-
-		return (
-			'<div class="o-listbox">' .
-				"<button class='o-listbox__btn l-flex' data-align='center' data-justify='def' type='button' aria-haspopup='listbox' aria-labelledby='$id' id='$id'>" .
-					"<span class='o-listbox__text'>$selected_index_label</span>" .
-					'<span class="o-listbox__caret"></span>' .
-				'</button>' .
-				'<div class="o-listbox__container">' .
-					"<ul class='$list_classes' id='$list_id' tabindex='-1' role='listbox' aria-labelledby='$id' aria-activedescendant='$selected_index_id'>" .
-						$options_output .
-					'</ul>' .
-				'</div>' .
 			'</div>'
 		);
 	}

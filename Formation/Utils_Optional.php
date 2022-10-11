@@ -21,39 +21,6 @@ use Formation\Utils;
 class Utils_Optional {
 
 	/**
-	 * Get mailchimp list by location.
-	 *
-	 * @param string $location
-	 * @return boolean|array
-	 */
-
-	public static function get_mailchimp_list( $location = '' ) {
-		/* Check for api */
-
-		if ( ! get_option( FRM::$namespace . '_mailchimp_api_key', '' ) ) {
-			return false;
-		}
-
-		/* Check for list */
-
-		$name    = FRM::$namespace . "_$location";
-		$list_id = get_option( $name . '_list_id', false );
-
-		if ( ! $list_id ) {
-			return false;
-		}
-
-		return [
-			'id'              => $list_id,
-			'title'           => get_option( $name . '_title', 'Sign up' ),
-			'text'            => get_option( $name . '_text', '' ),
-			'submit_label'    => get_option( $name . '_submit_label', 'Submit' ),
-			'success_message' => get_option( $name . '_success_message', '' ),
-			'fields'          => get_option( $name . '_fields', false ),
-		];
-	}
-
-	/**
 	 * Get media position class.
 	 *
 	 * @param string $pos
@@ -432,6 +399,7 @@ class Utils_Optional {
 				'content_class' => '',
 				'close_class'   => '',
 				'icon_path'     => '',
+				'a11y_class'    => '',
 			],
 			$args
 		);
@@ -449,6 +417,7 @@ class Utils_Optional {
 			'content_class' => $content_class,
 			'close_class'   => $close_class,
 			'icon_path'     => $icon_path,
+			'a11y_class'    => $a11y_class,
 		] = $args;
 
 		/* Escape */
@@ -458,6 +427,7 @@ class Utils_Optional {
 		$overlay_class = esc_attr( $overlay_class );
 		$content_class = esc_attr( $content_class );
 		$close_class   = esc_attr( $close_class );
+		$a11y_class    = esc_attr( $a11y_class );
 
 		if ( $class ) {
 			$class = " class='$class'";
@@ -477,6 +447,10 @@ class Utils_Optional {
 
 		if ( $close_class ) {
 			$close_class = " class='$close_class'";
+		}
+
+		if ( $a11y_class ) {
+			$close_class = " class='$a11y_class'";
 		}
 
 		/* Attributes */
@@ -503,7 +477,7 @@ class Utils_Optional {
 						'<div>' .
 							$content .
 							"<button$close_class>" .
-								"<span class='" . FRM::$a11y_class['visually_hide'] . "'>Close modal</span>" .
+								"<span$a11y_class>Close modal</span>" .
 								/* phpcs:ignore */
 								file_get_contents( $icon_path ) . // Ignore: local path
 							'</button>' .
@@ -530,6 +504,7 @@ class Utils_Optional {
 				'button_class' => '',
 				'icon_class'   => '',
 				'icon_path'    => '',
+				'a11y_class'   => '',
 			],
 			$args
 		);
@@ -543,6 +518,7 @@ class Utils_Optional {
 			'button_class' => $button_class,
 			'icon_class'   => $icon_class,
 			'icon_path'    => $icon_path,
+			'a11y_class'   => $a11y_class,
 		] = $args;
 
 		/* Escape */
@@ -575,6 +551,10 @@ class Utils_Optional {
 			$icon_class = " class='$icon_class'";
 		}
 
+		if ( $a11y_class ) {
+			$a11y_class = " class='$a11y_class'";
+		}
+
 		/* Label ID */
 
 		$unique_id = 'search-' . uniqid();
@@ -582,11 +562,11 @@ class Utils_Optional {
 		return (
 			"<form$form_class role='search' method='get' action='$action'>" .
 				"<div$field_class>" .
-					"<label class='" . FRM::$a11y_class['visually_hide'] . "' for='$unique_id'>Search for: </label>" .
+					"<label$a11y_class for='$unique_id'>Search for: </label>" .
 					"<input$input_class type='search' id='$unique_id' placeholder='Search' value='$query' name='s' />" .
 					"<button$button_class type='submit'>" .
-						"<span class='" . FRM::$a11y_class['visually_hide'] . "'>Submit search query</span>" .
-						"<span$icon_class aria-hidden='true'>" .
+						"<span$a11y_class>Submit search query</span>" .
+						"<span$icon_class>" .
 							/* phpcs:ignore */
 							( $icon_path ? file_get_contents( $icon_path ) : '' ) . // Ignore: local path
 						'</span>' .

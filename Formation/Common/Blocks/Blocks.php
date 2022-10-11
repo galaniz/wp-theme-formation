@@ -62,7 +62,6 @@ class Blocks {
 		'wp-core-data',
 		'wp-dom',
 		'wp-dom-ready',
-		'wp-editor',
 		'wp-element',
 		'wp-hooks',
 	];
@@ -107,7 +106,8 @@ class Blocks {
 	public function register_blocks() {
 		/* Check blocks and blocks folder url exist */
 
-		if ( count( self::$blocks ) === 0 || ! self::$folder_url ) {
+		// if ( count( self::$blocks ) === 0 || ! self::$folder_url ) {
+		if ( count( self::$blocks ) === 0 ) {
 			return;
 		}
 
@@ -126,6 +126,27 @@ class Blocks {
 
 			$n      = FRM::$namespace . '/' . $name;
 			$handle = FRM::$namespace . '_' . $b['handle'];
+
+			if ( isset( $b['uses_context'] ) ) {
+				$b['uses_context'] = array_map(
+					function( $v ) {
+						$v = FRM::$namespace . '/' . $v;
+
+						return $v;
+					},
+					$b['uses_context']
+				);
+			}
+
+			if ( isset( $b['provides_context'] ) ) {
+				$context = [];
+
+				foreach ( $b['provides_context'] as $k => $v ) {
+					$context[ FRM::$namespace . '/' . $k ] = $v;
+				}
+
+				$b['provides_context'] = $context;
+			}
 
 			if ( ! isset( $data['blocks'][ $n ] ) ) {
 				$data['blocks'][ $n ] = $b;
@@ -147,6 +168,14 @@ class Blocks {
 
 			if ( isset( $b['attr'] ) ) {
 				$register_args['attributes'] = $b['attr'];
+			}
+
+			if ( isset( $b['uses_context'] ) ) {
+				$register_args['uses_context'] = $b['uses_context'];
+			}
+
+			if ( isset( $b['provides_context'] ) ) {
+				$register_args['provides_context'] = $b['provides_context'];
 			}
 
 			$r = register_block_type( $n, $register_args );

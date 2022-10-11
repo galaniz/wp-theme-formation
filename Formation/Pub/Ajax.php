@@ -101,13 +101,10 @@ trait Ajax {
 	}
 
 	/**
-	 * Validate nonces and recaptcha for contact and comment forms.
-	 *
-	 * Note: recaptcha api keys required.
+	 * Validate nonces for contact and comment forms.
 	 *
 	 * @pass string $nonce Required.
 	 * @pass string $nonce_name Required.
-	 * @pass string $recaptcha Required.
 	 */
 
 	public static function send_form( $priv_type = 'nopriv' ) {
@@ -146,24 +143,36 @@ trait Ajax {
 	/**
 	 * Process mailchimp signup form.
 	 *
+	 * @pass string $id Required.
 	 * @pass array $inputs Required.
-	 * @pass string $location Required.
 	 * @echo string if successfully sent
 	 */
 
 	protected static function mailchimp_signup( $post ) {
-		if ( ! isset( $post['location'] ) ) {
-			throw new \Exception( 'No location' );
+		$id     = $post['id'] ?? false;
+		$inputs = $post['inputs'] ?? false;
+
+		if ( ! $id ) {
+			throw new \Exception( 'No id' );
 		}
 
-		if ( ! isset( $post['inputs'] ) ) {
+		if ( ! $inputs ) {
 			throw new \Exception( 'No inputs' );
 		}
 
-		/* Inputs */
+		$meta = get_option( static::$namespace . '_form_' . $id, '' );
 
-		$inputs   = $post['inputs'];
-		$location = $post['location'];
+		if ( ! $meta ) {
+			throw new \Exception( 'No meta' );
+		}
+
+		$list_id = $meta['mailchimp_list'] ?? false;
+
+		if ( ! $list_id ) {
+			throw new \Exception( 'No List ID' );
+		}
+
+		/* Inputs */
 
 		$email        = '';
 		$tags         = [];
@@ -220,12 +229,6 @@ trait Ajax {
 		}
 
 		$data_center = explode( '-', $key )[1];
-
-		$list_id = get_option( $n . $location . '_list_id', '' );
-
-		if ( ! $list_id ) {
-			throw new \Exception( 'No List ID' );
-		}
 
 		/* Url */
 
