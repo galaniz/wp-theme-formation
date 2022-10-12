@@ -62,18 +62,23 @@ class Contact_Form {
 			'script'           => 'contact-form/form.js',
 		],
 		'contact-form-group' => [
-			'attr'         => [
-				'legend' => ['type' => 'string'],
+			'attr'             => [
+				'legend'   => ['type' => 'string'],
+				'required' => ['type' => 'boolean'],
 			],
-			'default'      => [
-				'legend' => '',
+			'default'          => [
+				'legend'   => '',
+				'required' => false,
 			],
-			'uses_context' => [
+			'provides_context' => [
+				'contact-form-group/required' => 'required',
+			],
+			'uses_context'     => [
 				'contact-form/type',
 			],
-			'render'       => [__CLASS__, 'render_contact_form_group'],
-			'handle'       => 'contact_form_group',
-			'script'       => 'contact-form/group.js',
+			'render'           => [__CLASS__, 'render_contact_form_group'],
+			'handle'           => 'contact_form_group',
+			'script'           => 'contact-form/group.js',
 		],
 		'contact-form-field' => [
 			'attr'         => [
@@ -86,10 +91,11 @@ class Contact_Form {
 				'options'           => ['type' => 'string'],
 				'selected'          => ['type' => 'boolean'],
 				'placeholder'       => ['type' => 'string'],
-				'rows'              => ['type' => 'integer'],
+				'rows'              => ['type' => 'string'],
 				'width'             => ['type' => 'string'],
 				'classes'           => ['type' => 'string'],
-				'error_message'     => ['type' => 'string'],
+				'empty_message'     => ['type' => 'string'],
+				'invalid_message'   => ['type' => 'string'],
 				'mailchimp_consent' => ['type' => 'boolean'],
 				'merge_field'       => ['type' => 'string'],
 				'tag'               => ['type' => 'boolean'],
@@ -104,10 +110,11 @@ class Contact_Form {
 				'options'           => '',
 				'selected'          => false,
 				'placeholder'       => '',
-				'rows'              => 0,
+				'rows'              => '',
 				'width'             => '',
 				'classes'           => '',
-				'error_message'     => '',
+				'empty_message'     => '',
+				'invalid_message'   => '',
 				'mailchimp'         => false,
 				'mailchimp_consent' => false,
 				'merge_field'       => '',
@@ -115,6 +122,7 @@ class Contact_Form {
 			],
 			'uses_context' => [
 				'contact-form/type',
+				'contact-form-group/required',
 			],
 			'render'       => [__CLASS__, 'render_contact_form_field'],
 			'handle'       => 'contact_form_field',
@@ -278,13 +286,17 @@ class Contact_Form {
 		$attr = array_replace_recursive( self::$blocks['contact-form-group']['default'], $attributes );
 
 		[
-			'legend' => $legend,
+			'legend'   => $legend,
+			'required' => $required,
 		] = $attr;
+
+		$legend_id = uniqid();
 
 		/* Filter classes */
 
 		$classes = [
 			'container_class' => '',
+			'fieldset_class'  => '',
 			'fields_class'    => '',
 		];
 
@@ -292,6 +304,7 @@ class Contact_Form {
 
 		[
 			'container_class' => $container_class,
+			'fieldset_class'  => $fieldset_class,
 			'fields_class'    => $fields_class,
 		] = $classes;
 
@@ -299,16 +312,30 @@ class Contact_Form {
 			$container_class = " class='$container_class'";
 		}
 
+		if ( $fieldset_class ) {
+			$fieldset_class = " class='$fieldset_class'";
+		}
+
 		if ( $fields_class ) {
 			$fields_class = " class='$fields_class'";
+		}
+
+		/* Required */
+
+		$req      = '';
+		$req_attr = '';
+
+		if ( $required ) {
+			$req      = '<span data-required> required</span>';
+			$req_attr = ' data-req';
 		}
 
 		/* Output */
 
 		return (
 			"<div$container_class>" .
-				'<fieldset>' .
-					"<legend><span>$legend</span></legend>" .
+				"<fieldset$fieldset_class>" .
+					"<legend id='$legend_id'$req_attr><span>$legend</span>$req</legend>" .
 					"<div$fields_class>" .
 						$content .
 					'</div>' .
@@ -333,7 +360,8 @@ class Contact_Form {
 			'rows'              => $rows,
 			'width'             => $width,
 			'classes'           => $classes,
-			'error_message'     => $error_message,
+			'empty_message'     => $empty_message,
+			'invalid_message'   => $invalid_message,
 			'mailchimp'         => $mailchimp,
 			'mailchimp_consent' => $mailchimp_consent,
 			'merge_field'       => $merge_field,
@@ -359,8 +387,18 @@ class Contact_Form {
 			$field['id'] = $id;
 		}
 
+		$group_required = $block->context[ FRM::$namespace . '/contact-form-group/required' ] ?? false;
+
 		if ( 'radio' === $type || 'radio-group' === $type || 'radio-select' === $type || 'radio-text' === $type || 'checkbox' === $type || 'checkbox-group' === $type ) {
 			$field['label_above'] = false;
+
+			if ( $group_required ) {
+				$attr['data-aria-required'] = 'true';
+			}
+		} else {
+			if ( $group_required ) {
+				$attr['aria-required'] = 'true';
+			}
 		}
 
 		/* Attributes */
@@ -373,8 +411,12 @@ class Contact_Form {
 			$attr['rows'] = $rows;
 		}
 
-		if ( $error_message ) {
-			$attr['data-error-message'] = $error_message;
+		if ( $empty_message ) {
+			$attr['data-empty-message'] = $empty_message;
+		}
+
+		if ( $invalid_message ) {
+			$attr['data-invalid-message'] = $invalid_message;
 		}
 
 		if ( $mailchimp ) {

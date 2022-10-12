@@ -12,7 +12,8 @@ const {
 const {
   Panel,
   PanelBody,
-  TextControl
+  TextControl,
+  CheckboxControl
 } = window.wp.components
 
 const {
@@ -53,7 +54,8 @@ registerBlockType(name, {
     const { attributes, setAttributes } = props
 
     const {
-      legend = def.legend
+      legend = def.legend,
+      required = def.required
     } = attributes
 
     return [
@@ -64,6 +66,12 @@ registerBlockType(name, {
               label='Legend'
               value={legend}
               onChange={v => setAttributes({ legend: v })}
+            />
+            <CheckboxControl
+              label='Required'
+              value='1'
+              checked={!!required}
+              onChange={checked => setAttributes({ required: checked })}
             />
           </PanelBody>
         </InspectorControls>

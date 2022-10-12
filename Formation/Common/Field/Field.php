@@ -490,13 +490,15 @@ class Field {
 			$data_value = $data;
 		}
 
-		$val  = ! $value ? $data_value : $value;
-		$req  = '';
-		$attr = Utils::get_attr_as_str(
+		$val      = ! $value ? $data_value : $value;
+		$req      = '';
+		$req_attr = '';
+		$attr     = Utils::get_attr_as_str(
 			$attr,
-			function( $a, $v ) use ( &$req ) {
+			function( $a, $v ) use ( &$req, &$req_attr ) {
 				if ( 'aria-required' === $a && 'true' === $v ) {
-					$req = ' data-req';
+					$req      = '<span data-required> required</span>';
+					$req_attr = ' data-req';
 				}
 			}
 		);
@@ -521,15 +523,17 @@ class Field {
 		if ( $label && ! $label_hidden ) {
 			if ( $checkbox_radio ) {
 				$label = (
-					"<label for='" . esc_attr( $id ) . "'$req>" .
+					"<label for='" . esc_attr( $id ) . "'$req_attr>" .
 						'<span class="' . $pre . '__control" data-type="' . $type . '"></span>' .
 						"<span class='$label_class'>$label</span>" .
+						$req .
 					'</label>'
 				);
 			} else {
 				$label = (
-					"<label id='" . uniqid() . "' class='$label_class' for='" . esc_attr( $id ) . "'$req>" .
+					"<label id='" . uniqid() . "' class='$label_class' for='" . esc_attr( $id ) . "'$req_attr>" .
 						"<span>$label</span>" .
+						$req .
 					'</label>'
 				);
 			}

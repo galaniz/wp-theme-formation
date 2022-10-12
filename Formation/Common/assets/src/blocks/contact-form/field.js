@@ -15,8 +15,7 @@ const {
   TextareaControl,
   SelectControl,
   CheckboxControl,
-  RadioControl,
-  NumberControl
+  RadioControl
 } = window.wp.components
 
 const {
@@ -85,7 +84,8 @@ registerBlockType(name, {
       rows = def.rows,
       width = def.width,
       classes = def.classes,
-      error_message = def.error_message,
+      empty_message = def.empty_message,
+      invalid_message = def.invalid_message,
       mailchimp_consent = def.mailchimp_consent,
       merge_field = def.merge_field,
       tag = def.tag
@@ -97,8 +97,9 @@ registerBlockType(name, {
 
     if (type === 'textarea') {
       rowsInput = (
-        <NumberControl
+        <TextControl
           label='Rows'
+          type='number'
           value={rows}
           onChange={rows => setAttributes({ rows })}
         />
@@ -122,8 +123,18 @@ registerBlockType(name, {
     /* Options */
 
     let optionsInput = ''
+    let optionsTextarea = ''
 
     if (type === 'select' || type === 'radio-select' || type === 'radio-group' || type === 'checkbox-group') {
+      optionsTextarea = (
+        <TextareaControl
+          label='Options'
+          help='Format as label : value'
+          value={options}
+          onChange={options => setAttributes({ options })}
+        />
+      )
+
       optionsInput = (
         <Fragment>
           <TextControl
@@ -131,12 +142,7 @@ registerBlockType(name, {
             value={value}
             onChange={value => setAttributes({ value })}
           />
-          <TextareaControl
-            label='Options'
-            help='Format as label : value'
-            value={options}
-            onChange={options => setAttributes({ options })}
-          />
+          {optionsTextarea}
         </Fragment>
       )
     }
@@ -155,6 +161,7 @@ registerBlockType(name, {
             checked={!!selected}
             onChange={checked => setAttributes({ selected: checked })}
           />
+          {optionsTextarea}
         </Fragment>
       )
     }
@@ -277,11 +284,18 @@ registerBlockType(name, {
               onChange={classes => setAttributes({ classes })}
             />
             {required && (
-              <TextareaControl
-                label='Error Message'
-                value={error_message} // eslint-disable-line camelcase
-                onChange={v => setAttributes({ error_message: v })}
-              />
+              <Fragment>
+                <TextareaControl
+                  label='Empty Error Message'
+                  value={empty_message} // eslint-disable-line camelcase
+                  onChange={v => setAttributes({ empty_message: v })}
+                />
+                <TextareaControl
+                  label='Invalid Error Message'
+                  value={invalid_message} // eslint-disable-line camelcase
+                  onChange={v => setAttributes({ invalid_message: v })}
+                />
+              </Fragment>
             )}
             {mailchimpInputs}
           </PanelBody>

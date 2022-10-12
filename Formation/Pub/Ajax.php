@@ -232,13 +232,13 @@ trait Ajax {
 
 		/* Url */
 
-		$url = "https://$data_center.api.mailchimp.com/3.0/lists/$list_id/members/";
+		$url = "https://$data_center.api.mailchimp.com/3.0/lists/$list_id/members/$email";
 
 		/* Body */
 
 		$body = [
 			'email_address' => $email,
-			'status'        => 'pending',
+			'status_if_new' => 'pending',
 		];
 
 		if ( count( $tags ) > 0 ) {
@@ -254,6 +254,7 @@ trait Ajax {
 		$response = wp_safe_remote_post(
 			$url,
 			[
+				'method'  => 'PUT',
 				'headers' => [
 					'Content-type'  => 'application/json',
 					'Authorization' => "Bearer $key",
@@ -377,7 +378,7 @@ trait Ajax {
 				}
 			} else {
 				$input_label_output = '';
-				$email_label_exists = isset( $input['email_label'] );
+				$legend_exists      = isset( $input['legend'] );
 
 				if ( $input_label ) {
 					$input_label_output = '<strong>' . $input_label . '</strong>: ';
@@ -387,8 +388,8 @@ trait Ajax {
 					}
 				}
 
-				if ( $email_label_exists ) {
-					$input_label_output = '<strong>' . $input['email_label'] . '</strong>:' . ( $input_value ? '<br>' : '' );
+				if ( $legend_exists ) {
+					$input_label_output = '<strong>' . $input['legend'] . '</strong>:' . ( $input_value ? '<br>' : '' ) . $input_label_output;
 				}
 
 				if ( $input_value ) {
