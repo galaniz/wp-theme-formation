@@ -96,6 +96,26 @@ class Formation {
 	public static $posts_per_page = [];
 
 	/**
+	 * Custom image sizes to register.
+	 *
+	 * @var array $image_sizes {
+	 *  @type string $name Accepts int for size.
+	 * }
+	 */
+
+	public static $image_sizes = [];
+
+	/**
+	 * Nav menus to register.
+	 *
+	 * @var array $nav_menus {
+	 *  @type string $slug Accepts string for label.
+	 * }
+	 */
+
+	public static $nav_menus = [];
+
+	/**
 	 * Editor color palette theme support args.
 	 *
 	 * @var array $editor_color_palette {
@@ -120,24 +140,20 @@ class Formation {
 	public static $editor_font_sizes = [];
 
 	/**
-	 * Custom image sizes to register.
+	 * Options for gap in block options.
 	 *
-	 * @var array $image_sizes {
-	 *  @type string $name Accepts int for size.
-	 * }
+	 * @var array $gap_options
 	 */
 
-	public static $image_sizes = [];
+	public static $gap_options = [];
 
 	/**
-	 * Nav menus to register.
+	 * Options for width in block options.
 	 *
-	 * @var array $nav_menus {
-	 *  @type string $slug Accepts string for label.
-	 * }
+	 * @var array $width_options
 	 */
 
-	public static $nav_menus = [];
+	public static $width_options = [];
 
 	/**
 	 * If child theme change styles path.
@@ -215,31 +231,12 @@ class Formation {
 	public static $script_attributes = [];
 
 	/**
-	 * Markup for default loader icon.
+	 * Class prefix for fields.
 	 *
-	 * @var string $loader_icon
+	 * @var string $field_class_prefix
 	 */
 
-	public static $loader_icon = '';
-
-	/**
-	 * Options for gap in flex layouts.
-	 *
-	 * @var array $loader_icon
-	 */
-
-	public static $gap_options = [];
-
-	/**
-	 * Svg output for error and success in forms.
-	 *
-	 * @var array $form_svg
-	 */
-
-	public static $form_svg = [
-		'error'   => '',
-		'success' => '',
-	];
+	public static $field_class_prefix = 'o-form';
 
 	/**
 	 * Upload directory path.
@@ -413,7 +410,9 @@ class Formation {
 
 		additional_script_data( 'namespace', static::$namespace, true, true );
 		additional_script_data( 'namespace', static::$namespace, false, true );
+		additional_script_data( static::$namespace, ['color_options' => static::$editor_color_palette ], true, true );
 		additional_script_data( static::$namespace, ['gap_options' => static::$gap_options ], true, true );
+		additional_script_data( static::$namespace, ['width_options' => static::$width_options ], true, true );
 
 		$ajax_url = ['ajax_url' => admin_url( 'admin-ajax.php' )];
 

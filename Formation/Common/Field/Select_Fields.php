@@ -89,7 +89,7 @@ class Select_Fields {
 	 * @return string of markup
 	 */
 
-	public static function render( $fields = [], $group = true ) {
+	public static function render( $fields = [] ) {
 		if ( ! $fields ) {
 			return '';
 		}
@@ -132,7 +132,7 @@ class Select_Fields {
 								'type'        => $type,
 								'label'       => $o_arr[1],
 								'value'       => $o_arr[0],
-								'label_above' => false,
+								'label_first' => false,
 							];
 						}
 					}
@@ -158,8 +158,7 @@ class Select_Fields {
 
 		Field::render(
 			[
-				'fields'   => $fields,
-				'no_group' => ! $group,
+				'fields' => $fields,
 			],
 			$output
 		);

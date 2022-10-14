@@ -12,7 +12,9 @@ const {
 const {
   Panel,
   PanelBody,
-  TextControl
+  TextControl,
+  TextareaControl,
+  CheckboxControl
 } = window.wp.components
 
 const {
@@ -20,7 +22,6 @@ const {
   InnerBlocks
 } = window.wp.blockEditor
 
-const { withSelect } = window.wp.data
 const { Fragment } = window.wp.element
 const { registerBlockType } = window.wp.blocks
 
@@ -35,25 +36,11 @@ const nO = getNamespaceObj(getNamespace())
 const attr = nO.blocks[name].attr
 const def = nO.blocks[name].default
 
-/* Loop through inner blocks */
+let usesContext = []
 
-const recurseInnerBlocks = (innerBlocks, emailLabel) => {
-  innerBlocks.forEach((b) => {
-    if (b.name === n + 'contact-form-field') { b.attributes.email_label = emailLabel }
-
-    if (b.innerBlocks.length > 0) { recurseInnerBlocks(b.innerBlocks, emailLabel) }
-  })
+if (Object.getOwnPropertyDescriptor(nO.blocks[name], 'uses_context')) {
+  usesContext = nO.blocks[name].uses_context
 }
-
-/* Add to child field attributes */
-
-const dataSelector = withSelect((select, ownProps) => {
-  const { attributes } = ownProps
-  const { email_label = def.email_label } = attributes
-  const blocks = select('core/block-editor').getBlocks(ownProps.clientId)
-
-  recurseInnerBlocks(blocks, email_label)
-})
 
 /* Block */
 
@@ -62,36 +49,60 @@ registerBlockType(name, {
   category: 'theme-blocks',
   icon: 'email',
   attributes: attr,
+  usesContext,
   parent: [n + 'contact-form'],
-  edit: dataSelector(props => {
+  edit (props) {
     const { attributes, setAttributes } = props
-    const { emailLabel = def.email_label } = attributes
+
+    const {
+      legend = def.legend,
+      required = def.required,
+      empty_message = def.empty_message,
+      invalid_message = def.invalid_message
+    } = attributes
 
     return [
       <Fragment key='frag'>
         <InspectorControls>
           <PanelBody title='Field Group Options'>
             <TextControl
-              label='Email Label'
-              value={emailLabel}
-              onChange={text => setAttributes({ email_label: text })}
+              label='Legend'
+              value={legend}
+              onChange={v => setAttributes({ legend: v })}
             />
+            <CheckboxControl
+              label='Required'
+              value='1'
+              checked={!!required}
+              onChange={checked => setAttributes({ required: checked })}
+            />
+            {required && (
+              <Fragment>
+                <TextareaControl
+                  label='Empty Error Message'
+                  value={empty_message} // eslint-disable-line camelcase
+                  onChange={v => setAttributes({ empty_message: v })}
+                />
+                <TextareaControl
+                  label='Invalid Error Message'
+                  value={invalid_message} // eslint-disable-line camelcase
+                  onChange={v => setAttributes({ invalid_message: v })}
+                />
+              </Fragment>
+            )}
           </PanelBody>
         </InspectorControls>
       </Fragment>,
       <Panel key='panel'>
         <PanelBody title='Field Group'>
-          <div className='l-section'>
-            <InnerBlocks
-              allowedBlocks={[n + 'contact-form-group-top', n + 'contact-form-group-bottom']}
-              template={[[n + 'contact-form-group-top', {}, []], [n + 'contact-form-group-bottom', {}, []]]}
-            />
-          </div>
+          <InnerBlocks
+            allowedBlocks={[n + 'contact-form-field']}
+          />
         </PanelBody>
       </Panel>
     ]
-  }),
+  },
   save () {
-    return <InnerBlocks.Content /> // this block is rendered in php
+    return <InnerBlocks.Content /> // Rendered in php
   }
 })

@@ -25,7 +25,6 @@ _Parameters:_
 | `multi` | `boolean` | `false` | Add or remove multiple field(s).
 | `hidden` | `boolean` | `false` | In admin and if true, set section to display none.
 | `multi_col` | `boolean` | `false` | If multi, display as columns instead of rows.
-| `no_group` | `boolean` | `false` | In frontend and if true, don't wrap in group div.
 
 * `$output`  
 _Type:_ `string`  
@@ -50,7 +49,7 @@ _Parameters:_
 | `label` | `string/boolean` | `false` | Label text for input.
 | `label_class` | `string` | `''` | Add class to label div.
 | `label_hidden` | `boolean` | `false` | If true, label not included.
-| `label_above` | `boolean` | `true` | If true, label added before input, otherwise added after.
+| `label_first` | `boolean` | `true` | If true, label added before input, otherwise added after.
 | `placeholder` | `string` | `''` | Add placeholder to input.
 | `class` | `string` | `''` | Add class to input.
 | `field_class` | `string` | `''` | Add class to field.

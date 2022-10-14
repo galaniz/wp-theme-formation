@@ -52,6 +52,7 @@ trait Utils_Render {
 				'icon_class'   => '',
 				'icon_classes' => [],
 				'icon_paths'   => [],
+				'a11y_class'   => '',
 			],
 			$args
 		);
@@ -70,6 +71,7 @@ trait Utils_Render {
 			'icon_class'   => $icon_class,
 			'icon_classes' => $icon_classes,
 			'icon_paths'   => $icon_paths,
+			'a11y_class'   => $a11y_class,
 		] = $args;
 
 		if ( ! $links && ! $share ) {
@@ -158,6 +160,7 @@ trait Utils_Render {
 		$item_class = $item_class ? ' class="' . esc_attr( $item_class ) . '"' : '';
 		$link_class = $link_class ? ' class="' . esc_attr( $link_class ) . '"' : '';
 		$icon_class = $icon_class ? ' class="' . esc_attr( $icon_class ) . '"' : '';
+		$a11y_class = $a11y_class ? ' class="' . esc_attr( $a11y_class ) . '"' : '';
 
 		/* Attributes */
 
@@ -194,8 +197,8 @@ trait Utils_Render {
 			$output .=
 				"<$child_tag_name$item_class>" .
 					"<a href='$url'$link_class$link_attr>" .
-						"<span class='a11y-visually-hidden'>" . ucwords( $data_id ) . '</span>' .
-						"<div$icon_class_attr data-type='" . strtolower( $data_id ) . "' aria-hidden='true'>" .
+						"<span$a11y_class>" . ucwords( $data_id ) . '</span>' .
+						"<div$icon_class_attr data-type='" . strtolower( $data_id ) . "'>" .
 							/* phpcs:ignore */
 							( $icon_path ? file_get_contents( $icon_path ) : '' ) . // Ignore: local path
 						'</div>' .
@@ -209,20 +212,73 @@ trait Utils_Render {
 	}
 
 	/**
-	 * Output for loader animation.
+	 * Output logo.
+	 *
+	 * @param string $class
+	 * @param boolean $old_browser_compat
+	 * @return string html
+	 */
+
+	public static function render_logo( $class = '', $old_browser_compat = false ) {
+		$n      = static::$namespace;
+		$svg    = get_option( $n . '_svg_logo_meta', false );
+		$img    = $n . '_logo';
+		$output = '';
+
+		if ( $svg ) {
+			$meta   = explode( '|', $svg );
+			$width  = (int) $meta[0];
+			$height = (int) $meta[1];
+			$path   = $meta[2];
+
+			if ( $old_browser_compat && $width && $height ) {
+				$output .= "<div style='padding-top:" . ( ( $height / $width ) * 100 ) . "%'></div>";
+			}
+
+			/* phpcs:ignore */
+			$output .= file_get_contents( $path ); // Ignore: local path
+		} else {
+			$id = get_option( $img, 0 );
+
+			if ( ! $id ) {
+				return '';
+			}
+
+			$image = static::get_image( $id, 'large' );
+
+			if ( ! $image ) {
+				return '';
+			}
+
+			$src    = esc_url( $image['url'] );
+			$alt    = esc_attr( $image['alt'] );
+			$srcset = esc_attr( $image['srcset'] );
+			$sizes  = esc_attr( $image['sizes'] );
+			$class  = esc_attr( $class );
+
+			$output = "<img class='$class' src='$src' alt='$alt' srcset='$srcset' sizes='$sizes'>";
+		}
+
+		return $output;
+	}
+
+	/**
+	 * Output for search form.
 	 *
 	 * @param array $args
 	 * @return string html
 	 */
 
-	public static function render_loader( $args = [] ) {
+	public static function render_form_search( $args = [] ) {
 		$args = array_merge(
 			[
-				'loader_class' => '',
-				'loader_attr'  => [],
+				'form_class'   => '',
+				'field_class'  => '',
+				'input_class'  => '',
+				'button_class' => '',
 				'icon_class'   => '',
-				'icon_attr'    => [],
-				'html'         => '',
+				'icon_path'    => '',
+				'a11y_class'   => '',
 			],
 			$args
 		);
@@ -230,48 +286,67 @@ trait Utils_Render {
 		/* Destructure */
 
 		[
-			'loader_class' => $loader_class,
-			'loader_attr'  => $loader_attr,
+			'form_class'   => $form_class,
+			'field_class'  => $field_class,
+			'input_class'  => $input_class,
+			'button_class' => $button_class,
 			'icon_class'   => $icon_class,
-			'icon_attr'    => $icon_attr,
-			'html'         => $html,
+			'icon_path'    => $icon_path,
+			'a11y_class'   => $a11y_class,
 		] = $args;
-
-		/* Html */
-
-		$html = $html ? $html : static::$loader_icon;
-
-		/* Classes */
-
-		$loader_class = $loader_class ? " $loader_class" : '';
-		$icon_class   = $icon_class ? " $icon_class" : '';
 
 		/* Escape */
 
-		$loader_class = esc_attr( $loader_class );
+		$form_class   = esc_attr( $form_class );
+		$field_class  = esc_attr( $field_class );
+		$input_class  = esc_attr( $input_class );
+		$button_class = esc_attr( $button_class );
 		$icon_class   = esc_attr( $icon_class );
+		$action       = esc_url( home_url( '/' ) );
+		$query        = esc_attr( get_search_query() );
 
-		/* Attributes */
-
-		$loader_attr = static::get_attr_as_str( $loader_attr );
-		$icon_attr   = static::get_attr_as_str( $icon_attr );
-
-		if ( $loader_attr ) {
-			$loader_attr = " $loader_attr";
+		if ( $form_class ) {
+			$form_class = " class='$form_class'";
 		}
 
-		if ( $icon_attr ) {
-			$icon_attr = " $icon_attr";
+		if ( $field_class ) {
+			$field_class = " class='$field_class'";
 		}
 
-		/* Output */
+		if ( $input_class ) {
+			$input_class = " class='$input_class'";
+		}
+
+		if ( $button_class ) {
+			$button_class = " class='$button_class'";
+		}
+
+		if ( $icon_class ) {
+			$icon_class = " class='$icon_class'";
+		}
+
+		if ( $a11y_class ) {
+			$a11y_class = " class='$a11y_class'";
+		}
+
+		/* Label ID */
+
+		$unique_id = 'search-' . uniqid();
 
 		return (
-			"<div class='o-loader$loader_class'$loader_attr>" .
-				"<div class='o-loader__icon l-flex$icon_class' data-justify='center' data-align='center'$icon_attr>" .
-					$html .
+			"<form$form_class role='search' method='get' action='$action'>" .
+				"<div$field_class>" .
+					"<label$a11y_class for='$unique_id'>Search for: </label>" .
+					"<input$input_class type='search' id='$unique_id' placeholder='Search' value='$query' name='s' />" .
+					"<button$button_class type='submit'>" .
+						"<span$a11y_class>Submit search query</span>" .
+						"<span$icon_class>" .
+							/* phpcs:ignore */
+							( $icon_path ? file_get_contents( $icon_path ) : '' ) . // Ignore: local path
+						'</span>' .
+					'</button>' .
 				'</div>' .
-			'</div>'
+			'</form>'
 		);
 	}
 
@@ -285,20 +360,23 @@ trait Utils_Render {
 	public static function render_form( $args = [] ) {
 		$args = array_merge(
 			[
-				'form_class'          => '',
-				'form_attr'           => [],
-				'form_id'             => uniqid(),
-				'form_data_type'      => 'default',
-				'fields'              => '',
-				'fields_class'        => '',
-				'fields_attr'         => [],
-				'button_field_class'  => '',
-				'button_class'        => '',
-				'button_attr'         => [],
-				'error_summary_title' => 'There is a problem',
-				'error_summary_class' => '',
-				'submit_label'        => 'Send',
-				'success_message'     => '',
+				'form_class'         => '',
+				'form_attr'          => [],
+				'form_id'            => uniqid(),
+				'form_data_type'     => 'default',
+				'fields'             => '',
+				'fields_class'       => '',
+				'fields_attr'        => [],
+				'button_field_class' => '',
+				'button_class'       => '',
+				'button_attr'        => [],
+				'button_label'       => 'Send',
+				'button_loader'      => '',
+				'error_summary'      => '',
+				'error_result'       => '',
+				'error_message'      => [],
+				'success_result'     => '',
+				'success_message'    => [],
 			],
 			$args
 		);
@@ -311,20 +389,23 @@ trait Utils_Render {
 		/* Destructure */
 
 		[
-			'form_class'          => $form_class,
-			'form_attr'           => $form_attr,
-			'form_id'             => $form_id,
-			'form_data_type'      => $form_data_type,
-			'fields'              => $fields,
-			'fields_class'        => $fields_class,
-			'fields_attr'         => $fields_attr,
-			'button_field_class'  => $button_field_class,
-			'button_class'        => $button_class,
-			'button_attr'         => $button_attr,
-			'error_summary_title' => $error_summary_title,
-			'error_summary_class' => $error_summary_class,
-			'submit_label'        => $submit_label,
-			'success_message'     => $success_message,
+			'form_class'         => $form_class,
+			'form_attr'          => $form_attr,
+			'form_id'            => $form_id,
+			'form_data_type'     => $form_data_type,
+			'fields'             => $fields,
+			'fields_class'       => $fields_class,
+			'fields_attr'        => $fields_attr,
+			'button_field_class' => $button_field_class,
+			'button_class'       => $button_class,
+			'button_attr'        => $button_attr,
+			'button_label'       => $button_label,
+			'button_loader'      => $button_loader,
+			'error_summary'      => $error_summary,
+			'error_result'       => $error_result,
+			'error_message'      => $error_message,
+			'success_result'     => $success_result,
+			'success_message'    => $success_message,
 		] = $args;
 
 		/* Escape */
@@ -334,8 +415,7 @@ trait Utils_Render {
 		$fields_class       = esc_attr( $fields_class );
 		$button_field_class = esc_attr( $button_field_class );
 		$button_class       = esc_attr( $default_button_class . ( $button_class ? " $button_class" : '' ) );
-		$submit_label       = esc_attr( $submit_label );
-		$success_message    = esc_html( $success_message );
+		$button_label       = esc_attr( $button_label );
 
 		if ( $fields_class ) {
 			$fields_class = " class='$fields_class'";
@@ -364,25 +444,21 @@ trait Utils_Render {
 			$button_attr = " $button_attr";
 		}
 
-		/* Error summary */
-
-		$error_summary_title_id = uniqid();
-
-		$error_summary = (
-			"<div class='$error_summary_class' aria-labelledby='$error_summary_title_id'>" .
-				"<h2>$error_summary_title</h2>" .
-				'<ul></ul>' .
-			'</div>'
-		);
-
-		/* Success message */
+		/* Result messages */
 
 		if ( $success_message ) {
 			additional_script_data(
 				static::$namespace,
 				[
 					"form_$form_id" => [
-						'success_message' => $success_message,
+						'success_message' => [
+							'primary'   => $success_message['primary'] ?? '',
+							'secondary' => $success_message['secondary'] ?? '',
+						],
+						'error_message'   => [
+							'primary'   => $error_message['primary'] ?? '',
+							'secondary' => $error_message['secondary'] ?? '',
+						],
 					],
 				],
 				false,
@@ -390,40 +466,44 @@ trait Utils_Render {
 			);
 		}
 
+		/* Result markup */
+
+		$error_summary_id = $form_id . '_error_summary';
+		$error_summary    = sprintf( $error_summary, $error_summary_id, $error_summary_id );
+
+		$error_result_id = $form_id . '_error_result';
+		$error_result    = sprintf( $error_result, $error_result_id, $error_result_id );
+
+		$success_result_id = $form_id . '_success_result';
+		$success_result    = sprintf( $success_result, $success_result_id, $success_result_id );
+
+		/* Honeypot */
+
+		$honeypot_id       = uniqid();
+		$honeypot_name     = static::$namespace . '_asi';
+		$honeypot_label_id = uniqid();
+
+		$honeypot = (
+			"<label id='$honeypot_label_id' for='$honeypot_id' aria-hidden='true' data-asl>Website</label>" .
+			"<input type='url' name='$honeypot_name' id='$honeypot_id' value='' autocomplete='off' class='js-input' data-asi>"
+		);
+
 		/* Output */
 
 		return (
 			"<form class='$form_class' id='$form_id'$form_attr novalidate>" .
 				"<div$fields_class$fields_attr>" .
 					$fields .
+					$honeypot .
 					$error_summary .
+					$error_result .
 					"<div$button_field_class data-type='submit'>" .
 						"<button class='$button_class' type='submit'$button_attr>" .
-							static::render_loader(
-								[
-									'loader_attr' => [
-										'data-hide' => true,
-									],
-								]
-							) .
-							"<span>$submit_label</span>" .
+							$button_loader .
+							"<span>$button_label</span>" .
 						'</button>' .
 					'</div>' .
-				'</div>' .
-				"<div class='o-result'>" .
-					"<div class='o-result__message'>" .
-						"<div class='l-flex' aria-live='polite'>" .
-							'<div>' .
-								"<div class='o-result__icon l-relative'>" .
-									"<div class='o-result__error'>" . static::$form_svg['error'] . '</div>' .
-									"<div class='o-result__success'>" . static::$form_svg['success'] . '</div>' .
-								'</div>' .
-							'</div>' .
-							'<div>' .
-								"<div class='o-result__text'></div>" .
-							'</div>' .
-						'</div>' .
-					'</div>' .
+					$success_result .
 				'</div>' .
 			'</form>'
 		);

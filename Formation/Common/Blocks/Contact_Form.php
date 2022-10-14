@@ -31,86 +31,109 @@ class Contact_Form {
 	 */
 
 	public static $blocks = [
-		'contact-form'              => [
-			'attr'    => [
-				'id'              => ['type' => 'string'],
-				'email'           => ['type' => 'string'],
-				'subject'         => ['type' => 'string'],
-				'submit_label'    => ['type' => 'string'],
-				'success_message' => ['type' => 'string'],
-				'gap'             => ['type' => 'string'],
+		'contact-form'       => [
+			'attr'             => [
+				'id'             => ['type' => 'string'],
+				'type'           => ['type' => 'string'],
+				'email'          => ['type' => 'string'],
+				'subject'        => ['type' => 'string'],
+				'submit_label'   => ['type' => 'string'],
+				'success_title'  => ['type' => 'string'],
+				'success_text'   => ['type' => 'string'],
+				'field_gap'      => ['type' => 'string'],
+				'mailchimp_list' => ['type' => 'string'],
 			],
-			'default' => [
-				'id'              => '',
-				'email'           => '',
-				'subject'         => '',
-				'submit_label'    => 'Send',
-				'success_message' => '',
-				'gap'             => '',
+			'default'          => [
+				'id'             => '',
+				'type'           => 'contact',
+				'email'          => '',
+				'subject'        => '',
+				'submit_label'   => 'Send',
+				'success_title'  => '',
+				'success_text'   => '',
+				'field_gap'      => '',
+				'mailchimp_list' => '',
 			],
-			'render'  => [__CLASS__, 'render_contact_form'],
-			'handle'  => 'contact_form',
-			'script'  => 'contact-form/form.js',
+			'provides_context' => [
+				'contact-form/type' => 'type',
+			],
+			'render'           => [__CLASS__, 'render_contact_form'],
+			'handle'           => 'contact_form',
+			'script'           => 'contact-form/form.js',
 		],
-		'contact-form-group'        => [
-			'attr'    => [
-				'email_label' => ['type' => 'string'],
+		'contact-form-group' => [
+			'attr'             => [
+				'legend'          => ['type' => 'string'],
+				'required'        => ['type' => 'boolean'],
+				'empty_message'   => ['type' => 'string'],
+				'invalid_message' => ['type' => 'string'],
 			],
-			'default' => [
-				'email_label' => '',
+			'default'          => [
+				'legend'          => '',
+				'required'        => false,
+				'empty_message'   => '',
+				'invalid_message' => '',
 			],
-			'render'  => [__CLASS__, 'render_contact_form_group'],
-			'handle'  => 'contact_form_group',
-			'script'  => 'contact-form/group.js',
+			'provides_context' => [
+				'contact-form-group/required'        => 'required',
+				'contact-form-group/empty_message'   => 'empty_message',
+				'contact-form-group/invalid_message' => 'invalid_message',
+			],
+			'uses_context'     => [
+				'contact-form/type',
+			],
+			'render'           => [__CLASS__, 'render_contact_form_group'],
+			'handle'           => 'contact_form_group',
+			'script'           => 'contact-form/group.js',
 		],
-		'contact-form-group-top'    => [
-			'render' => [__CLASS__, 'render_contact_form_group_top'],
-			'handle' => 'contact_form_group_top',
-			'script' => 'contact-form/group-top.js',
-		],
-		'contact-form-group-bottom' => [
-			'attr'    => [
-				'gap' => ['type' => 'string'],
+		'contact-form-field' => [
+			'attr'         => [
+				'id'                => ['type' => 'string'],
+				'type'              => ['type' => 'string'],
+				'name'              => ['type' => 'string'],
+				'label'             => ['type' => 'string'],
+				'required'          => ['type' => 'boolean'],
+				'value'             => ['type' => 'string'],
+				'options'           => ['type' => 'string'],
+				'selected'          => ['type' => 'boolean'],
+				'placeholder'       => ['type' => 'string'],
+				'rows'              => ['type' => 'string'],
+				'width'             => ['type' => 'string'],
+				'classes'           => ['type' => 'string'],
+				'empty_message'     => ['type' => 'string'],
+				'invalid_message'   => ['type' => 'string'],
+				'mailchimp_consent' => ['type' => 'boolean'],
+				'merge_field'       => ['type' => 'string'],
+				'tag'               => ['type' => 'boolean'],
 			],
-			'default' => [
-				'gap' => '',
+			'default'      => [
+				'id'                => '',
+				'type'              => 'text',
+				'name'              => '',
+				'label'             => '',
+				'required'          => false,
+				'value'             => '',
+				'options'           => '',
+				'selected'          => false,
+				'placeholder'       => '',
+				'rows'              => '',
+				'width'             => '',
+				'classes'           => '',
+				'empty_message'     => '',
+				'invalid_message'   => '',
+				'mailchimp_consent' => false,
+				'merge_field'       => '',
+				'tag'               => false,
 			],
-			'render'  => [__CLASS__, 'render_contact_form_group_bottom'],
-			'handle'  => 'contact_form_group_bottom',
-			'script'  => 'contact-form/group-bottom.js',
-		],
-		'contact-form-field'        => [
-			'attr'    => [
-				'type'          => ['type' => 'string'],
-				'name'          => ['type' => 'string'],
-				'label'         => ['type' => 'string'],
-				'placeholder'   => ['type' => 'string'],
-				'required'      => ['type' => 'boolean'],
-				'attr'          => ['type' => 'string'],
-				'options'       => ['type' => 'string'],
-				'width'         => ['type' => 'string'],
-				'value'         => ['type' => 'string'],
-				'label_after'   => ['type' => 'boolean'],
-				'padding_small' => ['type' => 'boolean'],
-				'email_label'   => ['type' => 'string'],
+			'uses_context' => [
+				'contact-form/type',
+				'contact-form-group/required',
+				'contact-form-group/empty_message',
+				'contact-form-group/invalid_message',
 			],
-			'default' => [
-				'type'          => 'text',
-				'name'          => '',
-				'label'         => '',
-				'placeholder'   => '',
-				'required'      => false,
-				'attr'          => '',
-				'options'       => '',
-				'width'         => '100',
-				'value'         => '',
-				'label_after'   => false,
-				'padding_small' => false,
-				'email_label'   => '',
-			],
-			'render'  => [__CLASS__, 'render_contact_form_field'],
-			'handle'  => 'contact_form_field',
-			'script'  => 'contact-form/field.js',
+			'render'       => [__CLASS__, 'render_contact_form_field'],
+			'handle'       => 'contact_form_field',
+			'script'       => 'contact-form/field.js',
 		],
 	];
 
@@ -122,23 +145,6 @@ class Contact_Form {
 		/* Add blocks */
 
 		add_action( 'init', [$this, 'register_blocks'] );
-
-		/* Register meta and routes */
-
-		add_action(
-			'rest_api_init',
-			function() {
-				register_rest_route(
-					FRM::$namespace,
-					'/preview-contact-form',
-					[
-						'methods'             => 'GET',
-						'callback'            => [$this, 'preview_contact_form'],
-						'permission_callback' => '__return_true',
-					]
-				);
-			}
-		);
 	}
 
 	/**
@@ -208,186 +214,280 @@ class Contact_Form {
 	 * @return string of markup
 	 */
 
-	public static function render_contact_form( $attributes, $content = '' ) {
-			$attr = array_replace_recursive( self::$blocks['contact-form']['default'], $attributes );
-
-			[
-				'id'              => $id,
-				'email'           => $email,
-				'subject'         => $subject,
-				'submit_label'    => $submit_label,
-				'success_message' => $success_message,
-				'gap'             => $gap,
-			] = $attr;
-
-			if ( ! $email ) {
-				$email = get_option( 'admin_email', '' );
-			}
-
-			if ( ! $subject ) {
-				$subject = get_bloginfo( 'name' ) . ' Contact Form';
-			}
-
-			if ( $id ) {
-				/* Make sure $id not greater than 64 characters */
-
-				$id = substr( $id, 0, 40 );
-
-				update_option(
-					FRM::$namespace . '_form_' . $id,
-					[
-						'email'   => $email,
-						'subject' => $subject,
-					]
-				);
-			}
-
-			return FRM::render_form(
-				[
-					'form_id'         => $id,
-					'form_data_type'  => 'contact',
-					'fields'          => $content,
-					'fields_gap'      => $gap,
-					'submit_label'    => $submit_label,
-					'success_message' => $success_message,
-				]
-			);
-	}
-
-	public static function render_contact_form_group( $attributes, $content ) {
-		return "<div class='" . FRM::$classes['field_prefix'] . "-group l-100'>$content</div>";
-	}
-
-	public static function render_contact_form_group_top( $attributes, $content ) {
-		return "<div class='" . FRM::$classes['field_prefix'] . "-group__top'>$content</div>";
-	}
-
-	public static function render_contact_form_group_bottom( $attributes, $content ) {
-		return "<div class='" . FRM::$classes['field_prefix'] . "-group__bottom l-flex' data-gap='$gap' data-wrap>$content</div>";
-	}
-
-	public static function render_contact_form_field( $attributes ) {
-		$attr = array_replace_recursive( self::$blocks['contact-form-field']['default'], $attributes );
+	public static function render_contact_form( $attributes, $content = '', $block ) {
+		$attr = array_replace_recursive( self::$blocks['contact-form']['default'], $attributes );
 
 		[
-			'type'          => $type,
-			'name'          => $name,
-			'label'         => $label,
-			'placeholder'   => $placeholder,
-			'required'      => $required,
-			'attr'          => $attr,
-			'options'       => $options,
-			'width'         => $width,
-			'value'         => $value,
-			'label_after'   => $label_after,
-			'padding_small' => $padding_small,
-			'email_label'   => $email_label,
+			'id'             => $id,
+			'type'           => $type,
+			'email'          => $email,
+			'subject'        => $subject,
+			'submit_label'   => $submit_label,
+			'success_title'  => $success_title,
+			'success_text'   => $success_text,
+			'field_gap'      => $field_gap,
+			'mailchimp_list' => $mailchimp_list,
 		] = $attr;
 
-		$output = '';
-		$prefix = FRM::$namespace . '_';
-
-		$field_class = "l-$width";
-		$field_attr  = [];
-
-		if ( $label_after ) {
-			$field_attr['data-label-after'] = '';
+		if ( ! $email ) {
+			$email = get_option( 'admin_email', '' );
 		}
 
-		if ( $padding_small ) {
-			$field_attr['data-p-sm'] = '';
+		if ( ! $subject ) {
+			$subject = get_bloginfo( 'name' ) . ' Contact Form';
 		}
 
-		$field = [
-			'name'        => FRM::$namespace . '_' . $name,
-			'label'       => $label,
-			'type'        => $type,
-			'placeholder' => $placeholder,
-			'field_class' => $field_class,
-			'field_attr'  => $field_attr,
-			'value'       => $value,
+		if ( ! $id ) {
+			$id = uniqid();
+		}
+
+		if ( $id ) {
+			/* Make sure $id not greater than 64 characters */
+
+			$id = substr( $id, 0, 40 );
+
+			$option_args = [];
+
+			if ( 'contact' === $type || 'contact-mailchimp' === $type ) {
+				$option_args['email']   = $email;
+				$option_args['subject'] = $subject;
+			}
+
+			if ( 'mailchimp' === $type || 'contact-mailchimp' === $type ) {
+				$option_args['mailchimp_list'] = $mailchimp_list;
+			}
+
+			update_option( FRM::$namespace . '_form_' . $id, $option_args );
+		}
+
+		$args = [
+			'form_class'         => '',
+			'form_attr'          => [],
+			'form_id'            => $id,
+			'form_data_type'     => $type,
+			'fields'             => $content,
+			'fields_class'       => '',
+			'fields_attr'        => [],
+			'button_field_class' => '',
+			'button_class'       => '',
+			'button_attr'        => [],
+			'button_label'       => $submit_label,
+			'error_message'      => [
+				'primary'   => '',
+				'secondary' => '',
+			],
+			'success_message'    => [
+				'primary'   => $success_title,
+				'secondary' => $success_text,
+			],
 		];
 
-		if ( 'radio' === $type || 'checkbox' === $type ) {
-			$field['class'] = 'a11y-hide-input';
+		$args = apply_filters( 'formation_contact_form_args', $args, $attr );
+
+		/* Output */
+
+		return FRM::render_form( $args );
+	}
+
+	public static function render_contact_form_group( $attributes, $content, $block ) {
+		$attr = array_replace_recursive( self::$blocks['contact-form-group']['default'], $attributes );
+
+		[
+			'legend'          => $legend,
+			'required'        => $required,
+			'empty_message'   => $empty_message,
+			'invalid_message' => $invalid_message,
+		] = $attr;
+
+		$legend_id = uniqid();
+
+		/* Filter classes */
+
+		$classes = [
+			'container_class' => '',
+			'fieldset_class'  => '',
+			'fields_class'    => '',
+		];
+
+		$classes = apply_filters( 'formation_contact_form_group_classes', $classes, $attr, $block );
+
+		[
+			'container_class' => $container_class,
+			'fieldset_class'  => $fieldset_class,
+			'fields_class'    => $fields_class,
+		] = $classes;
+
+		if ( $container_class ) {
+			$container_class = " class='$container_class'";
 		}
 
-		$attr_array = self::get_assoc_array_from_str( $attr );
+		if ( $fieldset_class ) {
+			$fieldset_class = " class='$fieldset_class'";
+		}
 
-		$order   = 'select' === $type ? 'value:key' : 'key:value';
-		$indexed = 'select' === $type ? false : true;
+		if ( $fields_class ) {
+			$fields_class = " class='$fields_class'";
+		}
 
-		$options_array = self::get_assoc_array_from_str( $options, $order, $indexed );
+		/* Required */
+
+		$req      = '';
+		$req_attr = '';
 
 		if ( $required ) {
-			$attr_array['aria-required'] = true;
+			$req      = '<span data-required> required</span>';
+			$req_attr = ' data-req';
 		}
 
-		if ( 'textarea' === $type && ! isset( $attr_array['rows'] ) ) {
-			$attr_array['rows'] = 8;
+		/* Output */
+
+		return (
+			"<div$container_class>" .
+				"<fieldset$fieldset_class>" .
+					"<legend id='$legend_id'$req_attr><span>$legend</span>$req</legend>" .
+					"<div$fields_class>" .
+						$content .
+					'</div>' .
+				'</fieldset>' .
+			'</div>'
+		);
+	}
+
+	public static function render_contact_form_field( $attributes, $content, $block ) {
+		$attributes = array_replace_recursive( self::$blocks['contact-form-field']['default'], $attributes );
+
+		[
+			'id'                => $id,
+			'type'              => $type,
+			'name'              => $name,
+			'label'             => $label,
+			'required'          => $required,
+			'value'             => $value,
+			'options'           => $options,
+			'selected'          => $selected,
+			'placeholder'       => $placeholder,
+			'rows'              => $rows,
+			'width'             => $width,
+			'classes'           => $classes,
+			'empty_message'     => $empty_message,
+			'invalid_message'   => $invalid_message,
+			'mailchimp_consent' => $mailchimp_consent,
+			'merge_field'       => $merge_field,
+			'tag'               => $tag,
+		] = $attributes;
+
+		$output = '';
+		$attr   = [];
+		$prefix = FRM::$namespace . '_';
+
+		/* Field args */
+
+		$field = [
+			'type'        => $type,
+			'name'        => FRM::$namespace . '_' . $name,
+			'label'       => $label,
+			'value'       => $value,
+			'placeholder' => $placeholder,
+			'class'       => $classes,
+		];
+
+		if ( $id ) {
+			$field['id'] = $id;
 		}
 
-		if ( $email_label ) {
-			$attr_array['data-email-label'] = $email_label;
+		$group_required = $block->context[ FRM::$namespace . '/contact-form-group/required' ] ?? false;
+
+		if ( 'radio' === $type || 'radio-group' === $type || 'radio-select' === $type || 'radio-text' === $type || 'checkbox' === $type || 'checkbox-group' === $type ) {
+			$field['label_first'] = false;
+
+			if ( $group_required ) {
+				$group_empty   = $block->context[ FRM::$namespace . '/contact-form-group/empty_message' ] ?? false;
+				$group_invalid = $block->context[ FRM::$namespace . '/contact-form-group/invalid_message' ] ?? false;
+
+				$attr['data-aria-required'] = 'true';
+
+				if ( $group_empty ) {
+					$attr['data-empty-message'] = $group_empty;
+				}
+
+				if ( $group_invalid ) {
+					$attr['data-invalid-message'] = $group_invalid;
+				}
+			}
+		} else {
+			if ( $group_required ) {
+				$attr['aria-required'] = 'true';
+			}
 		}
 
-		$field['attr']    = $attr_array;
-		$field['options'] = $options_array;
+		/* Attributes */
+
+		if ( $required ) {
+			$attr['aria-required'] = 'true';
+		}
+
+		if ( $rows && 'textarea' === $type ) {
+			$attr['rows'] = $rows;
+		}
+
+		if ( $empty_message ) {
+			$attr['data-empty-message'] = $empty_message;
+		}
+
+		if ( $invalid_message ) {
+			$attr['data-invalid-message'] = $invalid_message;
+		}
+
+		$form_type = $block->context[ FRM::$namespace . '/contact-form/type' ] ?? false;
+
+		if ( 'mailchimp' === $form_type || 'contact-mailchimp' === $form_type ) {
+			if ( $mailchimp_consent ) {
+				$attr['data-mailchimp-consent'] = 'true';
+			}
+
+			if ( $merge_field ) {
+				$attr['data-merge-field'] = $merge_field;
+			}
+
+			if ( $tag ) {
+				$attr['data-tag'] = 'true';
+			}
+		}
+
+		$field['attr'] = $attr;
+
+		/* Options */
+
+		if ( $options ) {
+			$order   = 'select' === $type ? 'value:key' : 'key:value';
+			$indexed = 'select' === $type ? false : true;
+
+			$options = self::get_assoc_array_from_str( $options, $order, $indexed );
+
+			$field['options'] = $options;
+		}
 
 		/* Filter args */
 
-		$field = apply_filters( 'formation_contact_form_field_args', $field );
+		$field = apply_filters( 'formation_contact_form_field_args', $field, $attributes, $block );
 
-		if ( 'radio' === $type || 'checkbox' === $type ) {
-			$field['class'] = 'a11y-hide-input';
-
-			if ( $options_array ) {
-				$f     = $field;
-				$field = [];
-
-				foreach ( $options_array as $i => $opt ) {
-					$args          = $f;
-					$args['label'] = $opt['label'];
-					$args['value'] = $opt['value'];
-
-					$field[] = $args;
-				}
-			}
-		}
+		/* Output */
 
 		$render_args = [
-			'fields'   => ( isset( $field[0] ) ? $field : [$field] ),
-			'no_group' => true,
+			'fields' => ( isset( $field[0] ) ? $field : [$field] ),
 		];
 
-		if ( $value && ( $options_array || ( 'radio' === $type || 'checkbox' === $type || 'select' === $type ) ) ) {
+		if ( 'radio' === $type || 'radio-select' === $type || 'radio-text' === $type || 'checkbox' === $type ) {
+			$render_args['data'] = $selected ? $value : '';
+		}
+
+		if ( $value && ( 'radio-group' === $type || 'checkbox-group' === $type || 'select' === $type ) ) {
 			$render_args['data'] = $value;
 		}
 
 		Field::render( $render_args, $output );
 
 		return $output;
-	}
-
-	public function preview_contact_form( $data ) {
-		$req = $data->get_param( 'required' );
-
-		if ( is_string( $req ) ) {
-			$req = 'true' === $req ? true : false;
-		}
-
-		$args = [
-			'type'        => $data->get_param( 'type' ),
-			'name'        => $data->get_param( 'name' ),
-			'label'       => $data->get_param( 'label' ),
-			'placeholder' => $data->get_param( 'placeholder' ),
-			'required'    => $req,
-			'attr'        => $data->get_param( 'attr' ),
-			'options'     => $data->get_param( 'options' ),
-			'width'       => $data->get_param( 'width' ),
-		];
-
-		return self::render_contact_form_field( $args );
 	}
 
 } // End Contact_Form

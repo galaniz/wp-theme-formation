@@ -214,7 +214,7 @@ class Settings {
 			$register_args  = [];
 
 			if ( $label && isset( $field['helper'] ) ) {
-				$label .= '<p class="u-helper">' . $field['helper'] . '</p>';
+				$label .= '<p class="description">' . $field['helper'] . '</p>';
 			}
 
 			if ( ! isset( $field['fields'] ) ) {
