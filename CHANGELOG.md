@@ -91,3 +91,18 @@ All notable changes to this project will be documented in this file.
 - Update CSS class names for newer version of Formation and remove unnecessary classes throughout
 - `Theme` class make png logo and reusable blocks optional
 - `Utils_Render` form method simplify and update some args
+
+## [3.0.7] - 2022-10-14
+
+### Removed
+- `render_modal` and `render_table`.
+
+### Added
+- Uses and provides context to `Block` class
+- `contact-mailchimp` option for `send_form` in `Ajax` class
+
+### Changed
+- Update `Contact_Form` for better a11y and flexibility
+- Remove mailchimp list locations from `Theme` class and move to `Contact_Form`
+- Render methods to have fewer hard coded classes
+- Small organizational updates to `Field` class
