@@ -49,7 +49,7 @@ _Parameters:_
 | `label` | `string/boolean` | `false` | Label text for input.
 | `label_class` | `string` | `''` | Add class to label div.
 | `label_hidden` | `boolean` | `false` | If true, label not included.
-| `label_above` | `boolean` | `true` | If true, label added before input, otherwise added after.
+| `label_first` | `boolean` | `true` | If true, label added before input, otherwise added after.
 | `placeholder` | `string` | `''` | Add placeholder to input.
 | `class` | `string` | `''` | Add class to input.
 | `field_class` | `string` | `''` | Add class to field.

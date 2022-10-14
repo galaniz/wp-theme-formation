@@ -13,6 +13,7 @@ const {
   Panel,
   PanelBody,
   TextControl,
+  TextareaControl,
   CheckboxControl
 } = window.wp.components
 
@@ -55,7 +56,9 @@ registerBlockType(name, {
 
     const {
       legend = def.legend,
-      required = def.required
+      required = def.required,
+      empty_message = def.empty_message,
+      invalid_message = def.invalid_message
     } = attributes
 
     return [
@@ -73,6 +76,20 @@ registerBlockType(name, {
               checked={!!required}
               onChange={checked => setAttributes({ required: checked })}
             />
+            {required && (
+              <Fragment>
+                <TextareaControl
+                  label='Empty Error Message'
+                  value={empty_message} // eslint-disable-line camelcase
+                  onChange={v => setAttributes({ empty_message: v })}
+                />
+                <TextareaControl
+                  label='Invalid Error Message'
+                  value={invalid_message} // eslint-disable-line camelcase
+                  onChange={v => setAttributes({ invalid_message: v })}
+                />
+              </Fragment>
+            )}
           </PanelBody>
         </InspectorControls>
       </Fragment>,

@@ -132,7 +132,7 @@ class Select_Fields {
 								'type'        => $type,
 								'label'       => $o_arr[1],
 								'value'       => $o_arr[0],
-								'label_above' => false,
+								'label_first' => false,
 							];
 						}
 					}

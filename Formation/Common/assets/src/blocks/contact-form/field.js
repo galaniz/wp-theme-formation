@@ -39,6 +39,7 @@ const name = n + 'contact-form-field'
 const nO = getNamespaceObj(getNamespace())
 const attr = nO.blocks[name].attr
 const def = nO.blocks[name].default
+const contactFormtype = n + 'contact-form/type'
 
 let usesContext = []
 
@@ -185,8 +186,8 @@ registerBlockType(name, {
 
     let mailchimpInputs = ''
 
-    if (Object.getOwnPropertyDescriptor(context, usesContext)) {
-      const mailchimp = context[usesContext] === 'mailchimp' || context[usesContext] === 'contact-mailchimp'
+    if (Object.getOwnPropertyDescriptor(context, contactFormtype)) {
+      const mailchimp = context[contactFormtype] === 'mailchimp' || context[contactFormtype] === 'contact-mailchimp'
 
       if (mailchimp) {
         mailchimpInputs = (

@@ -47,7 +47,7 @@ class Field {
 			'label'             => false,
 			'label_hidden'      => false,
 			'label_class'       => '',
-			'label_above'       => true,
+			'label_first'       => true,
 			'attr'              => [],
 			'field_class'       => '',
 			'field_attr'        => [],
@@ -158,7 +158,7 @@ class Field {
 	}
 
 	/**
-	 * Remove brackets from name to create id ( tinymce doesn't allow brackets in id ).
+	 * Remove brackets from name to create id (tinymce doesn't allow brackets in id).
 	 *
 	 * @param string $id
 	 * @return string
@@ -175,7 +175,7 @@ class Field {
 	}
 
 	/**
-	 * Get value in data array from name ( lorem[%i][ipsum] )
+	 * Get value in data array from name (lorem[%i][ipsum])
 	 *
 	 * @param array $array
 	 * @param string $key
@@ -290,7 +290,7 @@ class Field {
 		/* Single field passed in */
 
 		if ( ! $fields ) {
-				$fields = [$args];
+			$fields = [$args];
 		}
 
 		/* Multi variables */
@@ -428,6 +428,10 @@ class Field {
 	public static function render_field( $args = [], &$output, $index = 0, $data = '', $copy = false, $multi = false, $multi_col = false ) {
 		$args = array_replace_recursive( self::$default['field'], $args );
 
+		/* Admin */
+
+		$admin = is_admin();
+
 		/* Destructure */
 
 		[
@@ -437,7 +441,7 @@ class Field {
 			'label'             => $label,
 			'label_hidden'      => $label_hidden,
 			'label_class'       => $label_class,
-			'label_above'       => $label_above,
+			'label_first'       => $label_first,
 			'attr'              => $attr,
 			'field_class'       => $field_class,
 			'field_attr'        => $field_attr,
@@ -465,24 +469,50 @@ class Field {
 			'toolbar'           => $toolbar,
 		] = $args;
 
-		/* Variables/attributes */
+		/* Name */
 
 		$name = FRM::get_namespaced_str( $name );
+
+		/* Id */
+
+		$id = $id ? $id : self::format_id( $name );
+
+		/* Multi */
 
 		if ( $multi ) {
 			$attr['data-name'] = $name;
 			$attr['data-id']   = self::format_id( $name );
+
+			if ( ! $copy ) {
+				$name = self::index_name( $name, $index );
+				$id   = self::format_id( $name );
+			}
 		}
 
-		$name           = $multi && ! $copy ? self::index_name( $name, $index ) : $name;
-		$id             = $id ? $id : self::format_id( $name );
-		$pre            = FRM::$field_class_prefix;
+		/* Field class prefix */
+
+		$pre = $admin ? 'o-form' : FRM::$field_class_prefix;
+
+		/* Checkbox or radio */
+
 		$checkbox_radio = 'checkbox' === $type || 'radio' === $type || 'radio-select' === $type || 'radio-text' === $type;
-		$placeholder    = $placeholder ? 'placeholder="' . esc_attr( $placeholder ) . '"' : '';
-		$classes        = esc_attr( $pre . '__' . $type . ' js-input' . ( $class ? " $class" : '' ) );
-		$label_class    = esc_attr( $pre . '__label' . ( $label_class ? " $label_class" : '' ) );
-		$label          = esc_html( $label );
-		$label_text     = $label;
+
+		/* Placeholder */
+
+		$placeholder = $placeholder ? 'placeholder="' . esc_attr( $placeholder ) . '"' : '';
+
+		/* Input classes */
+
+		$classes = esc_attr( $pre . '__' . $type . ' js-input' . ( $class ? " $class" : '' ) );
+
+		/* Label info */
+
+		$label_id    = uniqid();
+		$label_class = esc_attr( $pre . '__label' . ( $label_class ? " $label_class" : '' ) );
+		$label       = esc_html( $label );
+		$label_text  = $label;
+
+		/* Value */
 
 		if ( is_array( $data ) ) {
 			$data_value = self::get_array_value( $data, $name );
@@ -490,7 +520,10 @@ class Field {
 			$data_value = $data;
 		}
 
-		$val      = ! $value ? $data_value : $value;
+		$val = ! $value ? $data_value : $value;
+
+		/* Required */
+
 		$req      = '';
 		$req_attr = '';
 		$attr     = Utils::get_attr_as_str(
@@ -503,11 +536,15 @@ class Field {
 			}
 		);
 
+		/* Hidden */
+
 		$hidden = '100' === $hidden || ( $hidden && ! $val ) ? ' style="display: none;"' : '';
 
 		if ( 'hidden' === $type && ! $hidden_type_show ) {
 			$field_class .= ( $field_class ? ' ' : '' ) . 'u-v-h';
 		}
+
+		/* Field attributes */
 
 		if ( 'radio-select' === $type || 'radio-text' === $type ) {
 			$field_attr['role'] = 'group';
@@ -523,22 +560,22 @@ class Field {
 		if ( $label && ! $label_hidden ) {
 			if ( $checkbox_radio ) {
 				$label = (
-					"<label for='" . esc_attr( $id ) . "'$req_attr>" .
-						'<span class="' . $pre . '__control" data-type="' . $type . '"></span>' .
-						"<span class='$label_class'>$label</span>" .
+					"<label id='$label_id' for='" . esc_attr( $id ) . "'$req_attr>" .
+						"<span class='$label_class'><span>$label</span></span>" .
 						$req .
+						'<span class="' . $pre . '__control" data-type="' . $type . '"></span>' .
 					'</label>'
 				);
 			} else {
 				$label = (
-					"<label id='" . uniqid() . "' class='$label_class' for='" . esc_attr( $id ) . "'$req_attr>" .
+					"<label id='$label_id' class='$label_class' for='" . esc_attr( $id ) . "'$req_attr>" .
 						"<span>$label</span>" .
 						$req .
 					'</label>'
 				);
 			}
 
-			if ( $label_above ) {
+			if ( $label_first ) {
 				$output .= $label;
 			}
 		}
@@ -707,7 +744,9 @@ class Field {
 					}
 
 					$output .= sprintf(
-						'<select name="%1$s" id="%5$s" class="%3$s" %4$s>%2$s</select>',
+						'<div data-type="select">' .
+							'<select name="%1$s" id="%5$s" class="%3$s" %4$s>%2$s</select>' .
+						'</div>',
 						esc_attr( $name ),
 						$opt,
 						esc_attr( $classes ),
@@ -738,7 +777,7 @@ class Field {
 		$output .= $after;
 
 		if ( $label && ! $label_hidden ) {
-			if ( ! $label_above ) {
+			if ( ! $label_first ) {
 				$output .= $label;
 			}
 		}

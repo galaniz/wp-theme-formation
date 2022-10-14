@@ -63,15 +63,21 @@ class Contact_Form {
 		],
 		'contact-form-group' => [
 			'attr'             => [
-				'legend'   => ['type' => 'string'],
-				'required' => ['type' => 'boolean'],
+				'legend'          => ['type' => 'string'],
+				'required'        => ['type' => 'boolean'],
+				'empty_message'   => ['type' => 'string'],
+				'invalid_message' => ['type' => 'string'],
 			],
 			'default'          => [
-				'legend'   => '',
-				'required' => false,
+				'legend'          => '',
+				'required'        => false,
+				'empty_message'   => '',
+				'invalid_message' => '',
 			],
 			'provides_context' => [
-				'contact-form-group/required' => 'required',
+				'contact-form-group/required'        => 'required',
+				'contact-form-group/empty_message'   => 'empty_message',
+				'contact-form-group/invalid_message' => 'invalid_message',
 			],
 			'uses_context'     => [
 				'contact-form/type',
@@ -115,7 +121,6 @@ class Contact_Form {
 				'classes'           => '',
 				'empty_message'     => '',
 				'invalid_message'   => '',
-				'mailchimp'         => false,
 				'mailchimp_consent' => false,
 				'merge_field'       => '',
 				'tag'               => false,
@@ -123,6 +128,8 @@ class Contact_Form {
 			'uses_context' => [
 				'contact-form/type',
 				'contact-form-group/required',
+				'contact-form-group/empty_message',
+				'contact-form-group/invalid_message',
 			],
 			'render'       => [__CLASS__, 'render_contact_form_field'],
 			'handle'       => 'contact_form_field',
@@ -286,8 +293,10 @@ class Contact_Form {
 		$attr = array_replace_recursive( self::$blocks['contact-form-group']['default'], $attributes );
 
 		[
-			'legend'   => $legend,
-			'required' => $required,
+			'legend'          => $legend,
+			'required'        => $required,
+			'empty_message'   => $empty_message,
+			'invalid_message' => $invalid_message,
 		] = $attr;
 
 		$legend_id = uniqid();
@@ -362,7 +371,6 @@ class Contact_Form {
 			'classes'           => $classes,
 			'empty_message'     => $empty_message,
 			'invalid_message'   => $invalid_message,
-			'mailchimp'         => $mailchimp,
 			'mailchimp_consent' => $mailchimp_consent,
 			'merge_field'       => $merge_field,
 			'tag'               => $tag,
@@ -390,10 +398,21 @@ class Contact_Form {
 		$group_required = $block->context[ FRM::$namespace . '/contact-form-group/required' ] ?? false;
 
 		if ( 'radio' === $type || 'radio-group' === $type || 'radio-select' === $type || 'radio-text' === $type || 'checkbox' === $type || 'checkbox-group' === $type ) {
-			$field['label_above'] = false;
+			$field['label_first'] = false;
 
 			if ( $group_required ) {
+				$group_empty   = $block->context[ FRM::$namespace . '/contact-form-group/empty_message' ] ?? false;
+				$group_invalid = $block->context[ FRM::$namespace . '/contact-form-group/invalid_message' ] ?? false;
+
 				$attr['data-aria-required'] = 'true';
+
+				if ( $group_empty ) {
+					$attr['data-empty-message'] = $group_empty;
+				}
+
+				if ( $group_invalid ) {
+					$attr['data-invalid-message'] = $group_invalid;
+				}
 			}
 		} else {
 			if ( $group_required ) {
@@ -419,7 +438,9 @@ class Contact_Form {
 			$attr['data-invalid-message'] = $invalid_message;
 		}
 
-		if ( $mailchimp ) {
+		$form_type = $block->context[ FRM::$namespace . '/contact-form/type' ] ?? false;
+
+		if ( 'mailchimp' === $form_type || 'contact-mailchimp' === $form_type ) {
 			if ( $mailchimp_consent ) {
 				$attr['data-mailchimp-consent'] = 'true';
 			}

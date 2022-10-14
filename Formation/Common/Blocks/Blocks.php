@@ -106,8 +106,7 @@ class Blocks {
 	public function register_blocks() {
 		/* Check blocks and blocks folder url exist */
 
-		// if ( count( self::$blocks ) === 0 || ! self::$folder_url ) {
-		if ( count( self::$blocks ) === 0 ) {
+		if ( count( self::$blocks ) === 0 || ! self::$folder_url ) {
 			return;
 		}
 

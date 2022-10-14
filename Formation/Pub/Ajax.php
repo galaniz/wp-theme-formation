@@ -8,12 +8,6 @@
 namespace Formation\Pub;
 
 /**
- * Imports
- */
-
-use Formation\Formation as FRM;
-
-/**
  * Trait
  */
 
@@ -117,16 +111,55 @@ trait Ajax {
 				throw new \Exception( 'Forbidden' );
 			}
 
-			/* Honey Pot */
+			/* Id required */
+
+			$id = $_POST['id'] ?? false;
+
+			if ( ! $id ) {
+				throw new \Exception( 'No id' );
+			}
+
+			/* Input required */
+
+			$inputs = $_POST['inputs'] ?? false;
+
+			if ( ! $inputs ) {
+				throw new \Exception( 'No inputs' );
+			}
+
+			/* Honeypot */
+
+			$honeypot_name = static::$namespace . '_asi';
+
+			if ( ! isset( $inputs[ $honeypot_name ] ) || ! empty( $inputs[ $honeypot_name ]['value'] ) ) {
+				echo wp_json_encode( ['success' => 'Success.'] );
+
+				exit;
+			}
 
 			/* Type */
 
 			$type = $_POST['type'] ?? 'contact';
 
 			if ( 'contact' === $type ) {
-				static::send_contact_form( $_POST );
+				static::send_contact_form( $id, $inputs, $_POST );
 			} elseif ( 'mailchimp' === $type ) {
-				static::mailchimp_signup( $_POST );
+				static::mailchimp_signup( $id, $inputs, $_POST );
+			} elseif ( 'contact-mailchimp' === $type ) {
+				static::send_contact_form( $id, $inputs, $_POST );
+
+				/* Consent */
+
+				$consent_name  = $_POST['mailchimp_consent_name'] ?? false;
+				$consent_value = false;
+
+				if ( $consent_name ) {
+					$consent_value = $inputs[ $consent_name ]['value'] ?? false;
+				}
+
+				if ( $consent_value ) {
+					static::mailchimp_signup( $id, $inputs, $_POST, true );
+				}
 			}
 
 			/* phpcs:ignore */
@@ -143,32 +176,31 @@ trait Ajax {
 	/**
 	 * Process mailchimp signup form.
 	 *
-	 * @pass string $id Required.
-	 * @pass array $inputs Required.
-	 * @echo string if successfully sent
+	 * @var string $id
+	 * @var array $inputs
+	 * @var array $post
+	 * @var boolean $silent
+	 * @echo string if successful
 	 */
 
-	protected static function mailchimp_signup( $post ) {
-		$id     = $post['id'] ?? false;
-		$inputs = $post['inputs'] ?? false;
-
-		if ( ! $id ) {
-			throw new \Exception( 'No id' );
-		}
-
-		if ( ! $inputs ) {
-			throw new \Exception( 'No inputs' );
-		}
-
+	protected static function mailchimp_signup( $id = '', $inputs = [], $post = [], $silent = false ) {
 		$meta = get_option( static::$namespace . '_form_' . $id, '' );
 
 		if ( ! $meta ) {
+			if ( $silent ) {
+				exit;
+			}
+
 			throw new \Exception( 'No meta' );
 		}
 
 		$list_id = $meta['mailchimp_list'] ?? false;
 
 		if ( ! $list_id ) {
+			if ( $silent ) {
+				exit;
+			}
+
 			throw new \Exception( 'No List ID' );
 		}
 
@@ -178,7 +210,7 @@ trait Ajax {
 		$tags         = [];
 		$merge_fields = [];
 
-		$n = self::$namespace . '_';
+		$n = static::$namespace . '_';
 
 		foreach ( $inputs as $name => $input ) {
 			$input_type  = $input['type'];
@@ -206,15 +238,22 @@ trait Ajax {
 			$input_value = urldecode( $input_value );
 
 			if ( isset( $input['tag'] ) ) {
-				$tags[] = $input_value;
+				$tags[] = [
+					'name'   => $input_value,
+					'status' => 'active',
+				];
 			}
 
 			if ( isset( $input['merge_field'] ) ) {
-				$merge_fields[ strtoupper( str_replace( $n, '', $name ) ) ] = $input_value;
+				$merge_fields[ $input['merge_field'] ] = $input_value;
 			}
 		}
 
 		if ( ! $email ) {
+			if ( $silent ) {
+				exit;
+			}
+
 			throw new \Exception( 'No email' );
 		}
 
@@ -225,6 +264,10 @@ trait Ajax {
 		$key = get_option( $n . 'mailchimp_api_key', '' );
 
 		if ( ! $key ) {
+			if ( $silent ) {
+				exit;
+			}
+
 			throw new \Exception( 'No API key' );
 		}
 
@@ -274,8 +317,16 @@ trait Ajax {
 		}
 
 		if ( $error ) {
+			if ( $silent ) {
+				exit;
+			}
+
 			throw new \Exception( 'Error Mailchimp API' );
 		} else {
+			if ( $silent ) {
+				exit;
+			}
+
 			echo wp_json_encode( ['success' => 'Successfully subscribed.'] );
 		}
 	}
@@ -283,23 +334,13 @@ trait Ajax {
 	/**
 	 * Process and send contact form.
 	 *
-	 * @pass string $id Required.
-	 * @pass array $inputs
-	 * @echo string if successfully sent
+	 * @var string $id
+	 * @var array $inputs
+	 * @var array $post
+	 * @echo string if successful
 	 */
 
-	protected static function send_contact_form( $post ) {
-		$id     = $post['id'] ?? false; // Id to get array of information (email, subject...)
-		$inputs = $post['inputs'] ?? false;
-
-		if ( ! $id ) {
-			throw new \Exception( 'No id' );
-		}
-
-		if ( ! $inputs ) {
-			throw new \Exception( 'No inputs' );
-		}
-
+	protected static function send_contact_form( $id = '', $inputs = [], $post = [] ) {
 		$meta = get_option( static::$namespace . '_form_' . $id, '' );
 
 		if ( ! $meta ) {
@@ -372,7 +413,7 @@ trait Ajax {
 					add_filter(
 						'wp_mail_from',
 						function( $email ) use ( $input_value ) {
-								return $input_value;
+							return $input_value;
 						}
 					);
 				}
@@ -442,7 +483,7 @@ trait Ajax {
 	 * @echo string json containing output
 	 */
 
-	public static function get_posts( $post ) {
+	public static function get_posts( $post = [] ) {
 		try {
 			$type           = $post['type'] ?? 'post';
 			$posts_per_page = (int) $post['ppp'] ?? 0;

@@ -338,12 +338,24 @@ trait Utils_Render {
 		$success_result_id = $form_id . '_success_result';
 		$success_result    = sprintf( $success_result, $success_result_id, $success_result_id );
 
+		/* Honeypot */
+
+		$honeypot_id       = uniqid();
+		$honeypot_name     = static::$namespace . '_asi';
+		$honeypot_label_id = uniqid();
+
+		$honeypot = (
+			"<label id='$honeypot_label_id' for='$honeypot_id' aria-hidden='true' data-asl>Website</label>" .
+			"<input type='url' name='$honeypot_name' id='$honeypot_id' value='' autocomplete='off' class='js-input' data-asi>"
+		);
+
 		/* Output */
 
 		return (
 			"<form class='$form_class' id='$form_id'$form_attr novalidate>" .
 				"<div$fields_class$fields_attr>" .
 					$fields .
+					$honeypot .
 					$error_summary .
 					$error_result .
 					"<div$button_field_class data-type='submit'>" .
