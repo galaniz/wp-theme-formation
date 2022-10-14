@@ -212,6 +212,145 @@ trait Utils_Render {
 	}
 
 	/**
+	 * Output logo.
+	 *
+	 * @param string $class
+	 * @param boolean $old_browser_compat
+	 * @return string html
+	 */
+
+	public static function render_logo( $class = '', $old_browser_compat = false ) {
+		$n      = static::$namespace;
+		$svg    = get_option( $n . '_svg_logo_meta', false );
+		$img    = $n . '_logo';
+		$output = '';
+
+		if ( $svg ) {
+			$meta   = explode( '|', $svg );
+			$width  = (int) $meta[0];
+			$height = (int) $meta[1];
+			$path   = $meta[2];
+
+			if ( $old_browser_compat && $width && $height ) {
+				$output .= "<div style='padding-top:" . ( ( $height / $width ) * 100 ) . "%'></div>";
+			}
+
+			/* phpcs:ignore */
+			$output .= file_get_contents( $path ); // Ignore: local path
+		} else {
+			$id = get_option( $img, 0 );
+
+			if ( ! $id ) {
+				return '';
+			}
+
+			$image = static::get_image( $id, 'large' );
+
+			if ( ! $image ) {
+				return '';
+			}
+
+			$src    = esc_url( $image['url'] );
+			$alt    = esc_attr( $image['alt'] );
+			$srcset = esc_attr( $image['srcset'] );
+			$sizes  = esc_attr( $image['sizes'] );
+			$class  = esc_attr( $class );
+
+			$output = "<img class='$class' src='$src' alt='$alt' srcset='$srcset' sizes='$sizes'>";
+		}
+
+		return $output;
+	}
+
+	/**
+	 * Output for search form.
+	 *
+	 * @param array $args
+	 * @return string html
+	 */
+
+	public static function render_form_search( $args = [] ) {
+		$args = array_merge(
+			[
+				'form_class'   => '',
+				'field_class'  => '',
+				'input_class'  => '',
+				'button_class' => '',
+				'icon_class'   => '',
+				'icon_path'    => '',
+				'a11y_class'   => '',
+			],
+			$args
+		);
+
+		/* Destructure */
+
+		[
+			'form_class'   => $form_class,
+			'field_class'  => $field_class,
+			'input_class'  => $input_class,
+			'button_class' => $button_class,
+			'icon_class'   => $icon_class,
+			'icon_path'    => $icon_path,
+			'a11y_class'   => $a11y_class,
+		] = $args;
+
+		/* Escape */
+
+		$form_class   = esc_attr( $form_class );
+		$field_class  = esc_attr( $field_class );
+		$input_class  = esc_attr( $input_class );
+		$button_class = esc_attr( $button_class );
+		$icon_class   = esc_attr( $icon_class );
+		$action       = esc_url( home_url( '/' ) );
+		$query        = esc_attr( get_search_query() );
+
+		if ( $form_class ) {
+			$form_class = " class='$form_class'";
+		}
+
+		if ( $field_class ) {
+			$field_class = " class='$field_class'";
+		}
+
+		if ( $input_class ) {
+			$input_class = " class='$input_class'";
+		}
+
+		if ( $button_class ) {
+			$button_class = " class='$button_class'";
+		}
+
+		if ( $icon_class ) {
+			$icon_class = " class='$icon_class'";
+		}
+
+		if ( $a11y_class ) {
+			$a11y_class = " class='$a11y_class'";
+		}
+
+		/* Label ID */
+
+		$unique_id = 'search-' . uniqid();
+
+		return (
+			"<form$form_class role='search' method='get' action='$action'>" .
+				"<div$field_class>" .
+					"<label$a11y_class for='$unique_id'>Search for: </label>" .
+					"<input$input_class type='search' id='$unique_id' placeholder='Search' value='$query' name='s' />" .
+					"<button$button_class type='submit'>" .
+						"<span$a11y_class>Submit search query</span>" .
+						"<span$icon_class>" .
+							/* phpcs:ignore */
+							( $icon_path ? file_get_contents( $icon_path ) : '' ) . // Ignore: local path
+						'</span>' .
+					'</button>' .
+				'</div>' .
+			'</form>'
+		);
+	}
+
+	/**
 	 * Output for general forms (contact, sign ups...)
 	 *
 	 * @param array $args
