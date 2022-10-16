@@ -85,13 +85,13 @@ registerBlockType(name, {
 
     let gapInput = ''
 
-    if (nO.gap_options.length) {
+    if (nO.field_gap_options.length) {
       gapInput = (
         <div>
           <SelectControl
             label='Field Gap'
             value={field_gap} // eslint-disable-line camelcase
-            options={nO.gap_options}
+            options={nO.field_gap_options}
             onChange={v => setAttributes({ field_gap: v })}
           />
         </div>

@@ -746,6 +746,7 @@ class Field {
 					$output .= sprintf(
 						'<div data-type="select">' .
 							'<select name="%1$s" id="%5$s" class="%3$s" %4$s>%2$s</select>' .
+							'<div data-select-caret></div>' .
 						'</div>',
 						esc_attr( $name ),
 						$opt,
@@ -789,8 +790,11 @@ class Field {
 					'name'    => $name . '_select',
 					'type'    => 'select',
 					'options' => $options,
+					'class'   => 'js-conditional',
 					'attr'    => [
-						'aria-label' => $label_text,
+						'aria-label'  => $label_text,
+						'disabled'    => '',
+						'data-enable' => $id,
 					],
 				],
 				$output
@@ -800,11 +804,14 @@ class Field {
 		if ( 'radio-text' === $type ) {
 			$output .= self::render_field(
 				[
-					'id'   => uniqid(),
-					'name' => $name . '_text',
-					'type' => 'text',
-					'attr' => [
-						'aria-label' => $label_text,
+					'id'    => uniqid(),
+					'name'  => $name . '_text',
+					'type'  => 'text',
+					'class' => 'js-conditional',
+					'attr'  => [
+						'aria-label'  => $label_text,
+						'disabled'    => '',
+						'data-enable' => $id,
 					],
 				],
 				$output
