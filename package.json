@@ -1,6 +1,6 @@
 {
   "name": "wp-theme-formation",
-  "version": "3.0.7",
+  "version": "3.0.8",
   "description": "Provide base, utilities and added functionality for building WordPress themes",
   "main": "index.js",
   "scripts": {
