@@ -484,8 +484,10 @@ trait Utils_Render {
 		$honeypot_label_id = uniqid();
 
 		$honeypot = (
-			"<label id='$honeypot_label_id' for='$honeypot_id' aria-hidden='true' data-asl>Website</label>" .
-			"<input type='url' name='$honeypot_name' id='$honeypot_id' value='' autocomplete='off' class='js-input' data-asi>"
+			'<div data-asi>' .
+				"<label id='$honeypot_label_id' for='$honeypot_id'>Website</label>" .
+				"<input type='url' name='$honeypot_name' id='$honeypot_id' value='' autocomplete='off' class='js-input'>" .
+			'</div>'
 		);
 
 		/* Output */

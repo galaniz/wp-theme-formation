@@ -524,14 +524,12 @@ class Field {
 
 		/* Required */
 
-		$req      = '';
 		$req_attr = '';
 		$attr     = Utils::get_attr_as_str(
 			$attr,
-			function( $a, $v ) use ( &$req, &$req_attr ) {
+			function( $a, $v ) use ( &$req_attr ) {
 				if ( 'aria-required' === $a && 'true' === $v ) {
-					$req      = '<span data-required> required</span>';
-					$req_attr = ' data-req';
+					$req_attr = ' data-required';
 				}
 			}
 		);
@@ -562,7 +560,6 @@ class Field {
 				$label = (
 					"<label id='$label_id' for='" . esc_attr( $id ) . "'$req_attr>" .
 						"<span data-label class='$label_class'><span>$label</span></span>" .
-						$req .
 						'<span data-control data-type="' . $type . '"></span>' .
 					'</label>'
 				);
@@ -570,7 +567,6 @@ class Field {
 				$label = (
 					"<label data-label id='$label_id' class='$label_class' for='" . esc_attr( $id ) . "'$req_attr>" .
 						"<span>$label</span>" .
-						$req .
 					'</label>'
 				);
 			}

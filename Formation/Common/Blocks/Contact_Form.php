@@ -333,12 +333,10 @@ class Contact_Form {
 
 		/* Required */
 
-		$req      = '';
 		$req_attr = '';
 
 		if ( $required ) {
-			$req      = '<span data-required> required</span>';
-			$req_attr = ' data-req';
+			$req_attr = ' data-required';
 		}
 
 		/* Output */
@@ -346,7 +344,7 @@ class Contact_Form {
 		return (
 			"<div$container_class>" .
 				"<fieldset$fieldset_class>" .
-					"<legend id='$legend_id'$req_attr><span>$legend</span>$req</legend>" .
+					"<legend id='$legend_id'$req_attr><span>$legend</span></legend>" .
 					"<div$fields_class>" .
 						$content .
 					'</div>' .
