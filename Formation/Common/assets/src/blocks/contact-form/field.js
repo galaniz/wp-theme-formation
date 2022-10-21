@@ -87,6 +87,7 @@ registerBlockType(name, {
       classes = def.classes,
       empty_message = def.empty_message,
       invalid_message = def.invalid_message,
+      conditional = def.conditional,
       mailchimp_consent = def.mailchimp_consent,
       merge_field = def.merge_field,
       tag = def.tag
@@ -298,6 +299,12 @@ registerBlockType(name, {
                 />
               </Fragment>
             )}
+            <TextareaControl
+              label='Conditional'
+              help='Comma separated ids'
+              value={conditional}
+              onChange={conditional => setAttributes({ conditional })}
+            />
             {mailchimpInputs}
           </PanelBody>
         </InspectorControls>

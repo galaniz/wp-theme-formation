@@ -148,12 +148,28 @@ class Formation {
 	public static $gap_options = [];
 
 	/**
+	 * Options for gap option in contact form block.
+	 *
+	 * @var array $field_gap_options
+	 */
+
+	public static $field_gap_options = [];
+
+	/**
 	 * Options for width in block options.
 	 *
 	 * @var array $width_options
 	 */
 
 	public static $width_options = [];
+
+	/**
+	 * Restrict embed variations in blocks.
+	 *
+	 * @var array $embed_variations
+	 */
+
+	public static $embed_variations = [];
 
 	/**
 	 * If child theme change styles path.
@@ -410,9 +426,14 @@ class Formation {
 
 		additional_script_data( 'namespace', static::$namespace, true, true );
 		additional_script_data( 'namespace', static::$namespace, false, true );
+
+		/* Pass options for access in blocks */
+
 		additional_script_data( static::$namespace, ['color_options' => static::$editor_color_palette ], true, true );
 		additional_script_data( static::$namespace, ['gap_options' => static::$gap_options ], true, true );
+		additional_script_data( static::$namespace, ['field_gap_options' => static::$field_gap_options ], true, true );
 		additional_script_data( static::$namespace, ['width_options' => static::$width_options ], true, true );
+		additional_script_data( static::$namespace, ['embed_variations' => static::$embed_variations ], true, true );
 
 		$ajax_url = ['ajax_url' => admin_url( 'admin-ajax.php' )];
 
@@ -509,15 +530,11 @@ class Formation {
 
 		/* Support for custom block editor color palette */
 
-		if ( static::$editor_color_palette ) {
-			add_theme_support( 'editor-color-palette', static::$editor_color_palette );
-		}
+		add_theme_support( 'editor-color-palette', static::$editor_color_palette );
 
 		/* Support for custom block editor font sizes */
 
-		if ( static::$editor_font_sizes ) {
-			add_theme_support( 'editor-font-sizes', static::$editor_font_sizes );
-		}
+		add_theme_support( 'editor-font-sizes', static::$editor_font_sizes );
 
 		/* Add custom image sizes */
 

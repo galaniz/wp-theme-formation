@@ -106,3 +106,17 @@ All notable changes to this project will be documented in this file.
 - Remove mailchimp list locations from `Theme` class and move to `Contact_Form`
 - Render methods to have fewer hard coded classes
 - Small organizational updates to `Field` class
+
+## [3.0.8] - 2022-10-20
+
+### Added
+- theme-sample.json
+
+### Changed
+- Field gap options for `Contact_Form` optional
+- wp.domReady replace window load listener
+- More attributes for radio-text and radio-select types in `Field` class
+- Conditional option for fields in `Contact_Form`
+- Tags for mailchimp form string type
+- Replace some classes with attributes in `Field` class
+- Simplify required labels and legends

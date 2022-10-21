@@ -102,6 +102,7 @@ class Contact_Form {
 				'classes'           => ['type' => 'string'],
 				'empty_message'     => ['type' => 'string'],
 				'invalid_message'   => ['type' => 'string'],
+				'conditional'       => ['type' => 'string'],
 				'mailchimp_consent' => ['type' => 'boolean'],
 				'merge_field'       => ['type' => 'string'],
 				'tag'               => ['type' => 'boolean'],
@@ -121,6 +122,7 @@ class Contact_Form {
 				'classes'           => '',
 				'empty_message'     => '',
 				'invalid_message'   => '',
+				'conditional'       => '',
 				'mailchimp_consent' => false,
 				'merge_field'       => '',
 				'tag'               => false,
@@ -331,12 +333,10 @@ class Contact_Form {
 
 		/* Required */
 
-		$req      = '';
 		$req_attr = '';
 
 		if ( $required ) {
-			$req      = '<span data-required> required</span>';
-			$req_attr = ' data-req';
+			$req_attr = ' data-required';
 		}
 
 		/* Output */
@@ -344,7 +344,7 @@ class Contact_Form {
 		return (
 			"<div$container_class>" .
 				"<fieldset$fieldset_class>" .
-					"<legend id='$legend_id'$req_attr><span>$legend</span>$req</legend>" .
+					"<legend id='$legend_id'$req_attr><span>$legend</span></legend>" .
 					"<div$fields_class>" .
 						$content .
 					'</div>' .
@@ -371,6 +371,7 @@ class Contact_Form {
 			'classes'           => $classes,
 			'empty_message'     => $empty_message,
 			'invalid_message'   => $invalid_message,
+			'conditional'       => $conditional,
 			'mailchimp_consent' => $mailchimp_consent,
 			'merge_field'       => $merge_field,
 			'tag'               => $tag,
@@ -437,6 +438,17 @@ class Contact_Form {
 		if ( $invalid_message ) {
 			$attr['data-invalid-message'] = $invalid_message;
 		}
+
+		if ( $conditional ) {
+			$field['field_attr'] = [
+				'style'        => 'display:none',
+				'data-display' => $conditional,
+			];
+
+			$field['field_class'] = 'js-conditional';
+		}
+
+		/* Mailchimp attributes */
 
 		$form_type = $block->context[ FRM::$namespace . '/contact-form/type' ] ?? false;
 

@@ -239,7 +239,7 @@ trait Ajax {
 
 			if ( isset( $input['tag'] ) ) {
 				$tags[] = [
-					'name'   => $input_value,
+					'name'   => (string) $input_value,
 					'status' => 'active',
 				];
 			}

@@ -524,14 +524,12 @@ class Field {
 
 		/* Required */
 
-		$req      = '';
 		$req_attr = '';
 		$attr     = Utils::get_attr_as_str(
 			$attr,
-			function( $a, $v ) use ( &$req, &$req_attr ) {
+			function( $a, $v ) use ( &$req_attr ) {
 				if ( 'aria-required' === $a && 'true' === $v ) {
-					$req      = '<span data-required> required</span>';
-					$req_attr = ' data-req';
+					$req_attr = ' data-required';
 				}
 			}
 		);
@@ -561,16 +559,14 @@ class Field {
 			if ( $checkbox_radio ) {
 				$label = (
 					"<label id='$label_id' for='" . esc_attr( $id ) . "'$req_attr>" .
-						"<span class='$label_class'><span>$label</span></span>" .
-						$req .
-						'<span class="' . $pre . '__control" data-type="' . $type . '"></span>' .
+						"<span data-label class='$label_class'><span>$label</span></span>" .
+						'<span data-control data-type="' . $type . '"></span>' .
 					'</label>'
 				);
 			} else {
 				$label = (
-					"<label id='$label_id' class='$label_class' for='" . esc_attr( $id ) . "'$req_attr>" .
+					"<label data-label id='$label_id' class='$label_class' for='" . esc_attr( $id ) . "'$req_attr>" .
 						"<span>$label</span>" .
-						$req .
 					'</label>'
 				);
 			}
@@ -746,6 +742,7 @@ class Field {
 					$output .= sprintf(
 						'<div data-type="select">' .
 							'<select name="%1$s" id="%5$s" class="%3$s" %4$s>%2$s</select>' .
+							'<div data-select-arrow></div>' .
 						'</div>',
 						esc_attr( $name ),
 						$opt,
@@ -789,8 +786,11 @@ class Field {
 					'name'    => $name . '_select',
 					'type'    => 'select',
 					'options' => $options,
+					'class'   => 'js-conditional',
 					'attr'    => [
-						'aria-label' => $label_text,
+						'aria-label'  => $label_text,
+						'disabled'    => '',
+						'data-enable' => $id,
 					],
 				],
 				$output
@@ -800,11 +800,14 @@ class Field {
 		if ( 'radio-text' === $type ) {
 			$output .= self::render_field(
 				[
-					'id'   => uniqid(),
-					'name' => $name . '_text',
-					'type' => 'text',
-					'attr' => [
-						'aria-label' => $label_text,
+					'id'    => uniqid(),
+					'name'  => $name . '_text',
+					'type'  => 'text',
+					'class' => 'js-conditional',
+					'attr'  => [
+						'aria-label'  => $label_text,
+						'disabled'    => '',
+						'data-enable' => $id,
 					],
 				],
 				$output

@@ -13,7 +13,7 @@ const {
 
 /* Loop through and insert blocks array */
 
-window.addEventListener('load', () => {
+window.wp.domReady(() => {
   const n = getNamespace(true)
 
   if (!n) { return }

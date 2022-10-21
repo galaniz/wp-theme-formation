@@ -11,7 +11,7 @@ const {
 
 /* Unregister blocks if not in embed array */
 
-window.addEventListener('load', () => {
+window.wp.domReady(() => {
   const n = getNamespace(true)
 
   if (!n || !Object.getOwnPropertyDescriptor(window.wp, 'blocks')) { return }
