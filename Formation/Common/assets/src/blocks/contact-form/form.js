@@ -50,7 +50,7 @@ if (Object.getOwnPropertyDescriptor(nO.blocks[name], 'provides_context')) {
 
 const dataSelector = withSelect((select, ownProps) => {
   const clientId = ownProps.clientId
-  const args = { clientId: clientId }
+  const args = { clientId }
 
   if (!Object.getOwnPropertyDescriptor(ownProps, 'id')) {
     ownProps.attributes.id = clientId

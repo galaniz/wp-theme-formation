@@ -539,8 +539,11 @@ trait Utils {
 		$link_url = wp_parse_url( $url );
 		$home_url = wp_parse_url( home_url() );
 
-		if ( $link_url['host'] ) {
-			if ( $link_url['host'] !== $home_url['host'] ) {
+		$link_host = $link_url['host'] ?? false;
+		$home_host = $home_url['host'] ?? false;
+
+		if ( $link_host ) {
+			if ( $link_host !== $home_host ) {
 				$is_external = true;
 			}
 		}
