@@ -120,3 +120,11 @@ All notable changes to this project will be documented in this file.
 - Tags for mailchimp form string type
 - Replace some classes with attributes in `Field` class
 - Simplify required labels and legends
+
+## [3.0.9] - 2022-10-25
+
+### Fixed
+- `is_external_url` host check
+
+### Changed
+- withSelect callback clean up
