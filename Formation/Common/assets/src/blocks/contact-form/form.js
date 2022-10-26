@@ -49,14 +49,11 @@ if (Object.getOwnPropertyDescriptor(nO.blocks[name], 'provides_context')) {
 /* Set data */
 
 const dataSelector = withSelect((select, ownProps) => {
-  const clientId = ownProps.clientId
-  const args = { clientId }
+  const { clientId } = ownProps
 
   if (!Object.getOwnPropertyDescriptor(ownProps, 'id')) {
     ownProps.attributes.id = clientId
   }
-
-  return args
 })
 
 /* Block */

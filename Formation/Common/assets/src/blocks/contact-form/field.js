@@ -50,11 +50,11 @@ if (Object.getOwnPropertyDescriptor(nO.blocks[name], 'uses_context')) {
 /* Set data */
 
 const dataSelector = withSelect((select, ownProps) => {
-  const clientID = ownProps.clientId
-  const args = { clientID: clientID }
+  const { clientId } = ownProps
+  const args = { clientId }
 
   if (!Object.getOwnPropertyDescriptor(ownProps.attributes, 'id')) {
-    ownProps.attributes.id = clientID
+    ownProps.attributes.id = clientId
   }
 
   return args
@@ -70,10 +70,10 @@ registerBlockType(name, {
   usesContext,
   attributes: attr,
   edit: dataSelector(props => {
-    const { attributes, setAttributes, clientID, context } = props
+    const { attributes, setAttributes, clientId, context } = props
 
     const {
-      id = clientID,
+      id = clientId,
       type = def.type,
       name = def.name,
       label = def.label,
