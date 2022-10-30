@@ -334,9 +334,11 @@ class Contact_Form {
 		/* Required */
 
 		$req_attr = '';
+		$req_icon = '';
 
 		if ( $required ) {
 			$req_attr = ' data-required';
+			$req_icon = '<span data-required-icon aria-hidden="true"></span>';
 		}
 
 		/* Output */
@@ -344,7 +346,7 @@ class Contact_Form {
 		return (
 			"<div$container_class>" .
 				"<fieldset$fieldset_class>" .
-					"<legend id='$legend_id'$req_attr><span>$legend</span></legend>" .
+					"<legend id='$legend_id'$req_attr><span>$legend$req_icon</span></legend>" .
 					"<div$fields_class>" .
 						$content .
 					'</div>' .

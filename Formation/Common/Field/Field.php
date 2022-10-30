@@ -525,11 +525,13 @@ class Field {
 		/* Required */
 
 		$req_attr = '';
+		$req_icon = '';
 		$attr     = Utils::get_attr_as_str(
 			$attr,
-			function( $a, $v ) use ( &$req_attr ) {
+			function( $a, $v ) use ( &$req_attr, &$req_icon ) {
 				if ( 'aria-required' === $a && 'true' === $v ) {
 					$req_attr = ' data-required';
+					$req_icon = '<span data-required-icon aria-hidden="true"></span>';
 				}
 			}
 		);
@@ -559,14 +561,14 @@ class Field {
 			if ( $checkbox_radio ) {
 				$label = (
 					"<label id='$label_id' for='" . esc_attr( $id ) . "'$req_attr>" .
-						"<span data-label class='$label_class'><span>$label</span></span>" .
+						"<span data-label class='$label_class'><span>$label$req_icon</span></span>" .
 						'<span data-control data-type="' . $type . '"></span>' .
 					'</label>'
 				);
 			} else {
 				$label = (
 					"<label data-label id='$label_id' class='$label_class' for='" . esc_attr( $id ) . "'$req_attr>" .
-						"<span>$label</span>" .
+						"<span>$label$req_icon</span>" .
 					'</label>'
 				);
 			}
