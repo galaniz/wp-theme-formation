@@ -93,6 +93,7 @@ class Contact_Form {
 				'name'              => ['type' => 'string'],
 				'label'             => ['type' => 'string'],
 				'required'          => ['type' => 'boolean'],
+				'autocomplete'      => ['type' => 'string'],
 				'value'             => ['type' => 'string'],
 				'options'           => ['type' => 'string'],
 				'selected'          => ['type' => 'boolean'],
@@ -113,6 +114,7 @@ class Contact_Form {
 				'name'              => '',
 				'label'             => '',
 				'required'          => false,
+				'autocomplete'      => '',
 				'value'             => '',
 				'options'           => '',
 				'selected'          => false,
@@ -362,6 +364,7 @@ class Contact_Form {
 			'name'              => $name,
 			'label'             => $label,
 			'required'          => $required,
+			'autocomplete'      => $autocomplete,
 			'value'             => $value,
 			'options'           => $options,
 			'selected'          => $selected,
@@ -425,6 +428,10 @@ class Contact_Form {
 
 		if ( $required ) {
 			$attr['aria-required'] = 'true';
+		}
+
+		if ( $autocomplete ) {
+			$attr['autocomplete'] = $autocomplete;
 		}
 
 		if ( $rows && 'textarea' === $type ) {
