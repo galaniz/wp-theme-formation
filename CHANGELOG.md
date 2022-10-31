@@ -128,3 +128,8 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - withSelect callback clean up
+
+## [3.0.10] - 2022-10-31
+
+### Changed
+- Add ability to set autocomplete tokens for fields in `Contact_Form`

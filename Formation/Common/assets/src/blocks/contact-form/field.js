@@ -78,6 +78,7 @@ registerBlockType(name, {
       name = def.name,
       label = def.label,
       required = def.required,
+      autocomplete = def.autocomplete,
       value = def.value,
       options = def.options,
       selected = def.selected,
@@ -269,6 +270,11 @@ registerBlockType(name, {
                 { label: typeLabels.select, value: 'select' }
               ]}
               onChange={type => setAttributes({ type })}
+            />
+            <TextControl
+              label='Autocomplete Token(s)'
+              value={autocomplete}
+              onChange={autocomplete => setAttributes({ autocomplete })}
             />
             {rowsInput}
             {placeholderInput}
