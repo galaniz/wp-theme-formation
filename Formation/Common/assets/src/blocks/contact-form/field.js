@@ -84,6 +84,7 @@ registerBlockType(name, {
       selected = def.selected,
       placeholder = def.placeholder,
       rows = def.rows,
+      size = def.size,
       width = def.width,
       classes = def.classes,
       empty_message = def.empty_message,
@@ -105,6 +106,22 @@ registerBlockType(name, {
           type='number'
           value={rows}
           onChange={rows => setAttributes({ rows })}
+        />
+      )
+    }
+
+    /* Size */
+
+    let sizeInput = ''
+
+    if (type === 'text' || type === 'email' || type === 'tel' || type === 'radio-text') {
+      sizeInput = (
+        <TextControl
+          label='Size'
+          help='Visible width in characters'
+          type='number'
+          value={size}
+          onChange={size => setAttributes({ size })}
         />
       )
     }
@@ -277,6 +294,7 @@ registerBlockType(name, {
               onChange={autocomplete => setAttributes({ autocomplete })}
             />
             {rowsInput}
+            {sizeInput}
             {placeholderInput}
             {optionsInput}
             <CheckboxControl
