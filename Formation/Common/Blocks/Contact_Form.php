@@ -99,6 +99,7 @@ class Contact_Form {
 				'selected'          => ['type' => 'boolean'],
 				'placeholder'       => ['type' => 'string'],
 				'rows'              => ['type' => 'string'],
+				'size'              => ['type' => 'string'],
 				'width'             => ['type' => 'string'],
 				'classes'           => ['type' => 'string'],
 				'empty_message'     => ['type' => 'string'],
@@ -120,6 +121,7 @@ class Contact_Form {
 				'selected'          => false,
 				'placeholder'       => '',
 				'rows'              => '',
+				'size'              => '',
 				'width'             => '',
 				'classes'           => '',
 				'empty_message'     => '',
@@ -336,9 +338,11 @@ class Contact_Form {
 		/* Required */
 
 		$req_attr = '';
+		$req_icon = '';
 
 		if ( $required ) {
 			$req_attr = ' data-required';
+			$req_icon = '<span data-required-icon aria-hidden="true"></span>';
 		}
 
 		/* Output */
@@ -346,7 +350,7 @@ class Contact_Form {
 		return (
 			"<div$container_class>" .
 				"<fieldset$fieldset_class>" .
-					"<legend id='$legend_id'$req_attr><span>$legend</span></legend>" .
+					"<legend id='$legend_id'$req_attr><span>$legend$req_icon</span></legend>" .
 					"<div$fields_class>" .
 						$content .
 					'</div>' .
@@ -370,6 +374,7 @@ class Contact_Form {
 			'selected'          => $selected,
 			'placeholder'       => $placeholder,
 			'rows'              => $rows,
+			'size'              => $size,
 			'width'             => $width,
 			'classes'           => $classes,
 			'empty_message'     => $empty_message,
@@ -436,6 +441,10 @@ class Contact_Form {
 
 		if ( $rows && 'textarea' === $type ) {
 			$attr['rows'] = $rows;
+		}
+
+		if ( $size && ( 'text' === $type || 'email' === $type || 'tel' === $type || 'radio-text' === $type ) ) {
+			$attr['size'] = $size;
 		}
 
 		if ( $empty_message ) {

@@ -133,3 +133,11 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Add ability to set autocomplete tokens for fields in `Contact_Form`
+
+## [3.0.11] - 2022-10-31
+
+### Added
+- Size attribute to fields in `Contact_Form` and `Field`
+
+### Changed
+- Span for required icon in `Contact Form` legend and `Field` labels
