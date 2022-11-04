@@ -495,9 +495,9 @@ trait Utils_Render {
 		return (
 			"<form class='$form_class' id='$form_id'$form_attr novalidate>" .
 				"<div$fields_class$fields_attr>" .
+					$error_summary .
 					$fields .
 					$honeypot .
-					$error_summary .
 					$error_result .
 					"<div$button_field_class data-type='submit'>" .
 						"<button class='$button_class' type='submit'$button_attr>" .
