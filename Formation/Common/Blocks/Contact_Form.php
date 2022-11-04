@@ -310,17 +310,19 @@ class Contact_Form {
 		/* Filter classes */
 
 		$classes = [
-			'container_class' => '',
-			'fieldset_class'  => '',
-			'fields_class'    => '',
+			'container_class'       => '',
+			'fieldset_class'        => '',
+			'fields_class'          => '',
+			'visually_hidden_class' => 'a11y-visually-hidden',
 		];
 
 		$classes = apply_filters( 'formation_contact_form_group_classes', $classes, $attr, $block );
 
 		[
-			'container_class' => $container_class,
-			'fieldset_class'  => $fieldset_class,
-			'fields_class'    => $fields_class,
+			'container_class'       => $container_class,
+			'fieldset_class'        => $fieldset_class,
+			'fields_class'          => $fields_class,
+			'visually_hidden_class' => $visually_hidden_class,
 		] = $classes;
 
 		if ( $container_class ) {
@@ -342,7 +344,7 @@ class Contact_Form {
 
 		if ( $required ) {
 			$req_attr = ' data-required';
-			$req_icon = '<span data-required-icon aria-hidden="true"></span>';
+			$req_icon = "<span class='$visually_hidden_class'> required</span><span data-required-icon aria-hidden='true'></span>";
 		}
 
 		/* Output */
