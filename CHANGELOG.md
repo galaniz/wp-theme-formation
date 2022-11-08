@@ -141,3 +141,9 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Span for required icon in `Contact Form` legend and `Field` labels
+
+## [3.0.12] - 2022-11-08
+
+### Changed
+- `render_form` move error summary to top
+- `Contact_Form` required visually hidden text for fieldset
