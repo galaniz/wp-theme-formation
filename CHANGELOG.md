@@ -147,3 +147,8 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - `render_form` move error summary to top
 - `Contact_Form` required visually hidden text for fieldset
+
+## [3.0.13] - 2022-11-11
+
+### Added
+- Page excerpts in `Formation`

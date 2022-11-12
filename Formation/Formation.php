@@ -536,6 +536,10 @@ class Formation {
 
 		add_theme_support( 'editor-font-sizes', static::$editor_font_sizes );
 
+		/* Excerpts for pages */
+
+		add_post_type_support( 'page', 'excerpt' );
+
 		/* Add custom image sizes */
 
 		if ( static::$image_sizes ) {
