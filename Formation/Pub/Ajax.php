@@ -88,8 +88,16 @@ trait Ajax {
 
 			exit;
 		} catch ( \Exception $e ) {
+			$code = $e->getCode();
+
+			if ( ! $code ) {
+				$code = 500;
+			}
+
 			echo esc_html( $e->getMessage() );
-			header( http_response_code( 500 ) );
+
+			header( http_response_code( $code ) );
+
 			exit;
 		}
 	}
@@ -167,8 +175,16 @@ trait Ajax {
 
 			exit;
 		} catch ( \Exception $e ) {
+			$code = $e->getCode();
+
+			if ( ! $code ) {
+				$code = 500;
+			}
+
 			echo esc_html( $e->getMessage() );
-			header( http_response_code( 500 ) );
+
+			header( http_response_code( $code ) );
+
 			exit;
 		}
 	}
@@ -231,11 +247,11 @@ trait Ajax {
 				}
 
 				if ( 'email' === $input_type ) {
-					$email = urldecode( $input_value );
+					$email = rawurldecode( $input_value );
 				}
 			}
 
-			$input_value = urldecode( $input_value );
+			$input_value = rawurldecode( $input_value );
 
 			if ( isset( $input['tag'] ) ) {
 				$tags[] = [
@@ -271,7 +287,14 @@ trait Ajax {
 			throw new \Exception( 'No API key' );
 		}
 
-		$data_center = explode( '-', $key )[1];
+		/* Data center */
+
+		$data_center_array = explode( '-', $key );
+		$data_center       = isset( $data_center_array[1] ) ? $data_center_array[1] : '';
+
+		if ( ! $data_center ) {
+			throw new \Exception( 'No data center' );
+		}
 
 		/* Url */
 
@@ -306,11 +329,13 @@ trait Ajax {
 			]
 		);
 
+		$code = isset( $response['response']['code'] ) ? $response['response']['code'] : 500;
+
+		/* Error check */
+
 		if ( is_wp_error( $response ) ) {
 			$error = true;
 		} else {
-			$code = isset( $response['response']['code'] ) ? $response['response']['code'] : 500;
-
 			if ( 200 !== $code ) {
 				$error = true;
 			}
@@ -321,7 +346,20 @@ trait Ajax {
 				exit;
 			}
 
-			throw new \Exception( 'Error Mailchimp API' );
+			$response_body = isset( $response['body'] ) ? json_decode( $response['body'] ) : '';
+			$error_message = 'Error Mailchimp API';
+			$error_detail  = '';
+
+			if ( $response_body ) {
+				$error_message = isset( $response_body->title ) ? 'Mailchimp ' . $response_body->title : '';
+				$error_detail  = isset( $response_body->detail ) ? $response_body->detail : '';
+
+				if ( $error_detail ) {
+					$error_message .= ": $error_detail";
+				}
+			}
+
+			throw new \Exception( $error_message, $code );
 		} else {
 			if ( $silent ) {
 				exit;
@@ -570,8 +608,16 @@ trait Ajax {
 
 			exit;
 		} catch ( \Exception $e ) {
+			$code = $e->getCode();
+
+			if ( ! $code ) {
+				$code = 500;
+			}
+
 			echo esc_html( $e->getMessage() );
-			header( http_response_code( 500 ) );
+
+			header( http_response_code( $code ) );
+
 			exit;
 		}
 	}
