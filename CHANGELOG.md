@@ -152,3 +152,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Page excerpts in `Formation`
+
+## [3.0.14] - 2022-11-12
+
+### Changed
+- Replace urldecode with rawurldecode, more flexible codes in response and detailed Mailchimp error response in `Ajax`
