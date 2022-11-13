@@ -140,7 +140,7 @@ trait Ajax {
 			$honeypot_name = static::$namespace . '_asi';
 
 			if ( ! isset( $inputs[ $honeypot_name ] ) || ! empty( $inputs[ $honeypot_name ]['value'] ) ) {
-				echo wp_json_encode( ['success' => 'Success.'] );
+				echo wp_json_encode( ['contact_success' => 'Success.'] );
 
 				exit;
 			}
@@ -150,11 +150,19 @@ trait Ajax {
 			$type = $_POST['type'] ?? 'contact';
 
 			if ( 'contact' === $type ) {
-				static::send_contact_form( $id, $inputs, $_POST );
+				$echo = static::send_contact_form( $id, $inputs, $_POST );
+
+				if ( $echo ) {
+					echo wp_json_encode( $echo );
+				}
 			} elseif ( 'mailchimp' === $type ) {
-				static::mailchimp_signup( $id, $inputs, $_POST );
+				$echo = static::mailchimp_signup( $id, $inputs, $_POST );
+
+				if ( $echo ) {
+					echo wp_json_encode( $echo );
+				}
 			} elseif ( 'contact-mailchimp' === $type ) {
-				static::send_contact_form( $id, $inputs, $_POST );
+				$echo = static::send_contact_form( $id, $inputs, $_POST );
 
 				/* Consent */
 
@@ -166,7 +174,23 @@ trait Ajax {
 				}
 
 				if ( $consent_value ) {
-					static::mailchimp_signup( $id, $inputs, $_POST, true );
+					$total_echo = [];
+
+					if ( $echo ) {
+						$total_echo = $echo;
+					}
+
+					$mc_echo = static::mailchimp_signup( $id, $inputs, $_POST, true );
+
+					if ( $mc_echo ) {
+						$total_echo['mailchimp_result'] = $mc_echo['mailchimp_result'];
+					}
+
+					echo wp_json_encode( $total_echo );
+				} else {
+					if ( $echo ) {
+						echo wp_json_encode( $echo );
+					}
 				}
 			}
 
@@ -293,6 +317,10 @@ trait Ajax {
 		$data_center       = isset( $data_center_array[1] ) ? $data_center_array[1] : '';
 
 		if ( ! $data_center ) {
+			if ( $silent ) {
+				exit;
+			}
+
 			throw new \Exception( 'No data center' );
 		}
 
@@ -342,10 +370,6 @@ trait Ajax {
 		}
 
 		if ( $error ) {
-			if ( $silent ) {
-				exit;
-			}
-
 			$response_body = isset( $response['body'] ) ? json_decode( $response['body'] ) : '';
 			$error_message = 'Error Mailchimp API';
 			$error_detail  = '';
@@ -359,13 +383,17 @@ trait Ajax {
 				}
 			}
 
+			if ( $silent ) {
+				return ['mailchimp_result' => $error_message];
+			}
+
 			throw new \Exception( $error_message, $code );
 		} else {
 			if ( $silent ) {
-				exit;
+				return ['mailchimp_result' => 'Successfully subscribed.'];
 			}
 
-			echo wp_json_encode( ['success' => 'Successfully subscribed.'] );
+			return ['mailchimp_success' => 'Successfully subscribed.'];
 		}
 	}
 
@@ -503,7 +531,7 @@ trait Ajax {
 		if ( ! $result ) {
 			throw new \Exception( 'Error sending form' );
 		} else {
-			echo wp_json_encode( ['success' => 'Form successully sent.'] );
+			return ['contact_success' => 'Form successully sent.'];
 		}
 
 		// Reset content-type to avoid conflicts
