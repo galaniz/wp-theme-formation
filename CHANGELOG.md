@@ -157,3 +157,8 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Replace urldecode with rawurldecode, more flexible codes in response and detailed Mailchimp error response in `Ajax`
+
+## [3.0.15] - 2022-11-13
+
+### Changed
+- `Ajax` return contact and mailchimp results for more flexible output
