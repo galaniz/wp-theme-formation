@@ -94,9 +94,9 @@ trait Ajax {
 				$code = 500;
 			}
 
-			echo esc_html( $e->getMessage() );
+			http_response_code( $code );
 
-			header( http_response_code( $code ) );
+			echo esc_html( $e->getMessage() );
 
 			exit;
 		}
@@ -205,9 +205,9 @@ trait Ajax {
 				$code = 500;
 			}
 
-			echo esc_html( $e->getMessage() );
+			http_response_code( $code );
 
-			header( http_response_code( $code ) );
+			echo esc_html( $e->getMessage() );
 
 			exit;
 		}
@@ -642,9 +642,9 @@ trait Ajax {
 				$code = 500;
 			}
 
-			echo esc_html( $e->getMessage() );
+			http_response_code( $code );
 
-			header( http_response_code( $code ) );
+			echo esc_html( $e->getMessage() );
 
 			exit;
 		}

@@ -1170,8 +1170,10 @@ class Field {
 
 					exit;
 				} catch ( \Exception $e ) {
+					http_response_code( 500 );
+
 					echo esc_html( $e->getMessage() );
-					header( http_response_code( 500 ) );
+
 					exit;
 				}
 			}
@@ -1197,8 +1199,10 @@ class Field {
 
 					exit;
 				} catch ( \Exception $e ) {
+					http_response_code( 500 );
+
 					echo esc_html( $e->getMessage() );
-					header( http_response_code( 500 ) );
+
 					exit;
 				}
 			}
