@@ -788,7 +788,7 @@ class Field {
 					'name'    => $name . '_select',
 					'type'    => 'select',
 					'options' => $options,
-					'class'   => 'js-conditional',
+					'class'   => 'js-conditional js-radio-set-input',
 					'attr'    => [
 						'aria-label'  => $label_text,
 						'disabled'    => '',
@@ -811,7 +811,7 @@ class Field {
 					'id'    => uniqid(),
 					'name'  => $name . '_text',
 					'type'  => 'text',
-					'class' => 'js-conditional',
+					'class' => 'js-conditional js-radio-set-input',
 					'attr'  => $radio_text_attr,
 				],
 				$output
