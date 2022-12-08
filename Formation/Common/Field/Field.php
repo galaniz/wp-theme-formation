@@ -497,18 +497,6 @@ class Field {
 
 		$checkbox_radio = 'checkbox' === $type || 'radio' === $type || 'radio-select' === $type || 'radio-text' === $type;
 
-		/* Radio text size */
-
-		$radio_text_size = '';
-
-		if ( 'radio-text' === $type && isset( $attr['size'] ) ) {
-			$radio_text_size = $attr['size'];
-
-			if ( $radio_text_size ) {
-				unset( $attr['size'] );
-			}
-		}
-
 		/* Placeholder */
 
 		$placeholder = $placeholder ? 'placeholder="' . esc_attr( $placeholder ) . '"' : '';
@@ -817,10 +805,6 @@ class Field {
 				'disabled'    => '',
 				'data-enable' => $id,
 			];
-
-			if ( $radio_text_size ) {
-				$radio_text_attr['size'] = $radio_text_size;
-			}
 
 			$output .= self::render_field(
 				[
