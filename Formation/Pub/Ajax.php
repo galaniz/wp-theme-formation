@@ -391,7 +391,8 @@ trait Ajax {
 
 		/* Url */
 
-		$url = "https://$data_center.api.mailchimp.com/3.0/lists/$list_id/members/$email";
+		$email_hash = md5( strtolower( $email ) );
+		$url        = "https://$data_center.api.mailchimp.com/3.0/lists/$list_id/members/$email_hash";
 
 		/* Body */
 
@@ -399,10 +400,6 @@ trait Ajax {
 			'email_address' => $email,
 			'status_if_new' => 'pending',
 		];
-
-		if ( count( $tags ) > 0 ) {
-			$body['tags'] = $tags;
-		}
 
 		if ( count( $merge_fields ) > 0 ) {
 			$body['merge_fields'] = $merge_fields;
@@ -454,6 +451,20 @@ trait Ajax {
 
 			throw new \Exception( $error_message, $code );
 		} else {
+			if ( count( $tags ) > 0 ) {
+				$response = wp_safe_remote_post(
+					"$url/tags",
+					[
+						'method'  => 'POST',
+						'headers' => [
+							'Content-type'  => 'application/json',
+							'Authorization' => "Bearer $key",
+						],
+						'body'    => wp_json_encode( ['tags' => $tags] ),
+					]
+				);
+			}
+
 			if ( $silent ) {
 				return ['mailchimp_result' => 'Successfully subscribed.'];
 			}

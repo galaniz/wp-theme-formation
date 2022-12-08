@@ -788,11 +788,12 @@ class Field {
 					'name'    => $name . '_select',
 					'type'    => 'select',
 					'options' => $options,
-					'class'   => 'js-conditional js-radio-set-input',
+					'class'   => 'js-conditional',
 					'attr'    => [
-						'aria-label'  => $label_text,
-						'disabled'    => '',
-						'data-enable' => $id,
+						'aria-label'     => $label_text,
+						'disabled'       => '',
+						'data-enable'    => $id,
+						'data-radio-set' => '',
 					],
 				],
 				$output
@@ -801,9 +802,10 @@ class Field {
 
 		if ( 'radio-text' === $type ) {
 			$radio_text_attr = [
-				'aria-label'  => $label_text,
-				'disabled'    => '',
-				'data-enable' => $id,
+				'aria-label'     => $label_text,
+				'disabled'       => '',
+				'data-enable'    => $id,
+				'data-radio-set' => '',
 			];
 
 			$output .= self::render_field(
@@ -811,7 +813,7 @@ class Field {
 					'id'    => uniqid(),
 					'name'  => $name . '_text',
 					'type'  => 'text',
-					'class' => 'js-conditional js-radio-set-input',
+					'class' => 'js-conditional',
 					'attr'  => $radio_text_attr,
 				],
 				$output
