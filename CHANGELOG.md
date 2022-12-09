@@ -162,3 +162,18 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - `Ajax` return contact and mailchimp results for more flexible output
+
+## [3.0.16] - 2022-12-08
+
+### Fixed
+- HTTP codes in `Field` and `Ajax`
+- Tags fix Mailchimp in `Ajax`
+
+### Changed
+- More robust plain and html email output for `send_contact_form` in `Ajax`
+
+### Removed
+- Size attribute in `Field` and `Contact_Form`
+
+### Added
+- Data attribute for radio-tet and radio-select inputs in `Field`
