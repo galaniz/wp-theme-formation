@@ -14,6 +14,14 @@ namespace Formation\Pub;
 trait Ajax {
 
 	/**
+	 * Temporarily store plain email output.
+	 *
+	 * @var string $temp_output_plain
+	 */
+
+	public static $temp_output_plain = '';
+
+	/**
 	 * Setup actions.
 	 *
 	 * @uses add_action() to add ajax actions.
@@ -66,10 +74,67 @@ trait Ajax {
 	}
 
 	/**
-	 * Create nonces before form submission.
+	 * PHPMailer action callback.
 	 *
-	 * @pass string $nonce_name Required.
-	 * @echo string json containing nonce.
+	 * @param object $phpmailer
+	 */
+
+	public static function phpmailer_init( $phpmailer ) {
+		/* phpcs:ignore */
+		$phpmailer->AltBody = self::$temp_output_plain;
+
+		self::$temp_output_plain = '';
+
+		remove_action( 'phpmailer_init', [get_called_class(), 'phpmailer_init'] );
+	}
+
+	/**
+	 * Recurse through data to output plain and html email body.
+	 *
+	 * @param array $array
+	 * @param string $output
+	 * @param string $output_plain
+	 * @param integer $depth
+	 */
+
+	protected static function recurse_email_html( $array = [], &$output = '', &$output_plain, $depth = 1 ) {
+		foreach ( $array as $label => $value ) {
+			$h = $depth + 1;
+
+			if ( 1 === $depth ) {
+				$output .= (
+					'<tr>' .
+						'<td style="padding: 16px 0; border-bottom: 2px solid #ccc;">'
+				);
+			}
+
+			if ( $label ) {
+				$output .= "<h$h style='font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.3em'>$label</h$h>";
+
+				$output_plain .= "$label\n";
+			}
+
+			if ( is_array( $value ) ) {
+				self::recurse_email_html( $value, $output, $output_plain, $depth + 1 );
+			} else {
+				$output .= "<p style='font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.5em;'>$value</p>";
+
+				$output_plain .= wp_strip_all_tags( $value ) . "\n";
+			}
+
+			if ( 1 === $depth ) {
+				$output .= (
+						'</td>' .
+					'</tr>'
+				);
+
+				$output_plain .= "\n";
+			}
+		}
+	}
+
+	/**
+	 * Create nonces before form submission.
 	 */
 
 	public static function create_nonce() {
@@ -94,9 +159,9 @@ trait Ajax {
 				$code = 500;
 			}
 
-			echo esc_html( $e->getMessage() );
+			http_response_code( $code );
 
-			header( http_response_code( $code ) );
+			echo esc_html( $e->getMessage() );
 
 			exit;
 		}
@@ -105,8 +170,7 @@ trait Ajax {
 	/**
 	 * Validate nonces for contact and comment forms.
 	 *
-	 * @pass string $nonce Required.
-	 * @pass string $nonce_name Required.
+	 * @param string $priv_type
 	 */
 
 	public static function send_form( $priv_type = 'nopriv' ) {
@@ -143,6 +207,8 @@ trait Ajax {
 				echo wp_json_encode( ['contact_success' => 'Success.'] );
 
 				exit;
+			} else {
+				unset( $inputs[ $honeypot_name ] );
 			}
 
 			/* Type */
@@ -205,9 +271,9 @@ trait Ajax {
 				$code = 500;
 			}
 
-			echo esc_html( $e->getMessage() );
+			http_response_code( $code );
 
-			header( http_response_code( $code ) );
+			echo esc_html( $e->getMessage() );
 
 			exit;
 		}
@@ -216,11 +282,10 @@ trait Ajax {
 	/**
 	 * Process mailchimp signup form.
 	 *
-	 * @var string $id
-	 * @var array $inputs
-	 * @var array $post
-	 * @var boolean $silent
-	 * @echo string if successful
+	 * @param string $id
+	 * @param array $inputs
+	 * @param array $post
+	 * @param boolean $silent
 	 */
 
 	protected static function mailchimp_signup( $id = '', $inputs = [], $post = [], $silent = false ) {
@@ -326,7 +391,8 @@ trait Ajax {
 
 		/* Url */
 
-		$url = "https://$data_center.api.mailchimp.com/3.0/lists/$list_id/members/$email";
+		$email_hash = md5( strtolower( $email ) );
+		$url        = "https://$data_center.api.mailchimp.com/3.0/lists/$list_id/members/$email_hash";
 
 		/* Body */
 
@@ -334,10 +400,6 @@ trait Ajax {
 			'email_address' => $email,
 			'status_if_new' => 'pending',
 		];
-
-		if ( count( $tags ) > 0 ) {
-			$body['tags'] = $tags;
-		}
 
 		if ( count( $merge_fields ) > 0 ) {
 			$body['merge_fields'] = $merge_fields;
@@ -389,6 +451,20 @@ trait Ajax {
 
 			throw new \Exception( $error_message, $code );
 		} else {
+			if ( count( $tags ) > 0 ) {
+				$response = wp_safe_remote_post(
+					"$url/tags",
+					[
+						'method'  => 'POST',
+						'headers' => [
+							'Content-type'  => 'application/json',
+							'Authorization' => "Bearer $key",
+						],
+						'body'    => wp_json_encode( ['tags' => $tags] ),
+					]
+				);
+			}
+
 			if ( $silent ) {
 				return ['mailchimp_result' => 'Successfully subscribed.'];
 			}
@@ -400,18 +476,21 @@ trait Ajax {
 	/**
 	 * Process and send contact form.
 	 *
-	 * @var string $id
-	 * @var array $inputs
-	 * @var array $post
-	 * @echo string if successful
+	 * @param string $id
+	 * @param array $inputs
+	 * @param array $post
 	 */
 
 	protected static function send_contact_form( $id = '', $inputs = [], $post = [] ) {
+		/* Meta option required */
+
 		$meta = get_option( static::$namespace . '_form_' . $id, '' );
 
 		if ( ! $meta ) {
 			throw new \Exception( 'No meta' );
 		}
+
+		/* Email to send to required */
 
 		$to_email = $meta['email'];
 
@@ -419,10 +498,16 @@ trait Ajax {
 			throw new \Exception( 'No to email' );
 		}
 
-		$subject   = $meta['subject'];
-		$site_url  = home_url();
-		$site_name = get_bloginfo( 'name' );
-		$output    = '';
+		/* Email meta */
+
+		$subject      = $meta['subject'];
+		$site_url     = home_url();
+		$site_name    = get_bloginfo( 'name' );
+		$header       = "$site_name contact form submission";
+		$footer       = "This email was sent from a contact form on $site_name ($site_url)";
+		$sender_email = '';
+
+		/* Types for sanitization */
 
 		$input_types = [
 			'text'     => 'text_field',
@@ -431,10 +516,18 @@ trait Ajax {
 			'email'    => 'email',
 		];
 
+		/* Email output */
+
+		$output       = [];
+		$output_html  = '';
+		$output_plain = '';
+
 		foreach ( $inputs as $name => $input ) {
 			$input_type  = $input['type'];
 			$input_label = $input['label'] ?? '';
 			$input_value = $input['value'];
+
+			/* Sanitize */
 
 			if ( $input_type ) {
 				if ( isset( $input_types[ $input_type ] ) ) {
@@ -450,103 +543,133 @@ trait Ajax {
 				}
 			}
 
+			/* Array to string */
+
 			if ( is_array( $input_value ) ) {
 				$input_value = implode( '<br>', $input_value );
 			}
+
+			/* Subject */
 
 			if ( 'subject' === $input_label && $input_value ) {
 				$subject .= ' - ' . $input_value;
 				continue;
 			}
 
-			/* Make email name equal to sender name */
+			/* Sender email */
 
-			if ( 'name' === $input_label && $input_value ) {
-				add_filter(
-					'wp_mail_from_name',
-					function( $name ) use ( $input_value ) {
-						return $input_value;
-					}
-				);
+			if ( 'email' === $input_type && $input_value ) {
+				$sender_email = $input_value;
+				$input_value  = "<a href='mailto:$input_value'>$input_value</a>";
 			}
 
-			if ( 'email' === $input_type ) {
-				$output .= "<strong>$input_label</strong>: " . ( $input_value ? "<a href='mailto:$input_value'>$input_value</a>" : '' ) . '<br>';
+			/* Legend */
 
-				/* Make email from equal to sender email */
+			$legend = '';
 
-				if ( $input_value ) {
-					add_filter(
-						'wp_mail_from',
-						function( $email ) use ( $input_value ) {
-							return $input_value;
-						}
-					);
+			if ( isset( $input['legend'] ) ) {
+				$legend = $input['legend'];
+
+				if ( ! isset( $output[ $input['legend'] ] ) ) {
+					$output[ $input['legend'] ] = [];
 				}
-			} else {
-				$input_label_output = '';
-				$legend_exists      = isset( $input['legend'] );
+			}
 
-				if ( $input_label ) {
-					$input_label_output = '<strong>' . $input_label . '</strong>: ';
+			/* Label */
 
-					if ( 'textarea' === $input_type && $input_value ) {
-						$input_label_output .= '<br>';
-					}
-				}
-
-				if ( $legend_exists ) {
-					$input_label_output = '<strong>' . $input['legend'] . '</strong>:' . ( $input_value ? '<br>' : '' ) . $input_label_output;
-				}
-
-				if ( $input_value ) {
-					$output .= $input_label_output . $input_value . '<br>';
+			if ( ! isset( $output[ $input_label ] ) ) {
+				if ( $legend ) {
+					$output[ $input['legend'] ][ $input_label ] = [];
 				} else {
-					if ( $input_label_output ) {
-						$output .= $input_label_output . $input_value . '<br>';
-					}
+					$output[ $input_label ] = [];
 				}
+			}
+
+			/* Output value */
+
+			$output_value = $input_value ? $input_value : '--';
+
+			if ( $legend ) {
+				$output[ $input['legend'] ][ $input_label ][] = $output_value;
+			} else {
+				$output[ $input_label ][] = $output_value;
 			}
 		}
 
-		$output .= "<br>This email was sent from a contact form on $site_name ($site_url)";
+		self::recurse_email_html( $output, $output_html, $output_plain );
 
-		/* Allow html */
-
-		add_filter(
-			'wp_mail_content_type',
-			function() {
-				return 'text/html';
-			}
+		$output_html = (
+			'<table width="100%" cellpadding="0" cellspacing="0" border="0">' .
+				'<tr>' .
+					'<td align="center" width="100%" style="padding: 0 16px 16px 16px;">' .
+						'<table align="center" cellpadding="0" cellspacing="0" border="0" style="margin-right: auto; margin-left: auto; border-spacing: 0; max-width: 37.5em;">' .
+							'<tr>' .
+								'<td style="padding: 32px 0 0 0;">' .
+									"<h1 style='font-family: sans-serif; color: #222; margin: 0; line-height: 1.3em;'>$header</h1>" .
+								'</td>' .
+							'</tr>' .
+							'<tr>' .
+								'<td>' .
+									'<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;">' .
+										$output_html .
+										'<tr>' .
+											'<td style="padding: 32px 0;">' .
+												"<p style='font-family: sans-serif; color: #222; margin: 0; line-height: 1.5em;'>$footer</p>" .
+											'</td>' .
+										'</tr>' .
+									'</table>' .
+								'</td>' .
+							'</tr>' .
+						'</table>' .
+					'</td>' .
+				'</tr>' .
+			'</table>'
 		);
+
+		$output_plain = (
+			"$header\n\n" .
+			$output_plain .
+			$footer
+		);
+
+		self::$temp_output_plain = $output_plain;
+
+		/* Subjext fallback */
 
 		if ( ! $subject ) {
 			$subject = "$site_name Contact Form";
 		}
 
+		/* Headers */
+
+		$headers = [
+			'MIME-Version: 1.0',
+			'Content-Type: text/html; charset=UTF-8',
+			"Reply-To: <$sender_email>",
+		];
+
 		/* Send email */
 
-		$result = wp_mail( $to_email, $subject, "<p style='margin:0;font-family:sans-serif;'>$output</p>" );
+		add_action( 'phpmailer_init', [get_called_class(), 'phpmailer_init'] );
+
+		$result = wp_mail(
+			$to_email,
+			$subject,
+			$output_html,
+			$headers
+		);
 
 		if ( ! $result ) {
 			throw new \Exception( 'Error sending form' );
 		} else {
 			return ['contact_success' => 'Form successully sent.'];
 		}
-
-		// Reset content-type to avoid conflicts
-		// remove_filter( 'wp_mail_content_type', 'wpdocs_set_html_mail_content_type' );
 	}
 
 	/**
 	 * Get more posts for posts and custom post types.
 	 *
-	 * @pass string $type
-	 * @pass int $posts_per_page Required.
-	 * @pass array $query_args_static
-	 * @pass array $query_args
-	 * @pass array $filters
-	 * @echo string json containing output
+	 * @param array $post
 	 */
 
 	public static function get_posts( $post = [] ) {
@@ -642,9 +765,9 @@ trait Ajax {
 				$code = 500;
 			}
 
-			echo esc_html( $e->getMessage() );
+			http_response_code( $code );
 
-			header( http_response_code( $code ) );
+			echo esc_html( $e->getMessage() );
 
 			exit;
 		}

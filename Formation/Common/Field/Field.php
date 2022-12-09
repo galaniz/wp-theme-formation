@@ -497,18 +497,6 @@ class Field {
 
 		$checkbox_radio = 'checkbox' === $type || 'radio' === $type || 'radio-select' === $type || 'radio-text' === $type;
 
-		/* Radio text size */
-
-		$radio_text_size = '';
-
-		if ( 'radio-text' === $type && isset( $attr['size'] ) ) {
-			$radio_text_size = $attr['size'];
-
-			if ( $radio_text_size ) {
-				unset( $attr['size'] );
-			}
-		}
-
 		/* Placeholder */
 
 		$placeholder = $placeholder ? 'placeholder="' . esc_attr( $placeholder ) . '"' : '';
@@ -802,9 +790,10 @@ class Field {
 					'options' => $options,
 					'class'   => 'js-conditional',
 					'attr'    => [
-						'aria-label'  => $label_text,
-						'disabled'    => '',
-						'data-enable' => $id,
+						'aria-label'     => $label_text,
+						'disabled'       => '',
+						'data-enable'    => $id,
+						'data-radio-set' => '',
 					],
 				],
 				$output
@@ -813,14 +802,11 @@ class Field {
 
 		if ( 'radio-text' === $type ) {
 			$radio_text_attr = [
-				'aria-label'  => $label_text,
-				'disabled'    => '',
-				'data-enable' => $id,
+				'aria-label'     => $label_text,
+				'disabled'       => '',
+				'data-enable'    => $id,
+				'data-radio-set' => '',
 			];
-
-			if ( $radio_text_size ) {
-				$radio_text_attr['size'] = $radio_text_size;
-			}
 
 			$output .= self::render_field(
 				[
@@ -1170,8 +1156,10 @@ class Field {
 
 					exit;
 				} catch ( \Exception $e ) {
+					http_response_code( 500 );
+
 					echo esc_html( $e->getMessage() );
-					header( http_response_code( 500 ) );
+
 					exit;
 				}
 			}
@@ -1197,8 +1185,10 @@ class Field {
 
 					exit;
 				} catch ( \Exception $e ) {
+					http_response_code( 500 );
+
 					echo esc_html( $e->getMessage() );
-					header( http_response_code( 500 ) );
+
 					exit;
 				}
 			}

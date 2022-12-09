@@ -99,7 +99,6 @@ class Contact_Form {
 				'selected'          => ['type' => 'boolean'],
 				'placeholder'       => ['type' => 'string'],
 				'rows'              => ['type' => 'string'],
-				'size'              => ['type' => 'string'],
 				'width'             => ['type' => 'string'],
 				'classes'           => ['type' => 'string'],
 				'empty_message'     => ['type' => 'string'],
@@ -121,7 +120,6 @@ class Contact_Form {
 				'selected'          => false,
 				'placeholder'       => '',
 				'rows'              => '',
-				'size'              => '',
 				'width'             => '',
 				'classes'           => '',
 				'empty_message'     => '',
@@ -376,7 +374,6 @@ class Contact_Form {
 			'selected'          => $selected,
 			'placeholder'       => $placeholder,
 			'rows'              => $rows,
-			'size'              => $size,
 			'width'             => $width,
 			'classes'           => $classes,
 			'empty_message'     => $empty_message,
@@ -443,10 +440,6 @@ class Contact_Form {
 
 		if ( $rows && 'textarea' === $type ) {
 			$attr['rows'] = $rows;
-		}
-
-		if ( $size && ( 'text' === $type || 'email' === $type || 'tel' === $type || 'radio-text' === $type ) ) {
-			$attr['size'] = $size;
 		}
 
 		if ( $empty_message ) {
