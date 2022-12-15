@@ -22,6 +22,14 @@ trait Ajax {
 	public static $temp_output_plain = '';
 
 	/**
+	 * Temporarily store reply to email
+	 *
+	 * @var string $temp_reply_to
+	 */
+
+	public static $temp_reply_to = '';
+
+	/**
 	 * Setup actions.
 	 *
 	 * @uses add_action() to add ajax actions.
@@ -82,8 +90,10 @@ trait Ajax {
 	public static function phpmailer_init( $phpmailer ) {
 		/* phpcs:ignore */
 		$phpmailer->AltBody = self::$temp_output_plain;
+		$phpmailer->addReplyTo( self::$temp_reply_to );
 
 		self::$temp_output_plain = '';
+		self::$temp_reply_to     = '';
 
 		remove_action( 'phpmailer_init', [get_called_class(), 'phpmailer_init'] );
 	}
@@ -500,12 +510,11 @@ trait Ajax {
 
 		/* Email meta */
 
-		$subject      = $meta['subject'];
-		$site_url     = home_url();
-		$site_name    = get_bloginfo( 'name' );
-		$header       = "$site_name contact form submission";
-		$footer       = "This email was sent from a contact form on $site_name ($site_url)";
-		$sender_email = '';
+		$subject   = $meta['subject'];
+		$site_url  = home_url();
+		$site_name = get_bloginfo( 'name' );
+		$header    = "$site_name contact form submission";
+		$footer    = "This email was sent from a contact form on $site_name ($site_url)";
 
 		/* Types for sanitization */
 
@@ -556,11 +565,11 @@ trait Ajax {
 				continue;
 			}
 
-			/* Sender email */
+			/* Reply to email */
 
 			if ( 'email' === $input_type && $input_value ) {
-				$sender_email = $input_value;
-				$input_value  = "<a href='mailto:$input_value'>$input_value</a>";
+				self::$temp_reply_to = $input_value;
+				$input_value         = "<a href='mailto:$input_value'>$input_value</a>";
 			}
 
 			/* Legend */
@@ -645,7 +654,6 @@ trait Ajax {
 		$headers = [
 			'MIME-Version: 1.0',
 			'Content-Type: text/html; charset=UTF-8',
-			"Reply-To: <$sender_email>",
 		];
 
 		/* Send email */
