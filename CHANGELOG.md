@@ -177,3 +177,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Data attribute for radio-tet and radio-select inputs in `Field`
+
+## [3.0.17] - 2022-12-15
+
+### Fixed
+- Reply to header in `send_contact_form` in `Ajax`
