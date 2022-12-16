@@ -182,3 +182,8 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Reply to header in `send_contact_form` in `Ajax`
+
+## [3.0.18] - 2022-12-16
+
+### Fixed
+- Theme head script output 
