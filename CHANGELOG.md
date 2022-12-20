@@ -187,3 +187,8 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Theme head script output 
+
+## [3.0.19] - 2022-12-20
+
+### Fixed
+- Required variable error for output paramater in `Field`
