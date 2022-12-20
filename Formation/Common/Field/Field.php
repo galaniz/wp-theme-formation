@@ -264,7 +264,7 @@ class Field {
 	 * @return string of markup
 	 */
 
-	public static function render( $args = [], &$output ) {
+	public static function render( $args = [], &$output = '' ) {
 		/* Variables */
 
 		$args           = array_replace_recursive( self::$default['render'], $args );
@@ -425,7 +425,7 @@ class Field {
 	 * @param string $output Append to it as loop in render method.
 	 */
 
-	public static function render_field( $args = [], &$output, $index = 0, $data = '', $copy = false, $multi = false, $multi_col = false ) {
+	public static function render_field( $args = [], &$output = '', $index = 0, $data = '', $copy = false, $multi = false, $multi_col = false ) {
 		$args = array_replace_recursive( self::$default['field'], $args );
 
 		/* Admin */
