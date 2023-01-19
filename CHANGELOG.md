@@ -192,3 +192,11 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Required variable error for output paramater in `Field`
+
+## [3.0.20] - 2023-01-18
+
+### Fixed
+- Required parameter fixes in various methods
+
+### Changed
+- Search form label

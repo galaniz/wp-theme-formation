@@ -107,7 +107,7 @@ trait Ajax {
 	 * @param integer $depth
 	 */
 
-	protected static function recurse_email_html( $array = [], &$output = '', &$output_plain, $depth = 1 ) {
+	protected static function recurse_email_html( $array = [], &$output = '', &$output_plain = '', $depth = 1 ) {
 		foreach ( $array as $label => $value ) {
 			$h = $depth + 1;
 
