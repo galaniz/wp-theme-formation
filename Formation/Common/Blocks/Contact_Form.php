@@ -218,7 +218,7 @@ class Contact_Form {
 	 * @return string of markup
 	 */
 
-	public static function render_contact_form( $attributes, $content = '', $block ) {
+	public static function render_contact_form( $attributes, $content, $block ) {
 		$attr = array_replace_recursive( self::$blocks['contact-form']['default'], $attributes );
 
 		[

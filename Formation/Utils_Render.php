@@ -336,7 +336,7 @@ trait Utils_Render {
 		return (
 			"<form$form_class role='search' method='get' action='$action'>" .
 				"<div$field_class>" .
-					"<label$a11y_class for='$unique_id'>Search for: </label>" .
+					"<label$a11y_class for='$unique_id'>Search</label>" .
 					"<input$input_class type='search' id='$unique_id' placeholder='Search' value='$query' name='s' />" .
 					"<button$button_class type='submit'>" .
 						"<span$a11y_class>Submit search query</span>" .
