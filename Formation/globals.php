@@ -10,46 +10,55 @@ namespace Formation;
 /**
  * Pass data to front end not passed with localize script.
  *
- * @param string/boolean $name Required.
+ * @param string $name Required.
  * @param array $data Required.
  * @param boolean $admin
+ * @param boolean $head
+ * @param boolean $action
+ * @return void|string Script output.
  */
 
-function additional_script_data( $name = false, $data = [], $admin = false, $head = false ) {
-	$action = $admin ? 'admin_print_footer_scripts' : 'wp_print_footer_scripts';
+function additional_script_data( $name, $data = [], $admin = false, $head = false, $action = true ) {
+	if ( ! $name || ! $data ) {
+		return;
+	}
+
+	$name = esc_html( $name );
+	$data = wp_json_encode( $data );
+	$var  = 'data_' . uniqid();
+
+	$output = (
+		'<script type="text/javascript">' .
+			'(function () {' .
+				'function v(obj, k) {' .
+					'return obj[k];' .
+				'}' .
+				"var $var = $data;" .
+				"if (window.hasOwnProperty('$name')) {" .
+					"Object.keys($var).forEach(function(key) {" .
+						"window['$name'][key] = v($var, key);" .
+					'});' .
+				'} else {' .
+					"window['$name'] = $var;" .
+				'}' .
+			'})();' .
+		'</script>'
+	);
+
+	if ( ! $action ) {
+		return $output;
+	}
+
+	$hook_name = $admin ? 'admin_print_footer_scripts' : 'wp_print_footer_scripts';
 
 	if ( $head ) {
-		$action = $admin ? 'admin_head' : 'wp_head';
+		$hook_name = $admin ? 'print_head_scripts' : 'wp_print_head_scripts';
 	}
 
 	add_action(
-		$action,
+		$hook_name,
 		function() use ( $name, $data ) {
-			if ( ! $name || ! $data ) {
-				return;
-			}
-
-			$name = esc_html( $name );
-			$var  = 'data_' . uniqid(); ?>
-
-			<script type="text/javascript">
-			(function () {
-				<?php /* phpcs:disable */ ?>
-				var <?php echo $var; ?> = <?php echo wp_json_encode( $data ); ?>;
-
-				if( window.hasOwnProperty( '<?php echo $name; ?>' ) ) {
-					/* Merge existing object with new data */
-
-					for( var key in <?php echo $var; ?> ) {
-						window['<?php echo $name; ?>'][key] = <?php echo $var; ?>[key];
-					}
-				} else {
-					window['<?php echo $name; ?>'] = <?php echo $var; ?>;
-				}
-				<?php /* phpcs:enable */ ?>
-			})();
-			</script>
-			<?php
+			echo $output; // phpcs:ignore
 		}
 	);
 }
@@ -57,7 +66,7 @@ function additional_script_data( $name = false, $data = [], $admin = false, $hea
 /**
  * Write to debug log.
  *
- * @param array/object/string $log
+ * @param array|object|string $log
  */
 
 function write_to_log( $log = '' ) {

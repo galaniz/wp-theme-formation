@@ -35,7 +35,7 @@ trait Utils_Render {
 	 *  @type array $icon_classes
 	 *  @type array $icon_paths
 	 * }
-	 * @return string html
+	 * @return string Html output.
 	 */
 
 	public static function render_social( $args = [] ) {
@@ -216,7 +216,7 @@ trait Utils_Render {
 	 *
 	 * @param string $class
 	 * @param boolean $old_browser_compat
-	 * @return string html
+	 * @return string Html output.
 	 */
 
 	public static function render_logo( $class = '', $old_browser_compat = false ) {
@@ -266,7 +266,7 @@ trait Utils_Render {
 	 * Output for search form.
 	 *
 	 * @param array $args
-	 * @return string html
+	 * @return string Html output.
 	 */
 
 	public static function render_form_search( $args = [] ) {
@@ -354,7 +354,7 @@ trait Utils_Render {
 	 * Output for general forms (contact, sign ups...)
 	 *
 	 * @param array $args
-	 * @return string html
+	 * @return string Html output.
 	 */
 
 	public static function render_form( $args = [] ) {
@@ -579,4 +579,4 @@ trait Utils_Render {
 		}
 	}
 
-} // End Utils_Render
+}

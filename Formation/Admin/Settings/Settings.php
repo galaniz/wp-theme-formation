@@ -270,11 +270,11 @@ class Settings {
 	/**
 	 * Get tabs navigation
 	 *
-	 * @return string of output
+	 * @return string Html output.
 	 */
 
 	public function get_tab_nav() {
 		return $this->tab_nav;
 	}
 
-} // End Settings
+}

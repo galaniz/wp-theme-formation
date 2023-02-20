@@ -251,4 +251,4 @@ class Blocks {
 		);
 	}
 
-} // End Blocks
+}

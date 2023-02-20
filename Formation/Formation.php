@@ -132,7 +132,7 @@ class Formation {
 	 *
 	 * @var array $editor_font_sizes {
 	 *  @type string $name Accepts string.
-	 *  @type int $size Accepts int.
+	 *  @type integer $size Accepts int.
 	 *  @type string $slug Accepts string.
 	 * }
 	 */
@@ -387,7 +387,7 @@ class Formation {
 		}
 
 		add_action(
-			'wp_head',
+			'wp_print_head_scripts',
 			function() {
 				$theme_head_scripts = get_option( static::$namespace . '_scripts_head', '' );
 
@@ -832,7 +832,7 @@ class Formation {
 	 * Note: meant to be overwritten by user.
 	 *
 	 * @param array $args
-	 * @return string/array of html output
+	 * @return string|array Html output.
 	 */
 
 	public static function render_ajax_posts( $args = [] ) {
@@ -982,7 +982,7 @@ class Formation {
 	/**
 	 * Save fields to attachment.
 	 *
-	 * @param int $attachment_id
+	 * @param integer $attachment_id
 	 */
 
 	public function save_attachment_fields( $post, $attachment ) {
@@ -995,4 +995,4 @@ class Formation {
 		}
 	}
 
-} // End Formation
+}

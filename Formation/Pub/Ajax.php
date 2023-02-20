@@ -560,7 +560,7 @@ trait Ajax {
 
 			/* Subject */
 
-			if ( 'subject' === $input_label && $input_value ) {
+			if ( 'subject' === $name && $input_value ) {
 				$subject .= ' - ' . $input_value;
 				continue;
 			}
@@ -781,4 +781,4 @@ trait Ajax {
 		}
 	}
 
-} // End Ajax
+}

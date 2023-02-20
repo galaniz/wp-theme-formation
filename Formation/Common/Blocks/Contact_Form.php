@@ -215,7 +215,7 @@ class Contact_Form {
 	 *
 	 * @param array $attributes
 	 * @param string $content
-	 * @return string of markup
+	 * @return string Html markup.
 	 */
 
 	public static function render_contact_form( $attributes, $content, $block ) {
@@ -513,4 +513,4 @@ class Contact_Form {
 		return $output;
 	}
 
-} // End Contact_Form
+}

@@ -86,7 +86,7 @@ class Select_Fields {
 	 * Output fields.
 	 *
 	 * @param array $fields
-	 * @return string of markup
+	 * @return string Html markup.
 	 */
 
 	public static function render( $fields = [] ) {
@@ -195,4 +195,4 @@ class Select_Fields {
 		);
 	}
 
-} // End Select_Fields
+}

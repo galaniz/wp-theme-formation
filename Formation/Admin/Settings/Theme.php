@@ -797,4 +797,4 @@ class Theme {
 		return $output;
 	}
 
-} // End Theme
+}
