@@ -387,7 +387,7 @@ class Formation {
 		}
 
 		add_action(
-			'wp_print_head_scripts',
+			'wp_head',
 			function() {
 				$theme_head_scripts = get_option( static::$namespace . '_scripts_head', '' );
 

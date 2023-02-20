@@ -52,12 +52,12 @@ function additional_script_data( $name, $data = [], $admin = false, $head = fals
 	$hook_name = $admin ? 'admin_print_footer_scripts' : 'wp_print_footer_scripts';
 
 	if ( $head ) {
-		$hook_name = $admin ? 'print_head_scripts' : 'wp_print_head_scripts';
+		$hook_name = $admin ? 'admin_head' : 'wp_head';
 	}
 
 	add_action(
 		$hook_name,
-		function() use ( $name, $data ) {
+		function() use ( $name, $data, $output ) {
 			echo $output; // phpcs:ignore
 		}
 	);
