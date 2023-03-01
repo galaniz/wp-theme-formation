@@ -265,22 +265,25 @@ class Contact_Form {
 		}
 
 		$args = [
-			'form_class'         => '',
-			'form_attr'          => [],
-			'form_id'            => $id,
-			'form_data_type'     => $type,
-			'fields'             => $content,
-			'fields_class'       => '',
-			'fields_attr'        => [],
-			'button_field_class' => '',
-			'button_class'       => '',
-			'button_attr'        => [],
-			'button_label'       => $submit_label,
-			'error_message'      => [
+			'form_class'           => '',
+			'form_attr'            => [],
+			'form_id'              => $id,
+			'form_data_type'       => $type,
+			'fields'               => $content,
+			'fields_class'         => '',
+			'fields_attr'          => [],
+			'button_field_class'   => '',
+			'button_class'         => '',
+			'button_attr'          => [],
+			'button_label'         => $submit_label,
+			'honeypot_field_class' => '',
+			'honeypot_label_class' => '',
+			'honeypot_class'       => '',
+			'error_message'        => [
 				'primary'   => '',
 				'secondary' => '',
 			],
-			'success_message'    => [
+			'success_message'      => [
 				'primary'   => $success_title,
 				'secondary' => $success_text,
 			],

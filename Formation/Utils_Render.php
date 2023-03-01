@@ -360,23 +360,26 @@ trait Utils_Render {
 	public static function render_form( $args = [] ) {
 		$args = array_merge(
 			[
-				'form_class'         => '',
-				'form_attr'          => [],
-				'form_id'            => uniqid(),
-				'form_data_type'     => 'default',
-				'fields'             => '',
-				'fields_class'       => '',
-				'fields_attr'        => [],
-				'button_field_class' => '',
-				'button_class'       => '',
-				'button_attr'        => [],
-				'button_label'       => 'Send',
-				'button_loader'      => '',
-				'error_summary'      => '',
-				'error_result'       => '',
-				'error_message'      => [],
-				'success_result'     => '',
-				'success_message'    => [],
+				'form_class'           => '',
+				'form_attr'            => [],
+				'form_id'              => uniqid(),
+				'form_data_type'       => 'default',
+				'fields'               => '',
+				'fields_class'         => '',
+				'fields_attr'          => [],
+				'button_field_class'   => '',
+				'button_class'         => '',
+				'button_attr'          => [],
+				'button_label'         => 'Send',
+				'button_loader'        => '',
+				'honeypot_field_class' => '',
+				'honeypot_label_class' => '',
+				'honeypot_class'       => '',
+				'error_summary'        => '',
+				'error_result'         => '',
+				'error_message'        => [],
+				'success_result'       => '',
+				'success_message'      => [],
 			],
 			$args
 		);
@@ -389,23 +392,26 @@ trait Utils_Render {
 		/* Destructure */
 
 		[
-			'form_class'         => $form_class,
-			'form_attr'          => $form_attr,
-			'form_id'            => $form_id,
-			'form_data_type'     => $form_data_type,
-			'fields'             => $fields,
-			'fields_class'       => $fields_class,
-			'fields_attr'        => $fields_attr,
-			'button_field_class' => $button_field_class,
-			'button_class'       => $button_class,
-			'button_attr'        => $button_attr,
-			'button_label'       => $button_label,
-			'button_loader'      => $button_loader,
-			'error_summary'      => $error_summary,
-			'error_result'       => $error_result,
-			'error_message'      => $error_message,
-			'success_result'     => $success_result,
-			'success_message'    => $success_message,
+			'form_class'           => $form_class,
+			'form_attr'            => $form_attr,
+			'form_id'              => $form_id,
+			'form_data_type'       => $form_data_type,
+			'fields'               => $fields,
+			'fields_class'         => $fields_class,
+			'fields_attr'          => $fields_attr,
+			'button_field_class'   => $button_field_class,
+			'button_class'         => $button_class,
+			'button_attr'          => $button_attr,
+			'button_label'         => $button_label,
+			'button_loader'        => $button_loader,
+			'honeypot_field_class' => $honeypot_field_class,
+			'honeypot_label_class' => $honeypot_label_class,
+			'honeypot_class'       => $honeypot_class,
+			'error_summary'        => $error_summary,
+			'error_result'         => $error_result,
+			'error_message'        => $error_message,
+			'success_result'       => $success_result,
+			'success_message'      => $success_message,
 		] = $args;
 
 		/* Escape */
@@ -479,14 +485,17 @@ trait Utils_Render {
 
 		/* Honeypot */
 
-		$honeypot_id       = uniqid();
-		$honeypot_name     = static::$namespace . '_asi';
-		$honeypot_label_id = uniqid();
+		$honeypot_id          = uniqid();
+		$honeypot_name        = static::$namespace . '_asi';
+		$honeypot_label_id    = uniqid();
+		$honeypot_label_class = $honeypot_label_class ? " class='$honeypot_label_class'" : '';
+		$honeypot_field_class = $honeypot_field_class ? " class='$honeypot_field_class'" : '';
+		$honeypot_class       = $honeypot_class ? " class='$honeypot_class js-input'" : ' class="js-input"';
 
 		$honeypot = (
-			'<div data-asi>' .
-				"<label id='$honeypot_label_id' for='$honeypot_id'>Website</label>" .
-				"<input type='url' name='$honeypot_name' id='$honeypot_id' value='' autocomplete='off' class='js-input'>" .
+			"<div$honeypot_field_class data-asi>" .
+				"<label$honeypot_label_class id='$honeypot_label_id' for='$honeypot_id'>Website</label>" .
+				"<input type='url' name='$honeypot_name' id='$honeypot_id' value='' autocomplete='off'$honeypot_class>" .
 			'</div>'
 		);
 
