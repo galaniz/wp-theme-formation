@@ -122,7 +122,7 @@ class Field {
 	 * Get base name without keys or indexes.
 	 *
 	 * @param string $name
-	 * @return string base name
+	 * @return string Base name.
 	 */
 
 	public static function get_top_level_name( $name ) {
@@ -145,8 +145,8 @@ class Field {
 	 * Replace %i placeholder with actual index.
 	 *
 	 * @param string $name
-	 * @param int $index
-	 * @return string indexed name
+	 * @param integer $index
+	 * @return string Indexed name.
 	 */
 
 	public static function index_name( $name, $index ) {
@@ -179,7 +179,7 @@ class Field {
 	 *
 	 * @param array $array
 	 * @param string $key
-	 * @return string/array value of $key in $array
+	 * @return string|array Value of $key in $array.
 	 */
 
 	public static function get_array_value( $array, $key ) {
@@ -260,8 +260,9 @@ class Field {
 	/**
 	 * Output sections of fields.
 	 *
-	 * @param array $args @see self::$default['render']
-	 * @return string of markup
+	 * @see self::$default['render']
+	 * @param array $args
+	 * @return string Html markup.
 	 */
 
 	public static function render( $args = [], &$output = '' ) {
@@ -399,7 +400,7 @@ class Field {
 			}
 		}
 
-		// End output
+		/* End output */
 
 		if ( $multi ) {
 			$output .= '</div>';
@@ -413,7 +414,13 @@ class Field {
 			$output .= '</div>';
 		}
 
-		additional_script_data( FRM::$namespace, self::$localize_data, true );
+		additional_script_data(
+			[
+				'name'  => FRM::$namespace,
+				'data'  => self::$localize_data,
+				'admin' => true,
+			]
+		);
 
 		return $output;
 	}
@@ -829,7 +836,7 @@ class Field {
 	 * Output radio/checkbox buttons.
 	 *
 	 * @param array $args
-	 * @return string of markup
+	 * @return string Html markup.
 	 */
 
 	public static function render_opt_button( $args = [] ) {
@@ -911,7 +918,7 @@ class Field {
 	 * Output asset (files, links..).
 	 *
 	 * @param array $args
-	 * @return string of markup
+	 * @return string Html markup.
 	 */
 
 	public static function render_asset( $args = [] ) {
@@ -1088,12 +1095,14 @@ class Field {
 		$remove_nonce_name = FRM::$namespace . '_remove_file_nonce';
 
 		additional_script_data(
-			FRM::$namespace,
 			[
-				$upload_nonce_name => wp_create_nonce( $upload_nonce_name ),
-				$remove_nonce_name => wp_create_nonce( $remove_nonce_name ),
-			],
-			true
+				'name'  => FRM::$namespace,
+				'data'  => [
+					$upload_nonce_name => wp_create_nonce( $upload_nonce_name ),
+					$remove_nonce_name => wp_create_nonce( $remove_nonce_name ),
+				],
+				'admin' => true,
+			]
 		);
 
 		wp_enqueue_media();
@@ -1195,4 +1204,4 @@ class Field {
 		);
 	}
 
-} // End Field
+}

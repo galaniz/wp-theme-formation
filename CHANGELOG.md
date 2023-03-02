@@ -200,3 +200,15 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Search form label
+
+## [3.0.21] - 2023-03-01
+
+### Changed
+- Comment formatting
+- Update `additional_script_data` with additional options and instances of it
+
+### Fixed
+- Subject name in `Ajax`
+
+### Added
+- Honeypot classes options in `render_form` and contact form filter args

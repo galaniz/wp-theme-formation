@@ -53,8 +53,7 @@ class File_Upload {
 	/**
 	 * Make more secure array from _FILES.
 	 *
-	 * Source: https://dev.to/einlinuus/how-to-upload-files-with-php-correctly-and-securely-1kng
-	 *
+	 * @link https://dev.to/einlinuus/how-to-upload-files-with-php-correctly-and-securely-1kng
 	 * @param array $files
 	 * @return array
 	 */
@@ -114,7 +113,7 @@ class File_Upload {
 	/**
 	 * Check file size.
 	 *
-	 * @param int $size
+	 * @param integer $size
 	 * @return boolean
 	 */
 
@@ -224,7 +223,7 @@ class File_Upload {
 						throw new \Exception( 'Not uploaded via post' );
 					}
 				}
-			); // End array_walk
+			);
 
 			if ( $success ) {
 				if ( is_callable( $success ) ) {
@@ -240,4 +239,4 @@ class File_Upload {
 		}
 	}
 
-} // End File_Upload
+}

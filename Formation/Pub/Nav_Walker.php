@@ -144,4 +144,4 @@ class Nav_Walker extends \Walker_Nav_Menu {
 		}
 	}
 
-} // End Nav_Walker
+}

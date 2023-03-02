@@ -132,7 +132,7 @@ class Formation {
 	 *
 	 * @var array $editor_font_sizes {
 	 *  @type string $name Accepts string.
-	 *  @type int $size Accepts int.
+	 *  @type integer $size Accepts int.
 	 *  @type string $slug Accepts string.
 	 * }
 	 */
@@ -424,20 +424,91 @@ class Formation {
 
 		/* Pass namespace to front end */
 
-		additional_script_data( 'namespace', static::$namespace, true, true );
-		additional_script_data( 'namespace', static::$namespace, false, true );
+		additional_script_data(
+			[
+				'name'  => 'namespace',
+				'data'  => static::$namespace,
+				'admin' => true,
+				'head'  => true,
+			]
+		);
+
+		additional_script_data(
+			[
+				'name'  => 'namespace',
+				'data'  => static::$namespace,
+				'admin' => false,
+				'head'  => true,
+			]
+		);
 
 		/* Pass options for access in blocks */
 
-		additional_script_data( static::$namespace, ['color_options' => static::$editor_color_palette ], true, true );
-		additional_script_data( static::$namespace, ['gap_options' => static::$gap_options ], true, true );
-		additional_script_data( static::$namespace, ['field_gap_options' => static::$field_gap_options ], true, true );
-		additional_script_data( static::$namespace, ['width_options' => static::$width_options ], true, true );
-		additional_script_data( static::$namespace, ['embed_variations' => static::$embed_variations ], true, true );
+		additional_script_data(
+			[
+				'name'  => static::$namespace,
+				'data'  => [
+					'color_options' => static::$editor_color_palette,
+				],
+				'admin' => true,
+				'head'  => true,
+			]
+		);
 
-		$ajax_url = ['ajax_url' => admin_url( 'admin-ajax.php' )];
+		additional_script_data(
+			[
+				'name'  => static::$namespace,
+				'data'  => [
+					'gap_options' => static::$gap_options,
+				],
+				'admin' => true,
+				'head'  => true,
+			]
+		);
 
-		additional_script_data( static::$namespace, $ajax_url, true, true );
+		additional_script_data(
+			[
+				'name'  => static::$namespace,
+				'data'  => [
+					'field_gap_options' => static::$field_gap_options,
+				],
+				'admin' => true,
+				'head'  => true,
+			]
+		);
+
+		additional_script_data(
+			[
+				'name'  => static::$namespace,
+				'data'  => [
+					'width_options' => static::$width_options,
+				],
+				'admin' => true,
+				'head'  => true,
+			]
+		);
+
+		additional_script_data(
+			[
+				'name'  => static::$namespace,
+				'data'  => [
+					'embed_variations' => static::$embed_variations,
+				],
+				'admin' => true,
+				'head'  => true,
+			]
+		);
+
+		additional_script_data(
+			[
+				'name'  => static::$namespace,
+				'data'  => [
+					'ajax_url' => admin_url( 'admin-ajax.php' ),
+				],
+				'admin' => true,
+				'head'  => true,
+			]
+		);
 
 		/* Set uploads variables */
 
@@ -832,7 +903,7 @@ class Formation {
 	 * Note: meant to be overwritten by user.
 	 *
 	 * @param array $args
-	 * @return string/array of html output
+	 * @return string|array Html output.
 	 */
 
 	public static function render_ajax_posts( $args = [] ) {
@@ -982,7 +1053,7 @@ class Formation {
 	/**
 	 * Save fields to attachment.
 	 *
-	 * @param int $attachment_id
+	 * @param integer $attachment_id
 	 */
 
 	public function save_attachment_fields( $post, $attachment ) {
@@ -995,4 +1066,4 @@ class Formation {
 		}
 	}
 
-} // End Formation
+}

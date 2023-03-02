@@ -736,11 +736,13 @@ class Theme {
 				);
 
 				additional_script_data(
-					FRM::$namespace,
 					[
-						'geonames_un' => get_option( FRM::$namespace . '_geonames_username' ),
-					],
-					true
+						'name'  => FRM::$namespace,
+						'data'  => [
+							'geonames_un' => get_option( FRM::$namespace . '_geonames_username' ),
+						],
+						'admin' => true,
+					]
 				);
 			}
 		}
@@ -797,4 +799,4 @@ class Theme {
 		return $output;
 	}
 
-} // End Theme
+}

@@ -17,7 +17,7 @@ trait Utils {
 	 * Prefix string with namespace only if not already prefixed.
 	 *
 	 * @param string $name
-	 * @return string prefixed name
+	 * @return string Prefixed name.
 	 */
 
 	public static function get_namespaced_str( $name = '' ) {
@@ -34,7 +34,7 @@ trait Utils {
 	 * Get posts per page by post type.
 	 *
 	 * @param string $post_type
-	 * @return int posts per page
+	 * @return integer Posts per page.
 	 */
 
 	public static function get_posts_per_page( $post_type = 'post' ) {
@@ -56,7 +56,7 @@ trait Utils {
 	/**
 	 * Get first category for post.
 	 *
-	 * @param int $id
+	 * @param integer $id
 	 * @param string $taxonomy
 	 * @return array {
 	 *  @type string category name
@@ -99,7 +99,7 @@ trait Utils {
 	/**
 	 * Get current post id outside loop.
 	 *
-	 * @return int post id
+	 * @return int Post id.
 	 */
 
 	public static function get_id_outside_loop() {
@@ -122,7 +122,7 @@ trait Utils {
 	 *  @type string $post_id Accepts int.
 	 *  @type string $post Accepts string.
 	 * }
-	 * @return string trimmed to specified length
+	 * @return string
 	 */
 
 	public static function get_excerpt( $args = [] ) {
@@ -172,7 +172,7 @@ trait Utils {
 	/**
 	 * Ajax load more posts fallback.
 	 *
-	 * @return boolean|string url of next posts page
+	 * @return boolean|string Url of next posts page.
 	 */
 
 	public static function get_next_posts_link() {
@@ -203,7 +203,7 @@ trait Utils {
 	/**
 	 * Ajax load more comments fallback.
 	 *
-	 * @return string url of next comments page
+	 * @return string Url of next comments page.
 	 */
 
 	public static function get_next_comments_link() {
@@ -356,7 +356,7 @@ trait Utils {
 	/**
 	 * Get lat and lng coordinates from address.
 	 *
-	 * @return array/boolean
+	 * @return array|boolean
 	 */
 
 	public static function get_lat_lng( $address = '' ) {
@@ -521,8 +521,7 @@ trait Utils {
 	/**
 	 * Check if url is external.
 	 *
-	 * Source: https://bit.ly/3aPpU3O
-	 *
+	 * @link https://bit.ly/3aPpU3O
 	 * @param string $url
 	 * @return array
 	 */
@@ -551,4 +550,4 @@ trait Utils {
 		return $is_external;
 	}
 
-} // End Utils
+}
