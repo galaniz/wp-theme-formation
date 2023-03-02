@@ -1,6 +1,6 @@
 {
   "name": "alanizcreative/wp-theme-formation",
-  "version": "3.0.20",
+  "version": "3.0.21",
   "description": "Provide base, utilities and added functionality for building WordPress themes",
   "type": "library",
   "license": "MIT",
