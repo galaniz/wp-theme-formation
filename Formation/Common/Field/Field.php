@@ -414,7 +414,13 @@ class Field {
 			$output .= '</div>';
 		}
 
-		additional_script_data( FRM::$namespace, self::$localize_data, true );
+		additional_script_data(
+			[
+				'name'  => FRM::$namespace,
+				'data'  => self::$localize_data,
+				'admin' => true,
+			]
+		);
 
 		return $output;
 	}
@@ -1089,12 +1095,14 @@ class Field {
 		$remove_nonce_name = FRM::$namespace . '_remove_file_nonce';
 
 		additional_script_data(
-			FRM::$namespace,
 			[
-				$upload_nonce_name => wp_create_nonce( $upload_nonce_name ),
-				$remove_nonce_name => wp_create_nonce( $remove_nonce_name ),
-			],
-			true
+				'name'  => FRM::$namespace,
+				'data'  => [
+					$upload_nonce_name => wp_create_nonce( $upload_nonce_name ),
+					$remove_nonce_name => wp_create_nonce( $remove_nonce_name ),
+				],
+				'admin' => true,
+			]
 		);
 
 		wp_enqueue_media();

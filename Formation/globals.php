@@ -10,36 +10,63 @@ namespace Formation;
 /**
  * Pass data to front end not passed with localize script.
  *
- * @param string $name Required.
- * @param array $data Required.
- * @param boolean $admin
- * @param boolean $head
- * @param boolean $action
+ * @param array $args {
+ *  @type string $name Required.
+ *  @type array $data Required.
+ *  @type boolean $admin
+ *  @type boolean $head
+ *  @type boolean $action
+ * }
  * @return void|string Script output.
  */
 
-function additional_script_data( $name, $data = [], $admin = false, $head = false, $action = true ) {
+function additional_script_data( $args = [] ) {
+	$args = array_merge(
+		[
+			'name'   => '',
+			'data'   => [],
+			'admin'  => false,
+			'head'   => false,
+			'action' => true,
+		],
+		$args
+	);
+
+	/* Destructure */
+
+	[
+		'name'   => $name,
+		'data'   => $data,
+		'admin'  => $admin,
+		'head'   => $head,
+		'action' => $action,
+	] = $args;
+
+	/* Name and data required */
+
 	if ( ! $name || ! $data ) {
 		return;
 	}
+
+	/* Script output */
 
 	$name = esc_html( $name );
 	$data = wp_json_encode( $data );
 	$var  = 'data_' . uniqid();
 
 	$output = (
-		'<script type="text/javascript">' .
+		'<script type="text/javascript" defer>' .
 			'(function () {' .
 				'function v(obj, k) {' .
 					'return obj[k];' .
 				'}' .
 				"var $var = $data;" .
-				"if (window.hasOwnProperty('$name')) {" .
+				"if (Object.getOwnPropertyDescriptor(window, '$name')) {" .
 					"Object.keys($var).forEach(function(key) {" .
 						"window['$name'][key] = v($var, key);" .
 					'});' .
 				'} else {' .
-					"window['$name'] = $var;" .
+					"window['$name'] = $data;" .
 				'}' .
 			'})();' .
 		'</script>'
@@ -49,6 +76,8 @@ function additional_script_data( $name, $data = [], $admin = false, $head = fals
 		return $output;
 	}
 
+	/* Action */
+
 	$hook_name = $admin ? 'admin_print_footer_scripts' : 'wp_print_footer_scripts';
 
 	if ( $head ) {
@@ -57,7 +86,7 @@ function additional_script_data( $name, $data = [], $admin = false, $head = fals
 
 	add_action(
 		$hook_name,
-		function() use ( $name, $data, $output ) {
+		function() use ( $output ) {
 			echo $output; // phpcs:ignore
 		}
 	);
@@ -67,6 +96,7 @@ function additional_script_data( $name, $data = [], $admin = false, $head = fals
  * Write to debug log.
  *
  * @param array|object|string $log
+ * @return void
  */
 
 function write_to_log( $log = '' ) {

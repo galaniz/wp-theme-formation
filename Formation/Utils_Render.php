@@ -454,21 +454,23 @@ trait Utils_Render {
 
 		if ( $success_message ) {
 			additional_script_data(
-				static::$namespace,
 				[
-					"form_$form_id" => [
-						'success_message' => [
-							'primary'   => $success_message['primary'] ?? '',
-							'secondary' => $success_message['secondary'] ?? '',
-						],
-						'error_message'   => [
-							'primary'   => $error_message['primary'] ?? '',
-							'secondary' => $error_message['secondary'] ?? '',
+					'name'  => static::$namespace,
+					'data'  => [
+						"form_$form_id" => [
+							'success_message' => [
+								'primary'   => $success_message['primary'] ?? '',
+								'secondary' => $success_message['secondary'] ?? '',
+							],
+							'error_message'   => [
+								'primary'   => $error_message['primary'] ?? '',
+								'secondary' => $error_message['secondary'] ?? '',
+							],
 						],
 					],
-				],
-				false,
-				false,
+					'admin' => false,
+					'head'  => false,
+				]
 			);
 		}
 

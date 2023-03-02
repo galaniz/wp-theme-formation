@@ -182,7 +182,14 @@ class Blocks {
 			$counter++;
 		}
 
-		additional_script_data( FRM::$namespace, $data, true, true );
+		additional_script_data(
+			[
+				'name'  => FRM::$namespace,
+				'data'  => $data,
+				'admin' => true,
+				'head'  => true,
+			]
+		);
 	}
 
 	/**
